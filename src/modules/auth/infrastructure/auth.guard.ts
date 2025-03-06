@@ -7,18 +7,17 @@ import {
 // import { jwtConstants } from 'src/shared/constants';
 // import * as CryptoJS from 'crypto-js';
 import { InjectModel } from "@nestjs/mongoose";
+import { FastifyRequest } from "fastify";
 // import { UserModel } from 'src/schemas/user.schema';
 import { Model, Types } from "mongoose";
 
-import { User, UserSchema } from "@/src/schemas/user.schema";
-import { FastifyRequest } from "fastify";
+// import { User, UserSchema } from "@/src/repository/user.schema";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(
-    // private readonly logger: LoggerService,
-    @InjectModel(User.name) private userModel: Model<User>,
-  ) {}
+  constructor() // private readonly logger: LoggerService,
+  // @InjectModel(User.name) private userModel: Model<User>,
+  {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
@@ -53,7 +52,7 @@ export class AuthGuard implements CanActivate {
       // const { data, error } = await supabaseClient.auth.getUser(token);
 
       return "";
-    } catch (error) {
+    } catch {
       return new UnauthorizedException();
     }
   }

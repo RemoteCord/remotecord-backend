@@ -1,19 +1,27 @@
 import { Injectable } from "@nestjs/common";
 
-import { UserRepository } from "../../infrastructure/user.repository";
 import { CreateUserDto } from "./create-user.dto";
+import { SupabaseRepository } from "../../domain/supabase.repository";
 
 @Injectable()
 export class CreateUserUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly supabaseRepository: SupabaseRepository) {}
 
-  async execute(dto: CreateUserDto): Promise<{ message: string }> {
+  async execute(
+    dto: CreateUserDto,
+  ): Promise<{ status: boolean; token?: string }> {
     try {
-      await this.userRepository.create(dto);
-      return { message: "User created" };
+      // const res = await this.userRepository.create(dto.token);
+
+      // console.log(res);
+
+      const token = await this.supabaseRepository.generateClient(dto.token);
+      // return { token: token };
+      if (!token) throw new Error("Error generating token");
+      return { status: true, token };
     } catch (error) {
       console.log(error);
-      return { message: "User alreay exist" };
+      return { status: false };
     }
   }
 }

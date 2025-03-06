@@ -1,19 +1,16 @@
 import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
-
-import { User, UserSchema } from "@/src/schemas/user.schema";
-
 import { CreateUserUseCase } from "./aplication/create-user-use-case/create-user.use-case";
 import { AuthGuard } from "./infrastructure/auth.guard";
 import { CreateUserController } from "./infrastructure/routes/create-user/create-user.controller";
-import { UserRepository } from "./infrastructure/user.repository";
+import { SupabaseRepository } from "./domain/supabase.repository";
+import { SchemasModule } from "@/src/repository/schemas.module";
+import { SharedModule } from "../shared/shared.module";
+import { WsClientModule } from "../ws-client/ws-client.module";
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-  ],
+  imports: [SchemasModule, SharedModule, WsClientModule],
   controllers: [CreateUserController],
-  providers: [CreateUserUseCase, UserRepository, AuthGuard],
+  providers: [CreateUserUseCase, AuthGuard, SupabaseRepository],
   exports: [AuthGuard],
 })
 export class AuthModule {}

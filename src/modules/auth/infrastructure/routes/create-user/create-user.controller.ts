@@ -8,8 +8,10 @@ import { AUTH_ROUTE } from "./route.constants";
 export class CreateUserController {
   constructor(private readonly createUserUseCase: CreateUserUseCase) {}
 
-  @Post()
-  async run(@Body() body: CreateUserDto): Promise<{ message: string }> {
+  @Post("callback")
+  async run(
+    @Body() body: CreateUserDto,
+  ): Promise<{ status: boolean; token?: string }> {
     return await this.createUserUseCase.execute(body);
   }
 }

@@ -15,6 +15,12 @@
     "plugin:unicorn/recommended",
     "plugin:node/recommended",
   ],
+  "prettier/prettier": [
+    "error",
+    {
+      "endOfLine": "auto",
+    },
+  ],
   "rules": {
     "simple-import-sort/imports": "off",
     "simple-import-sort/exports": "off",
@@ -38,7 +44,7 @@
     {
       "files": ["*.ts"],
       "rules": {
-        "linebreak-style": ["error", "unix"],
+        "linebreak-style": "off",
         "@typescript-eslint/no-unsafe-member-access": "off",
         "simple-import-sort/imports": [
           "error",
