@@ -18,8 +18,8 @@
     "paths": {
       "@/src/*": ["src/*"],
       "@/app/*": ["src/app/*"],
-      "@/contexts/*": ["src/contexts/*"],
-      "@/shared/*": ["src/contexts/shared/*"],
+      "@/modules/*": ["src/modules/*"],
+      "@/shared/*": ["src/modules/shared/*"],
       "@/tests/*": ["tests/*"]
     },
     "types": ["vitest/globals"]

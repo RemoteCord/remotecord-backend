@@ -1,10 +1,11 @@
-import { Logger } from "@nestjs/common";
+import { Logger, ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from "@nestjs/platform-fastify";
+import cookieParser from "cookie-parser";
 
 import { AppModule } from "@/app/app.module";
 
@@ -14,9 +15,15 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
+  app.enableCors({
+    origin: ["http://localhost:3007", "https://luqueee.dev"],
+    credentials: true,
+  });
   app.setGlobalPrefix("api");
+  app.useGlobalPipes(new ValidationPipe());
   const configService = app.get(ConfigService);
   const port = configService.get<string>("PORT", "3000");
+  app.use(cookieParser());
 
   await app.listen(port, "0.0.0.0");
 

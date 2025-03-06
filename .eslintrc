@@ -4,7 +4,7 @@
   "parserOptions": {
     "project": "tsconfig.json",
     "sourceType": "module",
-    "ecmaVersion": 2022
+    "ecmaVersion": 2022,
   },
   "plugins": ["@typescript-eslint", "simple-import-sort"],
   "extends": [
@@ -13,11 +13,11 @@
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:prettier/recommended",
     "plugin:unicorn/recommended",
-    "plugin:node/recommended"
+    "plugin:node/recommended",
   ],
   "rules": {
-    "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error",
+    "simple-import-sort/imports": "off",
+    "simple-import-sort/exports": "off",
     "unicorn/prefer-module": "off",
     "unicorn/prefer-top-level-await": "off",
     "unicorn/prevent-abbreviations": "off",
@@ -25,27 +25,34 @@
     "node/no-missing-import": "off",
     "node/no-unsupported-features/es-syntax": [
       "error",
-      { "ignores": ["modules"] }
+      { "ignores": ["modules"] },
     ],
     "node/no-unpublished-import": "off",
     "no-process-exit": "off",
     "@typescript-eslint/restrict-template-expressions": [
       "error",
-      { "allowNumber": true }
-    ]
+      { "allowNumber": true },
+    ],
   },
   "overrides": [
     {
       "files": ["*.ts"],
       "rules": {
+        "linebreak-style": ["error", "unix"],
+        "@typescript-eslint/no-unsafe-member-access": "off",
         "simple-import-sort/imports": [
           "error",
           {
             "groups": [
               [
-                "^(assert|buffer|child_process|cluster|console|constants|crypto|dgram|dns|domain|events|fs|http|https|module|net|os|path|punycode|querystring|readline|repl|stream|string_decoder|sys|timers|tls|tty|url|util|vm|zlib|freelist|v8|process|async_hooks|http2|perf_hooks)(/.*|$)"
+                "^(assert|buffer|child_process|cluster|console|constants|crypto|dgram|dns|domain|events|fs|http|https|module|net|os|path|punycode|querystring|readline|repl|stream|string_decoder|sys|timers|tls|tty|url|util|vm|zlib|freelist|v8|process|async_hooks|http2|perf_hooks)(/.*|$)",
               ],
-              ["^node:.*\\u0000$", "^@?\\w.*\\u0000$", "^[^.].*\\u0000$", "^\\..*\\u0000$"],
+              [
+                "^node:.*\\u0000$",
+                "^@?\\w.*\\u0000$",
+                "^[^.].*\\u0000$",
+                "^\\..*\\u0000$",
+              ],
               ["^\\u0000"],
               ["^node:"],
               ["^@?\\w"],
@@ -53,29 +60,29 @@
               ["^@/src(/.*|$)"],
               ["^@/app(/.*|$)"],
               ["^@/shared(/.*|$)"],
-              ["^@/contexts(/.*|$)"],
+              ["^@/modules(/.*|$)"],
               ["^"],
-              ["^\\."]
-            ]
-          }
-        ]
-      }
+              ["^\\."],
+            ],
+          },
+        ],
+      },
     },
     {
       "files": ["*.js", "*.mjs", "*.cjs"],
-      "extends": ["plugin:@typescript-eslint/disable-type-checked"]
+      "extends": ["plugin:@typescript-eslint/disable-type-checked"],
     },
     {
       "files": ["*.module.ts"],
       "rules": {
-        "@typescript-eslint/no-extraneous-class": "off"
-      }
+        "@typescript-eslint/no-extraneous-class": "off",
+      },
     },
     {
       "files": ["scripts/**"],
       "rules": {
-        "no-console": "off"
-      }
+        "no-console": "off",
+      },
     },
     {
       "files": ["tests/**"],
@@ -84,8 +91,8 @@
       "rules": {
         "@typescript-eslint/unbound-method": "off",
         "vitest/expect-expect": "off",
-        "vitest/no-standalone-expect": "off"
-      }
+        "vitest/no-standalone-expect": "off",
+      },
     },
     {
       "files": ["tests/performance/**"],
@@ -95,11 +102,11 @@
         "@typescript-eslint/no-unsafe-call": "off",
         "@typescript-eslint/no-unsafe-assignment": "off",
         "@typescript-eslint/no-unsafe-member-access": "off",
-        "no-undef": "off"
-      }
-    }
+        "no-undef": "off",
+      },
+    },
   ],
   "env": {
-    "node": true
-  }
+    "node": true,
+  },
 }
