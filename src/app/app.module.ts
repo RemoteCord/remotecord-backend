@@ -11,6 +11,9 @@ import { AuthModule } from "../modules/auth/auth.module";
 import { WsClientModule } from "../modules/ws-client/ws-client.module";
 import { SchemasModule } from "../repository/schemas.module";
 import { configVar } from "../config/config-var";
+import { ControllerModule } from "../modules/controller/controller.module";
+import { WsBotModule } from "../modules/ws-bot/ws-bot.module";
+import { WsApplicationModule } from "../modules/ws-application/ws-application.module";
 
 @Module({
   imports: [
@@ -19,12 +22,15 @@ import { configVar } from "../config/config-var";
       load: [configVar],
     }),
 
+    AuthModule,
     ConfigModule.forRoot({ isGlobal: true, cache: true }),
     LoggerModule,
     HealthModule,
-    AuthModule,
     WsClientModule,
+    WsBotModule,
+    WsApplicationModule,
     SchemasModule,
+    ControllerModule,
   ],
 })
 export class AppModule {}

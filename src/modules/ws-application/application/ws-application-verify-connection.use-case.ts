@@ -1,0 +1,20 @@
+import { Injectable } from "@nestjs/common";
+import { ClientDataEncryptUseCase } from "../../auth/application/client-data-encrypt.use-case";
+
+@Injectable()
+export class WsApplicationVerifyConnectionUseCase {
+  constructor(
+    private readonly clientDataEncryptUseCase: ClientDataEncryptUseCase,
+  ) {}
+
+  async execute(token: string) {
+    if (!token) throw new Error("Token not provided");
+
+    const clientid = this.clientDataEncryptUseCase.decrypt(token);
+    if (!clientid) {
+      throw new Error("Invalid token");
+    }
+
+    return clientid;
+  }
+}

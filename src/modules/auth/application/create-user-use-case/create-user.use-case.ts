@@ -2,10 +2,14 @@ import { Injectable } from "@nestjs/common";
 
 import { CreateUserDto } from "./create-user.dto";
 import { SupabaseRepository } from "../../domain/supabase.repository";
+import { UserRepository } from "@/src/repository/user/user.repository";
 
 @Injectable()
 export class CreateUserUseCase {
-  constructor(private readonly supabaseRepository: SupabaseRepository) {}
+  constructor(
+    private readonly supabaseRepository: SupabaseRepository,
+    private readonly userRepository: UserRepository,
+  ) {}
 
   async execute(
     dto: CreateUserDto,
@@ -15,7 +19,17 @@ export class CreateUserUseCase {
 
       // console.log(res);
 
-      const token = await this.supabaseRepository.generateClient(dto.token);
+      const user = await this.supabaseRepository.getClientDataFromSupabase(
+        dto.token,
+      );
+
+      const token = await this.userRepository.createUser({
+        id: user.id,
+        email: user.email!,
+        avatar: user.user_metadata.avatar_url,
+        name: user.user_metadata.full_name,
+      });
+
       // return { token: token };
       if (!token) throw new Error("Error generating token");
       return { status: true, token };

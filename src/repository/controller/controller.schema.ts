@@ -11,12 +11,8 @@ export class ControllerModel {
   @Prop({ required: false, default: [] })
   friends!: string[];
 
-  @Prop({ required: false, default: [] })
-  activeclients!: string[];
-
   @Prop({ required: false, default: "" })
   activeclient!: string;
 }
 
 export const ControllerSchema = SchemaFactory.createForClass(ControllerModel);
-

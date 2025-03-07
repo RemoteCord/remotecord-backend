@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from "@nestjs/common";
 
-import { CreateUserDto } from "../../../aplication/create-user-use-case/create-user.dto";
-import { CreateUserUseCase } from "../../../aplication/create-user-use-case/create-user.use-case";
+import { CreateUserDto } from "../../../application/create-user-use-case/create-user.dto";
+import { CreateUserUseCase } from "../../../application/create-user-use-case/create-user.use-case";
 import { AUTH_ROUTE } from "./route.constants";
 
 @Controller(AUTH_ROUTE)

@@ -10,50 +10,47 @@ import { InjectModel } from "@nestjs/mongoose";
 import { FastifyRequest } from "fastify";
 // import { UserModel } from 'src/schemas/user.schema';
 import { Model, Types } from "mongoose";
+import { LoggerService } from "../../shared/providers";
+import { UserRepository } from "@/src/repository/user/user.repository";
+import { CustomUnathorizedException } from "./exceptions";
+import { ClientDataEncryptUseCase } from "../application/client-data-encrypt.use-case";
 
 // import { User, UserSchema } from "@/src/repository/user.schema";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor() // private readonly logger: LoggerService,
-  // @InjectModel(User.name) private userModel: Model<User>,
-  {}
+  constructor(
+    private readonly logger: LoggerService,
+    private readonly userRepository: UserRepository,
+    private readonly clientDataEncrypt: ClientDataEncryptUseCase,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
-      // console.log('context:', context);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const request: FastifyRequest = context.switchToHttp().getRequest();
-      //   const token = this.extractTokenFromHeader(request);
+      const token = this.extractTokenFromHeader(request);
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      // this.logger.info('TOKEN REQUEST:', token);
-      console.log("req", request);
-      //   if (!token) {
-      //     // this.logger.error("No token found in request");
-      //     throw new UnauthorizedException();
-      //   }
+      // console.log("req", request);
+      if (!token) {
+        // this.logger.error("No token found in request");
+        throw new Error("Token not found");
+      }
 
       //   const result = await this.verifyToken(token);
       //   //   request["user"] = result;
       // this.logger.info('token:', token);
 
+      const clientid = this.clientDataEncrypt.decrypt(token);
+
+      request.headers["clientid"] = clientid;
+
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       //   this.logger.error("Error:", error);
-      console.log("Error:", error);
-      throw new UnauthorizedException();
-    }
-  }
-
-  async verifyToken(token: string) {
-    try {
-      // const { data, error } = await supabaseClient.auth.getUser(token);
-
-      return "";
-    } catch {
-      return new UnauthorizedException();
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      this.logger.error("Error Auth Guard:", errorMessage);
+      throw new CustomUnathorizedException();
     }
   }
 

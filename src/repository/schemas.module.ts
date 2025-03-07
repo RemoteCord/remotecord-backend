@@ -1,4 +1,4 @@
-import { Global, Module } from "@nestjs/common";
+import { forwardRef, Global, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Configuration } from "../config/env.enum";
@@ -9,10 +9,12 @@ import {
   ControllerSchema,
 } from "./controller/controller.schema";
 import { ControllerRepository } from "./controller/controller.repository";
+import { SharedModule } from "../modules/shared/shared.module";
+import { AuthModule } from "../modules/auth/auth.module";
 
-@Global()
 @Module({
   imports: [
+    SharedModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -24,6 +26,7 @@ import { ControllerRepository } from "./controller/controller.repository";
       { name: UserModel.name, schema: UserSchema },
       { name: ControllerModel.name, schema: ControllerSchema },
     ]),
+    forwardRef(() => AuthModule),
   ],
   providers: [UserRepository, ControllerRepository],
   exports: [MongooseModule, UserRepository, ControllerRepository],
