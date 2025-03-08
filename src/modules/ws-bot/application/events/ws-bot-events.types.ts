@@ -18,3 +18,9 @@ export interface WsBotSendScreensEvent {
     isprimary: boolean;
   }[];
 }
+
+export interface WsBotSendCmdCommandEvent {
+  controllerid: string;
+  stdout: string;
+  pwd: string;
+}

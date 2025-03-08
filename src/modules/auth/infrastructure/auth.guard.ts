@@ -42,6 +42,8 @@ export class AuthGuard implements CanActivate {
 
       const clientid = this.clientDataEncrypt.decrypt(token);
 
+      this.logger.info("clientid:", clientid);
+
       request.headers["clientid"] = clientid;
 
       return true;

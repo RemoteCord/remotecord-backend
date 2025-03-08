@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { WsApplicationRepository } from "../../domain/ws-application.repository";
 import { ClientDataEncryptUseCase } from "@/src/modules/auth/application/client-data-encrypt.use-case";
-import { ConnectClientDto } from "@/src/modules/controller/infrastructure/routes/connect-client/connect-client.dto";
+import { ConnectClientDto } from "@/src/modules/controller/infrastructure/routes/dto/connect-client.dto";
 
 @Injectable()
 export class WsApplicationConnectClientUseCase {

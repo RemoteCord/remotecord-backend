@@ -1,20 +1,22 @@
 import { Injectable } from "@nestjs/common";
 import { ClientsMap, ClientSockets } from "../types/ws-client.type";
 import { Socket } from "socket.io";
+import { FileRequest } from "../types/tasks.type";
 
 @Injectable()
 export class WsClientRepository {
   clients = new Map() as ClientsMap;
+
   constructor() {}
 
   async addClient(clientid: string, data: ClientSockets) {
     this.clients.set(clientid, data);
   }
 
-  async removeClient(clientid: string) {
+  removeClient(clientid: string) {
     this.clients.delete(clientid);
   }
-  async getClient(clientid: string) {
+  getClient(clientid: string) {
     return this.clients.get(clientid);
   }
 

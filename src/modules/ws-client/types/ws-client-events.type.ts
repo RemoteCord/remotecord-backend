@@ -22,3 +22,8 @@ export interface GetScreensFromClientEvent {
     isprimary: boolean;
   }[];
 }
+
+export interface RunCmdCommand {
+  stdout: string;
+  pwd: string;
+}

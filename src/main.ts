@@ -1,13 +1,18 @@
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
+// import {
+//   FastifyAdapter,
+//   NestFastifyApplication,
+// } from "@nestjs/platform-fastify";
+import cookieParser from "cookie-parser";
+
+import { AppModule } from "./app/app.module";
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from "@nestjs/platform-fastify";
-import cookieParser from "cookie-parser";
-
-import { AppModule } from "@/app/app.module";
+import multiPart from "@fastify/multipart";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -24,6 +29,13 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get<string>("PORT", "3000");
   app.use(cookieParser());
+
+  //@ts-ignore - This is a custom plugin
+  await app.register(multiPart, {
+    limits: {
+      fileSize: 100 * 1024 * 1024, // 100MB in bytes
+    },
+  });
 
   await app.listen(port, "0.0.0.0");
 

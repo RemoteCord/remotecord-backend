@@ -3,7 +3,6 @@ import { ConfigService } from "@nestjs/config";
 
 import { LogInterceptor } from "./interceptors";
 import { LoggerService } from "./providers/logger.service";
-import { JwtModule, JwtService } from "@nestjs/jwt";
 
 const loggerProvider: Provider = {
   provide: Logger,

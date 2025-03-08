@@ -1,5 +1,6 @@
 import { Socket } from "socket.io";
 import { UserModel } from "src/repository/user/user.schema";
+import { FileRequest } from "./tasks.type";
 
 export type ClientSockets = {
   socket: Socket;
@@ -8,3 +9,4 @@ export type ClientSockets = {
 };
 export type ClientsMap = Map<string, ClientSockets>;
 
+export type ClientUploadFile = Map<string, FileRequest>;

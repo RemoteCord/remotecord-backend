@@ -15,10 +15,13 @@ import type {
   RunCmdCommandEvent,
   TasksEvent,
   GetScreensFromClientEvent,
+  RunCmdCommand,
 } from "../types/ws-client-events.type";
 import type { FileRequest } from "../types/tasks.type";
 import { UseGuards } from "@nestjs/common";
 import { WsBotSendScreensUseCase } from "../../ws-bot/application/events/ws-bot-send-screens.use-case";
+import { WsBotSendCommandUseCase } from "../../ws-bot/application/events/ws-bot-send-command.use-case";
+import { WsClientFile } from "../application/events/ws-client-file";
 
 @WebSocketGateway({
   namespace: "clients",
@@ -33,6 +36,8 @@ export class WsClientGateway
     private readonly wsClientLeavesUseCase: WsClientLeavesUseCase,
     private readonly wsClientResetAllConnectionsUseCase: WsClientResetAllConnectionsUseCase,
     private readonly wsBotSendScreensUseCase: WsBotSendScreensUseCase,
+    private readonly wsBotSendCmdCommandUseCase: WsBotSendCommandUseCase,
+    private readonly wsClientFile: WsClientFile,
     private readonly logger: LoggerService,
   ) {}
 
@@ -56,7 +61,12 @@ export class WsClientGateway
 
   @UseGuards(WsClientGuard)
   @SubscribeMessage("runCmdCommand")
-  runCmdCommand(client: Socket, data: RunCmdCommandEvent) {}
+  runCmdCommand(client: Socket, data: RunCmdCommand) {
+    this.wsBotSendCmdCommandUseCase.execute({
+      controllerid: client.handshake.query.controllerid as string,
+      ...data,
+    });
+  }
 
   @UseGuards(WsClientGuard)
   @SubscribeMessage("getScreensFromClient")
@@ -74,7 +84,15 @@ export class WsClientGateway
 
   @UseGuards(WsClientGuard)
   @SubscribeMessage("getFileFromClient")
-  getFileFromClient(client: Socket, data: FileRequest) {}
+  getFileFromClient(client: Socket, data: FileRequest) {
+    const { metadata, buffer } = data;
+
+    const size = metadata.size;
+
+    if (size > 10) {
+      this.logger.error("File too big");
+    }
+  }
 
   @UseGuards(WsClientGuard)
   @SubscribeMessage("getTasksFromClient")

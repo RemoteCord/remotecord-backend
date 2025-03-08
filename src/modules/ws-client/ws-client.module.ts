@@ -1,5 +1,4 @@
 import { forwardRef, Module } from "@nestjs/common";
-import { ClientDataEncryptUseCase } from "../auth/application/client-data-encrypt.use-case";
 import { WsClientGateway } from "./infrastructure/ws-client.gateway";
 import { WsClientRepository } from "./domain/ws-client.repository";
 import { WsClientJoinsUseCase } from "./application/ws-client-joins.use-case";
@@ -9,9 +8,11 @@ import { WsClientLeavesUseCase } from "./application/ws-client-leaves.use-case";
 import { WsClientVerifyConnectionUseCase } from "./application/ws-client-verify-connection.use-case";
 import { WsClientResetAllConnectionsUseCase } from "./application/ws-client-reset-all-connections-use-case";
 import { WsClientGuard } from "./application/ws-client.guard";
-import { WsClientUploadFile } from "./application/events/ws-client-upload-file";
+import { WsClientFile } from "./application/events/ws-client-file";
 import { WsBotModule } from "../ws-bot/ws-bot.module";
 import { WsClientGetScreens } from "./application/events/ws-client-get-screens";
+import { WsClientSendCmdCommand } from "./application/events/ws-client-send-cmd-command";
+import { ClientModule } from "../client/infrastructure/client.module";
 
 @Module({
   providers: [
@@ -22,16 +23,24 @@ import { WsClientGetScreens } from "./application/events/ws-client-get-screens";
     WsClientVerifyConnectionUseCase,
     WsClientResetAllConnectionsUseCase,
     WsClientGuard,
-    WsClientUploadFile,
+    WsClientFile,
     WsClientGetScreens,
+    WsClientSendCmdCommand,
   ],
   exports: [
     WsClientJoinsUseCase,
     WsClientLeavesUseCase,
     WsClientResetAllConnectionsUseCase,
-    WsClientUploadFile,
+    WsClientFile,
     WsClientGetScreens,
+    WsClientSendCmdCommand,
+    WsClientRepository,
   ],
-  imports: [SchemasModule, forwardRef(() => AuthModule), WsBotModule],
+  imports: [
+    SchemasModule,
+    forwardRef(() => AuthModule),
+    WsBotModule,
+    ClientModule,
+  ],
 })
 export class WsClientModule {}

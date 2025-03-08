@@ -14,6 +14,7 @@ import { configVar } from "../config/config-var";
 import { ControllerModule } from "../modules/controller/controller.module";
 import { WsBotModule } from "../modules/ws-bot/ws-bot.module";
 import { WsApplicationModule } from "../modules/ws-application/ws-application.module";
+import { ClientModule } from "../modules/client/infrastructure/client.module";
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { WsApplicationModule } from "../modules/ws-application/ws-application.mo
     WsApplicationModule,
     SchemasModule,
     ControllerModule,
+    ClientModule,
   ],
 })
 export class AppModule {}

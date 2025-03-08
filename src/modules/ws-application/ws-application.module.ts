@@ -26,6 +26,7 @@ import { WsApplicationConnectClientUseCase } from "./application/events/ws-appli
     WsApplicationLeavesUseCase,
     WsApplicationResetAllConnectionsUseCase,
     WsApplicationConnectClientUseCase,
+    WsApplicationRepository,
   ],
   imports: [SchemasModule, forwardRef(() => AuthModule)],
 })

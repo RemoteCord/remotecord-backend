@@ -8,6 +8,9 @@ import { WsBotConnectClientUseCase } from "./application/events/ws-bot-connect-c
 import { WsBotDisconnectClientUseCase } from "./application/events/ws-bot-disconnect-client.use-case";
 import { AuthModule } from "../auth/auth.module";
 import { WsBotSendScreensUseCase } from "./application/events/ws-bot-send-screens.use-case";
+import { WsBotSendCommandUseCase } from "./application/events/ws-bot-send-command.use-case";
+import { WsBotSendFileUseCase } from "./application/events/ws-bot-send-file.use-case";
+import { ClientModule } from "../client/infrastructure/client.module";
 
 @Module({
   providers: [
@@ -19,6 +22,8 @@ import { WsBotSendScreensUseCase } from "./application/events/ws-bot-send-screen
     WsBotConnectClientUseCase,
     WsBotDisconnectClientUseCase,
     WsBotSendScreensUseCase,
+    WsBotSendCommandUseCase,
+    WsBotSendFileUseCase,
   ],
   exports: [
     WsBotSendMessageUseCase,
@@ -26,7 +31,10 @@ import { WsBotSendScreensUseCase } from "./application/events/ws-bot-send-screen
     WsBotDisconnectClientUseCase,
     WsBotSendScreensUseCase,
     WsBotSendMessageUseCase,
+    WsBotSendCommandUseCase,
+    WsBotSendFileUseCase,
+    WsBotRepository,
   ],
-  imports: [forwardRef(() => AuthModule)],
+  imports: [forwardRef(() => AuthModule), ClientModule],
 })
 export class WsBotModule {}
