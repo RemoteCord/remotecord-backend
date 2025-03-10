@@ -6,4 +6,5 @@ export const configVar = () => ({
   SECRET: process.env.SECRET,
   SUPABASE_KEY: process.env.SUPABASE_KEY,
   SUPABASE_URL: process.env.SUPABASE_URL,
+  FILES_DURATION: Number(process.env.FILES_DURATION) || 60,
 });

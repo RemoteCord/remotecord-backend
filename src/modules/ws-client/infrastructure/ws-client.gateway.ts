@@ -16,12 +16,14 @@ import type {
   TasksEvent,
   GetScreensFromClientEvent,
   RunCmdCommand,
+  GetScreenshotFromClientEvent,
 } from "../types/ws-client-events.type";
 import type { FileRequest } from "../types/tasks.type";
 import { UseGuards } from "@nestjs/common";
-import { WsBotSendScreensUseCase } from "../../ws-bot/application/events/ws-bot-send-screens.use-case";
+import { WsBotScreenshotUseCase } from "../../ws-bot/application/events/ws-bot-screenshot.use-case";
 import { WsBotSendCommandUseCase } from "../../ws-bot/application/events/ws-bot-send-command.use-case";
 import { WsClientFile } from "../application/events/ws-client-file";
+import { WsBotSendExplorerUseCase } from "../../ws-bot/application/events/ws-bot-send-explorer.use-case";
 
 @WebSocketGateway({
   namespace: "clients",
@@ -35,8 +37,9 @@ export class WsClientGateway
     private readonly wsClientJoinsUseCase: WsClientJoinsUseCase,
     private readonly wsClientLeavesUseCase: WsClientLeavesUseCase,
     private readonly wsClientResetAllConnectionsUseCase: WsClientResetAllConnectionsUseCase,
-    private readonly wsBotSendScreensUseCase: WsBotSendScreensUseCase,
+    private readonly wsBotScreenshotUseCase: WsBotScreenshotUseCase,
     private readonly wsBotSendCmdCommandUseCase: WsBotSendCommandUseCase,
+    private readonly wsBotSendExplorerUseCase: WsBotSendExplorerUseCase,
     private readonly wsClientFile: WsClientFile,
     private readonly logger: LoggerService,
   ) {}
@@ -72,15 +75,36 @@ export class WsClientGateway
   @SubscribeMessage("getScreensFromClient")
   getScreensFromClient(client: Socket, data: GetScreensFromClientEvent) {
     this.logger.info("getScreensFromClient", data);
-    this.wsBotSendScreensUseCase.execute({
+    this.wsBotScreenshotUseCase.sendScreens({
       controllerid: client.handshake.query.controllerid as string,
       screens: data.screens,
     });
   }
 
   @UseGuards(WsClientGuard)
+  @SubscribeMessage("getScreenshotFromClient")
+  getScreenshotFromClient(client: Socket, data: GetScreenshotFromClientEvent) {
+    this.logger.info("getScreensFromClient", data);
+    // this.wsBotSendScreensUseCase.execute({
+    //   controllerid: client.handshake.query.controllerid as string,
+    //   screens: data.screens,
+    // });
+
+    this.wsBotScreenshotUseCase.sendScreenshot({
+      controllerid: client.handshake.query.controllerid as string,
+      buffer: data.buffer,
+    });
+  }
+
+  @UseGuards(WsClientGuard)
   @SubscribeMessage("getFilesFolder")
-  getExplorerFromClient(client: Socket, data: GetExplorerFromClientEvent) {}
+  getExplorerFromClient(client: Socket, data: GetExplorerFromClientEvent) {
+    this.logger.info("getExplorerFromClient Event", data);
+    this.wsBotSendExplorerUseCase.execute({
+      controllerid: client.handshake.query.controllerid as string,
+      ...data,
+    });
+  }
 
   @UseGuards(WsClientGuard)
   @SubscribeMessage("getFileFromClient")

@@ -8,14 +8,14 @@ import { ControllerRepository } from "@/src/repository/controller/controller.rep
 import { WsClientFile } from "@/src/modules/ws-client/application/events/ws-client-file";
 import { WsBotRepository } from "@/src/modules/ws-bot/domain/ws-bot.repository";
 import Crypto from "node:crypto";
-import { ClientRepository } from "@/src/modules/client/domain/client.repository";
+import { FileRepository } from "@/src/modules/client/domain/file.repository";
 @Injectable()
 export class FileToClientUseCase {
   constructor(
     private readonly logger: LoggerService,
     private readonly controllerRepository: ControllerRepository,
     private readonly wsClientFile: WsClientFile,
-    private readonly clientRepository: ClientRepository,
+    private readonly fileRepository: FileRepository,
   ) {}
   async sendFileToClient(controllerid: string, data: SendFileToClientDto) {
     const activeclient = (
@@ -34,13 +34,21 @@ export class FileToClientUseCase {
     });
   }
 
-  async getFileFromRepository(controllerid: string) {
-    const file = this.clientRepository.getFile(controllerid);
+  async getFileFromRepository(controllerid: string, token: string) {
+    const { file } = this.fileRepository.getFile(token);
 
     if (!file || !file.buffer) {
       this.logger.error("File not found or file buffer is empty");
-      throw new Error("File not found or file buffer is empty");
+      return {
+        status: "file deleted",
+      };
     }
+
+    this.logger.info(
+      `Getting file from repository ${controllerid} with token ${token}`,
+    );
+
+    console.log(file);
 
     return new StreamableFile(new Uint8Array(file.buffer), {
       type: "application/octet-stream",
@@ -70,7 +78,7 @@ export class FileToClientUseCase {
 
     if (!activeclient) this.logger.error("No active client found");
 
-    this.clientRepository.addTokenForFile(activeclient, token);
+    this.fileRepository.addTokenForFile(activeclient, token);
 
     await this.wsClientFile.getFileFromClient({
       clientid: activeclient,

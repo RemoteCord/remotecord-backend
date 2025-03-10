@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { FileRequest } from "../../ws-client/types/tasks.type";
-import { ClientRepository } from "../domain/client.repository";
+import { FileRepository } from "../domain/file.repository";
 import { WsBotSendFileUseCase } from "../../ws-bot/application/events/ws-bot-send-file.use-case";
 
 @Injectable()
 export class FileUploaderUseCase {
   constructor(
-    private readonly clientRepository: ClientRepository,
+    private readonly fileRepository: FileRepository,
     private readonly wsBotSendFileUseCase: WsBotSendFileUseCase,
   ) {}
 
@@ -20,7 +20,7 @@ export class FileUploaderUseCase {
   ) {
     const { file, tokenFile } = body;
 
-    const validateToken = this.clientRepository.getTokenForFile(clientid);
+    const validateToken = this.fileRepository.getTokenForFile(clientid);
 
     if (!validateToken) {
       throw new Error("Token not found");
@@ -42,9 +42,9 @@ export class FileUploaderUseCase {
       },
     };
 
-    this.clientRepository.addFile(controllerid, fileFormatted);
+    this.fileRepository.addFile(validateToken, controllerid, fileFormatted);
 
-    this.wsBotSendFileUseCase.execute(controllerid);
+    this.wsBotSendFileUseCase.execute(controllerid, validateToken);
 
     return {
       message: "File uploaded",

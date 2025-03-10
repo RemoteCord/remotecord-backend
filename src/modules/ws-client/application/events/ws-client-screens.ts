@@ -5,14 +5,14 @@ import { ClientNotFoundException } from "@/src/repository/user/exceptions";
 import { LoggerService } from "@/src/modules/shared/providers";
 
 @Injectable()
-export class WsClientGetScreens {
+export class WsClientScreens {
   constructor(
     private readonly wsClientRepository: WsClientRepository,
     private readonly logger: LoggerService,
   ) {}
 
-  async execute(clientid: string) {
-    const client = await this.wsClientRepository.getClient(clientid);
+  async getScreens(clientid: string) {
+    const client = this.wsClientRepository.getClient(clientid);
 
     if (!client) {
       this.logger.error(`Client not found: ${clientid}`);
@@ -24,5 +24,22 @@ export class WsClientGetScreens {
     const { socket } = client;
 
     socket.emit("getScreensFromClient");
+  }
+
+  async getScreenshot(clientid: string, screenid: string) {
+    const client = this.wsClientRepository.getClient(clientid);
+
+    if (!client) {
+      this.logger.error(`Client not found: ${clientid}`);
+      throw new ClientNotFoundException(clientid);
+    }
+
+    this.logger.info(`Emiting send screenshot event to client ${clientid}`);
+
+    const { socket } = client;
+
+    socket.emit("getScreenshot", {
+      screenid,
+    });
   }
 }

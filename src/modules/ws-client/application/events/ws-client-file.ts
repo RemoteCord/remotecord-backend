@@ -8,18 +8,18 @@ import type {
 import { ClientNotFoundException } from "@/src/repository/user/exceptions";
 import { WsBotRepository } from "@/src/modules/ws-bot/domain/ws-bot.repository";
 import { LoggerService } from "@/src/modules/shared/providers";
-import { ClientRepository } from "@/src/modules/client/domain/client.repository";
+import { FileRepository } from "@/src/modules/client/domain/file.repository";
 
 @Injectable()
 export class WsClientFile {
   constructor(
     private readonly wsClientRepository: WsClientRepository,
-    private readonly clientRepository: ClientRepository,
+    private readonly fileRepository: FileRepository,
     private readonly logger: LoggerService,
   ) {}
 
   async uploadFileToClient({ clientid, fileroute }: ClientUploadFile) {
-    const client = await this.wsClientRepository.getClient(clientid);
+    const client = this.wsClientRepository.getClient(clientid);
 
     if (!client) {
       throw new ClientNotFoundException(clientid);
@@ -41,7 +41,7 @@ export class WsClientFile {
 
     const { socket } = client;
 
-    const tokenFile = this.clientRepository.getTokenForFile(clientid);
+    const tokenFile = this.fileRepository.getTokenForFile(clientid);
 
     this.logger.info(
       `Emmiting getting file from client ${clientid} ${tokenFile}`,

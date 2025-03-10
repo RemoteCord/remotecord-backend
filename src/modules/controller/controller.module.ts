@@ -15,14 +15,16 @@ import { FileToClientUseCase } from "./application/events/file-to-client.use-cas
 import { FileController } from "./infrastructure/routes/events/file.controller";
 import { WsClientModule } from "../ws-client/ws-client.module";
 import { SelectCurrentClientUseCase } from "./application/select-current-client.use-case";
-import { GetAvailableScreensUseCase } from "./application/get-available-screens.use-case";
+import { ScreensClientUseCase } from "./application/screenshot-client.use-case";
 import { ConnectClientController } from "./infrastructure/routes/connect-client.controller";
 import { WsApplicationModule } from "../ws-application/ws-application.module";
-import { GetScreensClientController } from "./infrastructure/routes/get-screens-client.controller";
+import { GetScreensClientController } from "./infrastructure/routes/screenshot-client.controller";
 import { SendCmdCommandToClientUseCase } from "./application/events/send-cmd-command.use-case";
 import { SendCmdCommandController } from "./infrastructure/routes/events/send-cmd-command.controller";
 import { WsBotModule } from "../ws-bot/ws-bot.module";
 import { ClientModule } from "../client/infrastructure/client.module";
+import { GetExplorerClientController } from "./infrastructure/routes/get-explorer-client.controller";
+import { GetExplorerClientUseCase } from "./application/events/get-explorer-client.use-case";
 
 @Module({
   controllers: [
@@ -34,6 +36,7 @@ import { ClientModule } from "../client/infrastructure/client.module";
     ConnectClientController,
     GetScreensClientController,
     SendCmdCommandController,
+    GetExplorerClientController,
   ],
   providers: [
     ActivateControllerUseCase,
@@ -42,8 +45,9 @@ import { ClientModule } from "../client/infrastructure/client.module";
     GetFriendsUseCase,
     FileToClientUseCase,
     SelectCurrentClientUseCase,
-    GetAvailableScreensUseCase,
+    ScreensClientUseCase,
     SendCmdCommandToClientUseCase,
+    GetExplorerClientUseCase,
   ],
   imports: [
     SharedModule,

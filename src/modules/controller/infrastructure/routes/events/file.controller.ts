@@ -1,14 +1,14 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import { CONTROLLER_ROUTE } from "../../route.constants";
 import { GetFileDto, SendFileToClientDto } from "../dto/file.dto";
 import { FileToClientUseCase } from "../../../application/events/file-to-client.use-case";
-import { ClientRepository } from "@/src/modules/client/domain/client.repository";
+import { FileRepository } from "@/src/modules/client/domain/file.repository";
 
 @Controller(CONTROLLER_ROUTE)
 export class FileController {
   constructor(
     private readonly fileToClientUseCase: FileToClientUseCase,
-    private readonly clientRepository: ClientRepository,
+    private readonly fileRepository: FileRepository,
   ) {}
 
   @Post(":controllerid/upload-file")
@@ -20,16 +20,14 @@ export class FileController {
   }
 
   @Get(":controllerid/file")
-  async getFile(@Param("controllerid") controllerid: string) {
-    return await this.fileToClientUseCase
-      .getFileFromRepository(controllerid)
-      .then(file => {
-        setTimeout(() => {
-          void this.clientRepository.deleteFile(controllerid);
-        }, 100000);
-
-        return file;
-      });
+  async getFile(
+    @Param("controllerid") controllerid: string,
+    @Query("token") token: string,
+  ) {
+    return await this.fileToClientUseCase.getFileFromRepository(
+      controllerid,
+      token,
+    );
   }
 
   @Post(":controllerid/file")

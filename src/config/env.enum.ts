@@ -6,4 +6,5 @@ export enum Configuration {
   SECRET = "SECRET",
   SUPABASE_KEY = "SUPABASE_KEY",
   SUPABASE_URL = "SUPABASE_URL",
+  FILES_DURATION = "FILES_DURATION",
 }

@@ -23,6 +23,10 @@ export interface GetScreensFromClientEvent {
   }[];
 }
 
+export interface GetScreenshotFromClientEvent {
+  buffer: ArrayBuffer;
+}
+
 export interface RunCmdCommand {
   stdout: string;
   pwd: string;

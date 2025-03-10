@@ -1,0 +1,40 @@
+import { LoggerService } from "@/src/modules/shared/providers";
+import { WsClientScreens } from "@/src/modules/ws-client/application/events/ws-client-screens";
+import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { Injectable } from "@nestjs/common";
+
+@Injectable()
+export class ScreensClientUseCase {
+  constructor(
+    private readonly controllerRepository: ControllerRepository,
+    private readonly wsClientScreens: WsClientScreens,
+    private readonly logger: LoggerService,
+  ) {}
+
+  async getScreens(controllerid: string) {
+    this.logger.info(
+      `Getting available screens for controller ${controllerid}`,
+    );
+    const activeclient = (
+      await this.controllerRepository.getControllerById(controllerid)
+    ).activeclient;
+
+    await this.wsClientScreens.getScreens(activeclient);
+
+    return { status: true };
+  }
+
+  async sendScreenshot(controllerid: string, screenid: string) {
+    this.logger.info(
+      `Sending screenshot ${screenid} to controller ${controllerid}`,
+    );
+
+    const activeclient = (
+      await this.controllerRepository.getControllerById(controllerid)
+    ).activeclient;
+
+    await this.wsClientScreens.getScreenshot(activeclient, screenid);
+
+    return { status: true };
+  }
+}

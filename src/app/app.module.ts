@@ -15,6 +15,7 @@ import { ControllerModule } from "../modules/controller/controller.module";
 import { WsBotModule } from "../modules/ws-bot/ws-bot.module";
 import { WsApplicationModule } from "../modules/ws-application/ws-application.module";
 import { ClientModule } from "../modules/client/infrastructure/client.module";
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ClientModule } from "../modules/client/infrastructure/client.module";
       envFilePath: `./environments/${process.env.NODE_ENV}.env`,
       load: [configVar],
     }),
+    ScheduleModule.forRoot(),
 
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true, cache: true }),

