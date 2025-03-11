@@ -14,6 +14,7 @@ export class WsBotJoinsUseCase {
   ) {}
 
   async execute(client: Socket) {
+    // console.log("bot", client.handshake.headers);
     const { token } = client.handshake.auth as { token: string };
 
     const botToken = this.configService.get(Configuration.SECRET);

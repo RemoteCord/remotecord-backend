@@ -1,36 +1,42 @@
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
-// import {
-//   FastifyAdapter,
-//   NestFastifyApplication,
-// } from "@nestjs/platform-fastify";
-import cookieParser from "cookie-parser";
-
-import { AppModule } from "./app/app.module";
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from "@nestjs/platform-fastify";
+import cookieParser from "cookie-parser";
 import multiPart from "@fastify/multipart";
 
+import { AppModule } from "./app/app.module";
+import helmet from "helmet";
+import { CorsOptions } from "./cors";
+import cors from "@fastify/cors";
+import { LogInterceptor } from "./modules/shared/interceptors";
+
+declare const module: any;
+
 async function bootstrap() {
+  const fastifyModule = new FastifyAdapter({ debugger: true });
+
+  // await fastifyModule.register(cors, CorsOptions);
+  // await fastifyModule.register(helmet);
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter(),
+    fastifyModule,
   );
 
-  app.enableCors({
-    origin: ["http://localhost:3007", "https://luqueee.dev"],
-    credentials: true,
-  });
+  app.enableCors(CorsOptions);
+
+  // await app.register(cors, CorsOptions);
   app.setGlobalPrefix("api");
   app.useGlobalPipes(new ValidationPipe());
+
   const configService = app.get(ConfigService);
   const port = configService.get<string>("PORT", "3000");
   app.use(cookieParser());
 
-  //@ts-ignore - This is a custom plugin
   await app.register(multiPart, {
     limits: {
       fileSize: 100 * 1024 * 1024, // 100MB in bytes
@@ -39,16 +45,19 @@ async function bootstrap() {
 
   await app.listen(port, "0.0.0.0");
 
-  const logger = app.get(Logger);
+  const logger = new Logger("Main");
   logger.log(`App is ready and listening on port ${port} 🚀`);
+
+  if (typeof module !== "undefined" && module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 
 bootstrap().catch(handleError);
 
 function handleError(error: unknown) {
-  // eslint-disable-next-line no-console
   console.error(error);
-  // eslint-disable-next-line unicorn/no-process-exit
   process.exit(1);
 }
 

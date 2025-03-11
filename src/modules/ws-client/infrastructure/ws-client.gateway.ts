@@ -40,7 +40,6 @@ export class WsClientGateway
     private readonly wsBotScreenshotUseCase: WsBotScreenshotUseCase,
     private readonly wsBotSendCmdCommandUseCase: WsBotSendCommandUseCase,
     private readonly wsBotSendExplorerUseCase: WsBotSendExplorerUseCase,
-    private readonly wsClientFile: WsClientFile,
     private readonly logger: LoggerService,
   ) {}
 

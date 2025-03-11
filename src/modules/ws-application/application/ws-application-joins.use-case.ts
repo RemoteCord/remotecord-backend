@@ -17,6 +17,8 @@ export class WsApplicationJoinsUseCase {
 
   async execute(client: Socket) {
     try {
+      console.log(client.handshake.headers);
+
       const { token } = client.handshake.auth as {
         token: string;
       };

@@ -4,10 +4,11 @@ import {
   WebSocketGateway,
 } from "@nestjs/websockets";
 import { Socket } from "socket.io";
-import { WsApplicationResetAllConnectionsUseCase } from "../application/ws-application-reset-all-connections-use-case";
+
 import { LoggerService } from "../../shared/providers";
-import { WsApplicationLeavesUseCase } from "../application/ws-application-leaves.use-case";
 import { WsApplicationJoinsUseCase } from "../application/ws-application-joins.use-case";
+import { WsApplicationLeavesUseCase } from "../application/ws-application-leaves.use-case";
+import { WsApplicationResetAllConnectionsUseCase } from "../application/ws-application-reset-all-connections-use-case";
 
 @WebSocketGateway({
   namespace: "application",
@@ -40,6 +41,6 @@ export class WsApplicationGateway
   }
 
   handleDisconnect(client: Socket) {
-    this.wsApplicationLeavesUseCase.execute(client);
+    void this.wsApplicationLeavesUseCase.execute(client);
   }
 }

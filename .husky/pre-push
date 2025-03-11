@@ -1,3 +1,0 @@
-node --run build
-find dist/main.js
-node --run test

@@ -15,18 +15,12 @@
     "plugin:unicorn/recommended",
     "plugin:node/recommended",
   ],
-  "prettier/prettier": [
-    "error",
-    {
-      "endOfLine": "auto",
-    },
-  ],
   "rules": {
     "simple-import-sort/imports": "off",
     "@typescript-eslint/consistent-type-imports": "error",
     "simple-import-sort/exports": "off",
     "unicorn/prefer-module": "off",
-    "unicorn/prefer-top-level-await": "off",
+    "unicorn/prefer-tpop-level-await": "off",
     "unicorn/prevent-abbreviations": "off",
     "no-console": "warn",
     "node/no-missing-import": "off",
