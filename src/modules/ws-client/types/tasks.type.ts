@@ -1,5 +1,4 @@
 export interface FileRequest {
-  buffer: ArrayBuffer | null;
   // url: string | null;
   metadata: {
     filename: string;

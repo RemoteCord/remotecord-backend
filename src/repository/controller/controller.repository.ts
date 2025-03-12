@@ -21,7 +21,7 @@ export class ControllerRepository {
   }
 
   async resetAllActiveClients() {
-    await this.controllerModel.updateMany({}, { activeclient: null });
+    await this.controllerModel.updateMany({}, { activeclient: "" });
   }
 
   async create(controllerid: string) {

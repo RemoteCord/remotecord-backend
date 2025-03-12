@@ -17,9 +17,6 @@ export class AddFriendToController {
   ) {
     console.log(body, controllerid);
 
-    return await this.addFriendtoControllerUseCase.execute({
-      controllerid,
-      clientid: body.clientid,
-    });
+    return await this.addFriendtoControllerUseCase.execute(controllerid, body);
   }
 }

@@ -5,11 +5,17 @@ import { LoggerService } from "../../shared/providers";
 import { diffSeconds } from "@formkit/tempo";
 import { ConfigService } from "@nestjs/config";
 import { Configuration } from "@/src/config/env.enum";
+import { deleteFile, getFile } from "../../shared/helpers/file.helpers";
 
 type FileResult = {
-  file: FileRequest;
+  path: string;
   timestamp: string;
   controllerid: string;
+  metadata: {
+    filename: string;
+    size: number;
+    format: string;
+  };
 };
 
 type FileMap = Map<string, FileResult>;
@@ -25,7 +31,7 @@ export class FileRepository {
     private readonly configService: ConfigService,
   ) {}
 
-  @Cron("0 * * * * *") // Every minute at second 0
+  @Cron("* * * * * *") // Every minute at second 0
   handleCronJobsFiles() {
     const fileDuration = this.configService.get<number>(
       Configuration.FILES_DURATION,
@@ -34,16 +40,27 @@ export class FileRepository {
 
     this.logger.info("Running files cronjob");
     const now = new Date().toISOString();
-    this.files.entries().forEach(([key, value]) => {
+    this.files.entries().forEach(async ([key, value]) => {
       const diff = diffSeconds(now, value.timestamp);
       console.log(key, value, diff);
       if (diff > fileDuration) {
-        this.deleteFile(key);
+        const fullFile = `${key}.${value.metadata.filename.split(".")[1]}`;
+        await this.deleteFile(fullFile);
+        this.files.delete(key);
       }
     });
   }
 
-  async addFile(token: string, controllerid: string, data: FileRequest) {
+  addFile(
+    token: string,
+    controllerid: string,
+    path: string,
+    metadata: {
+      filename: string;
+      size: number;
+      format: string;
+    },
+  ) {
     if (this.files.has(token)) {
       this.files.delete(token);
     }
@@ -52,15 +69,19 @@ export class FileRepository {
 
     // console.log(token, data);
     this.files.set(token, {
-      file: data,
+      path,
       controllerid,
       timestamp: date,
+      metadata,
     });
 
     // console.log(this.files);
   }
 
-  getFile(token: string) {
+  async getFile(token: string): Promise<{
+    buffer: string | Buffer;
+    file: FileResult;
+  }> {
     // console.log(this.files);
     const file = this.files.get(token);
 
@@ -68,13 +89,23 @@ export class FileRepository {
       throw new Error("File not found");
     }
 
+    // console.log(file);
+
     this.filesToken.delete(token);
 
-    return file;
+    const extFile = file.metadata.filename.split(".")[1];
+    const fullFile = `${token}.${extFile}`;
+
+    const fileBuffer = await getFile(fullFile);
+
+    return {
+      buffer: fileBuffer,
+      file,
+    };
   }
 
-  async deleteFile(token: string) {
-    this.files.delete(token);
+  async deleteFile(file: string) {
+    await deleteFile(file);
   }
 
   addTokenForFile(clientid: string, token: string) {

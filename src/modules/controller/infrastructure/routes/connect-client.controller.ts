@@ -18,7 +18,7 @@ export class ConnectClientController {
 
     console.log("running connect-client", controllerid, clientid);
 
-    await this.wsApllicationConnectClientUseCase.execute(
+    return await this.wsApllicationConnectClientUseCase.execute(
       controllerid,
       clientid,
       {
@@ -26,7 +26,5 @@ export class ConnectClientController {
         avatar,
       },
     );
-
-    return { status: true };
   }
 }

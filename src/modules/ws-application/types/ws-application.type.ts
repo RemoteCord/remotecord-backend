@@ -6,3 +6,10 @@ export type ApplicationSockets = {
   client_data: UserModel;
 };
 export type WsApplicationsMap = Map<string, ApplicationSockets>;
+
+export type FriendRequestsMap = Map<string, FriendRequestValue>;
+
+export type FriendRequestValue = {
+  token: string;
+  controllerid: string;
+};

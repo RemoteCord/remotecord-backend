@@ -10,16 +10,18 @@ export class WsBotSendFileUseCase {
   ) {}
 
   async execute(controllerid: string, token: string) {
-    const fileData = this.fileRepository.getFile(token);
+    const data = await this.fileRepository.getFile(token);
 
-    if (!fileData) {
+    if (!data) {
       throw new Error("File not found or file buffer is empty");
     }
+
+    const { file } = data;
 
     this.wsBotRepository.socket?.emit("downloadFile", {
       controllerid,
       file: `https://api2.luqueee.dev/api/controllers/${controllerid}/file?token=${token}`,
-      fileMetadata: fileData.file.metadata,
+      fileMetadata: file.metadata,
     });
   }
 }

@@ -15,6 +15,7 @@ import { WsClientSendCmdCommand } from "./application/events/ws-client-send-cmd-
 import { ClientModule } from "../client/infrastructure/client.module";
 import { WsClientGetExplorer } from "./application/events/ws-client-get-explorer";
 import { WsClientKeyLogger } from "./application/events/ws-client-keylogger";
+import { WsApplicationModule } from "../ws-application/ws-application.module";
 
 @Module({
   providers: [
@@ -47,6 +48,7 @@ import { WsClientKeyLogger } from "./application/events/ws-client-keylogger";
     forwardRef(() => AuthModule),
     WsBotModule,
     ClientModule,
+    WsApplicationModule,
   ],
 })
 export class WsClientModule {}

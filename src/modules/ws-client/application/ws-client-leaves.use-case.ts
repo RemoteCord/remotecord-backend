@@ -1,14 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
-import { WsClientRepository } from "../domain/ws-client.repository";
+
 import { LoggerService } from "../../shared/providers";
 import { WsBotDisconnectClientUseCase } from "../../ws-bot/application/events/ws-bot-disconnect-client.use-case";
+import { WsClientRepository } from "../domain/ws-client.repository";
+import { ControllerRepository } from "@/src/repository/controller/controller.repository";
 
 @Injectable()
 export class WsClientLeavesUseCase {
   constructor(
     private readonly wsClientRepository: WsClientRepository,
     private readonly wsBotDisconnectClientUseCase: WsBotDisconnectClientUseCase,
+    private readonly controllerRepository: ControllerRepository,
+
     private readonly logger: LoggerService,
   ) {}
 
@@ -21,7 +25,12 @@ export class WsClientLeavesUseCase {
 
       this.logger.info(`Client ${clientid} disconnected`);
 
-      await this.wsClientRepository.removeClient(clientid);
+      this.wsClientRepository.removeClient(clientid);
+
+      await this.controllerRepository.updateController(controllerid, {
+        activeclient: "",
+      });
+
       await this.wsBotDisconnectClientUseCase.execute({
         clientid,
         controllerid,

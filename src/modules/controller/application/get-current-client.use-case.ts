@@ -11,7 +11,7 @@ export class GetCurrentClientUseCase {
 
   async execute(
     controllerid: string,
-  ): Promise<{ activeclient: string | null }> {
+  ): Promise<{ activeclient: string | undefined }> {
     try {
       const controller =
         await this.controllerRepository.getControllerById(controllerid);
@@ -32,7 +32,7 @@ export class GetCurrentClientUseCase {
         `Error getting active client from controller ${controllerid}: ${errorMessage}`,
       );
 
-      return { activeclient: null };
+      return { activeclient: undefined };
     }
   }
 }

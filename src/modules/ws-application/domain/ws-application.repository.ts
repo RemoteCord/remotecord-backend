@@ -2,22 +2,27 @@ import { Injectable } from "@nestjs/common";
 import {
   WsApplicationsMap,
   ApplicationSockets,
+  FriendRequestsMap,
+  FriendRequestValue,
 } from "../types/ws-application.type";
 import { Socket } from "socket.io";
 
 @Injectable()
 export class WsApplicationRepository {
   clients = new Map() as WsApplicationsMap;
+
+  friendsRequests = new Map() as FriendRequestsMap;
+
   constructor() {}
 
-  async addClient(clientid: string, data: ApplicationSockets) {
+  addClient(clientid: string, data: ApplicationSockets) {
     this.clients.set(clientid, data);
   }
 
-  async removeClient(clientid: string) {
+  removeClient(clientid: string) {
     this.clients.delete(clientid);
   }
-  async getClient(clientid: string) {
+  getClient(clientid: string) {
     return this.clients.get(clientid);
   }
 
@@ -29,5 +34,17 @@ export class WsApplicationRepository {
     );
 
     this.clients.clear();
+  }
+
+  addRequest(clientid: string, data: FriendRequestValue) {
+    this.friendsRequests.set(clientid, data);
+  }
+
+  removeRequest(clientid: string) {
+    this.friendsRequests.delete(clientid);
+  }
+
+  getRequest(clientid: string) {
+    return this.friendsRequests.get(clientid);
   }
 }

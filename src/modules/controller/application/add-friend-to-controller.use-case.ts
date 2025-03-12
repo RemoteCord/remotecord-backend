@@ -1,32 +1,45 @@
 import { ControllerRepository } from "@/src/repository/controller/controller.repository";
 import { Injectable } from "@nestjs/common";
-import { AddFriendToControllerDto } from "./dto/add-friend-to-controller-use-case.dto";
 import { LoggerService } from "@/src/modules/shared/providers";
 import { UserRepository } from "@/src/repository/user/user.repository";
 import { ClientNotFoundException } from "@/src/repository/user/exceptions";
+import { AddFriendToControllerDto } from "../infrastructure/routes/dto/add-friend-to-controller.dto";
+import { WsApplicationAddFriend } from "../../ws-application/application/events/ws-application-add-friend";
+import { ClientDataEncryptUseCase } from "../../auth/application/client-data-encrypt.use-case";
 
 @Injectable()
 export class AddFriendToControllerUseCase {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly controllerRepository: ControllerRepository,
     private readonly logger: LoggerService,
+    private readonly wsApplicationAddFriend: WsApplicationAddFriend,
+    private readonly clientDataEncryptUseCase: ClientDataEncryptUseCase,
   ) {}
 
   async execute(
+    controllerid: string,
     dto: AddFriendToControllerDto,
   ): Promise<{ status: boolean; message?: string }> {
-    const { controllerid, clientid } = dto;
+    const { clientid, username, avatar } = dto;
     try {
       const existClient = await this.userRepository.getUserById(clientid);
       if (!existClient) throw new ClientNotFoundException();
 
-      const res = await this.controllerRepository.addFriendToController(
-        controllerid,
-        clientid,
-      );
+      const encryptedToken =
+        this.clientDataEncryptUseCase.encrypt(controllerid);
 
-      console.log(res);
+      // const res = await this.controllerRepository.addFriendToController(
+      //   controllerid,
+      //   clientid,
+      // );
+
+      // console.log(res);
+
+      this.wsApplicationAddFriend.execute(clientid, encryptedToken, {
+        ...dto,
+        controllerid,
+      });
+
       return { status: true };
     } catch (error) {
       const errorMessage =

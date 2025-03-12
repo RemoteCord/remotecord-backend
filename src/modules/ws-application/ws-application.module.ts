@@ -9,6 +9,9 @@ import { WsApplicationGuard } from "./application/ws-application.guard";
 import { SchemasModule } from "@/src/repository/schemas.module";
 import { AuthModule } from "../auth/auth.module";
 import { WsApplicationConnectClientUseCase } from "./application/events/ws-application-connect-client.use-case";
+import { WsApplicationAddFriend } from "./application/events/ws-application-add-friend";
+import { WsApplicationAddFriendUseCase } from "./application/ws-application-friend.use-case";
+import { WsClientModule } from "../ws-client/ws-client.module";
 
 @Module({
   providers: [
@@ -20,6 +23,8 @@ import { WsApplicationConnectClientUseCase } from "./application/events/ws-appli
     WsApplicationResetAllConnectionsUseCase,
     WsApplicationConnectClientUseCase,
     WsApplicationGuard,
+    WsApplicationAddFriend,
+    WsApplicationAddFriendUseCase,
   ],
   exports: [
     WsApplicationJoinsUseCase,
@@ -27,7 +32,13 @@ import { WsApplicationConnectClientUseCase } from "./application/events/ws-appli
     WsApplicationResetAllConnectionsUseCase,
     WsApplicationConnectClientUseCase,
     WsApplicationRepository,
+    WsApplicationAddFriend,
+    WsApplicationAddFriendUseCase,
   ],
-  imports: [SchemasModule, forwardRef(() => AuthModule)],
+  imports: [
+    SchemasModule,
+    forwardRef(() => AuthModule),
+    forwardRef(() => WsClientModule),
+  ],
 })
 export class WsApplicationModule {}

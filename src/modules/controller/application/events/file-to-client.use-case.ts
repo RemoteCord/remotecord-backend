@@ -35,9 +35,9 @@ export class FileToClientUseCase {
   }
 
   async getFileFromRepository(controllerid: string, token: string) {
-    const { file } = this.fileRepository.getFile(token);
+    const { file, buffer } = await this.fileRepository.getFile(token);
 
-    if (!file || !file.buffer) {
+    if (!file || !buffer) {
       this.logger.error("File not found or file buffer is empty");
       return {
         status: "file deleted",
@@ -45,15 +45,18 @@ export class FileToClientUseCase {
     }
 
     this.logger.info(
-      `Getting file from repository ${controllerid} with token ${token}`,
+      `Getting file from repository ${controllerid} with token ${token} `,
     );
 
-    console.log(file);
+    // console.log(file, buffer);
 
-    return new StreamableFile(new Uint8Array(file.buffer), {
-      type: "application/octet-stream",
-      disposition: `attachment; filename="${file.metadata.filename}"`,
-    });
+    return new StreamableFile(
+      Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer as string),
+      {
+        type: "application/octet-stream",
+        disposition: `attachment; filename="${file.metadata.filename}"`,
+      },
+    );
   }
 
   async getFileFromClient(controllerid: string, data: GetFileDto) {
