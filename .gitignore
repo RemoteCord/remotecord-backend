@@ -2,9 +2,9 @@ node_modules/
 dist/
 .tmp
 .idea
-.env
-coverage/
+.enve/
 .npm
+coverag
 .vscode
 .nyc_output
 k6-results
