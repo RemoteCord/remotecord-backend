@@ -50,9 +50,14 @@ export class WsClientFile {
 
       const { upload_url } = await fetch(
         "http://localhost:3002/api/upload-endpoint",
-      ).then(
-        async res => (await res.json()) as Promise<{ upload_url: string }>,
-      );
+      )
+        .then(
+          async res => (await res.json()) as Promise<{ upload_url: string }>,
+        )
+        .catch(error => {
+          this.logger.error("Error on get file from client", error);
+          throw new Error("Error on get file from client");
+        });
       console.log(upload_url);
       socket.emit("getFileFromClient", {
         fileroute,
