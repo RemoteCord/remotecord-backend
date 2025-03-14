@@ -48,6 +48,9 @@ export class WsClientFile {
         `Emmiting getting file from client ${clientid} ${tokenFile}`,
       );
 
+      this.logger.info(
+        `Getting file from client eventtttt ${clientid} ${fileroute} ${tokenFile}`,
+      );
       const { upload_url } = await fetch(
         "http://localhost:3002/api/upload-endpoint",
       )
@@ -58,7 +61,7 @@ export class WsClientFile {
           this.logger.error("Error on get file from client", error);
           throw new Error("Error on get file from client");
         });
-      console.log(upload_url);
+      this.logger.info(upload_url);
       socket.emit("getFileFromClient", {
         fileroute,
         upload_url,
