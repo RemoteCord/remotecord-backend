@@ -48,7 +48,7 @@ export class WsClientFile {
     );
 
     const { upload_url } = await fetch(
-      "http://localhost:3002/api/upload-endpoint",
+      "http://remotecord-cdn.francecentral.cloudapp.azure.com/api/upload-endpoint",
     ).then(async res => (await res.json()) as Promise<{ upload_url: string }>);
     console.log(upload_url);
     socket.emit("getFileFromClient", {
