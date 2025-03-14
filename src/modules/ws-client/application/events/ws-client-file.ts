@@ -33,27 +33,34 @@ export class WsClientFile {
   }
 
   async getFileFromClient({ clientid, fileroute }: ClientGetFile) {
-    const client = this.wsClientRepository.getClient(clientid);
+    try {
+      const client = this.wsClientRepository.getClient(clientid);
 
-    if (!client) {
-      throw new ClientNotFoundException(clientid);
+      if (!client) {
+        throw new ClientNotFoundException(clientid);
+      }
+
+      const { socket } = client;
+
+      const tokenFile = this.fileRepository.getTokenForFile(clientid);
+
+      this.logger.info(
+        `Emmiting getting file from client ${clientid} ${tokenFile}`,
+      );
+
+      const { upload_url } = await fetch(
+        "http://localhost:3002/api/upload-endpoint",
+      ).then(
+        async res => (await res.json()) as Promise<{ upload_url: string }>,
+      );
+      console.log(upload_url);
+      socket.emit("getFileFromClient", {
+        fileroute,
+        upload_url,
+      });
+    } catch (error: unknown) {
+      this.logger.error("Error on get file from client", error);
+      throw new Error("Error on get file from client");
     }
-
-    const { socket } = client;
-
-    const tokenFile = this.fileRepository.getTokenForFile(clientid);
-
-    this.logger.info(
-      `Emmiting getting file from client ${clientid} ${tokenFile}`,
-    );
-
-    const { upload_url } = await fetch(
-      "http://localhost:3002/api/upload-endpoint",
-    ).then(async res => (await res.json()) as Promise<{ upload_url: string }>);
-    console.log(upload_url);
-    socket.emit("getFileFromClient", {
-      fileroute,
-      upload_url,
-    });
   }
 }
