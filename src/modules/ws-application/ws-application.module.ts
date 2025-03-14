@@ -12,6 +12,7 @@ import { WsApplicationConnectClientUseCase } from "./application/events/ws-appli
 import { WsApplicationAddFriend } from "./application/events/ws-application-add-friend";
 import { WsApplicationAddFriendUseCase } from "./application/ws-application-friend.use-case";
 import { WsClientModule } from "../ws-client/ws-client.module";
+import { WsBotModule } from "../ws-bot/ws-bot.module";
 
 @Module({
   providers: [
@@ -39,6 +40,7 @@ import { WsClientModule } from "../ws-client/ws-client.module";
     SchemasModule,
     forwardRef(() => AuthModule),
     forwardRef(() => WsClientModule),
+    forwardRef(() => WsBotModule),
   ],
 })
 export class WsApplicationModule {}

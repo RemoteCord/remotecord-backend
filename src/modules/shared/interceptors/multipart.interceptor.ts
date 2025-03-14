@@ -25,10 +25,9 @@ export function MultipartInterceptor(
       next: CallHandler,
     ): Promise<Observable<any>> {
       const req = context.switchToHttp().getRequest<fastify.FastifyRequest>();
-
-      //   console.log("req.storedFiles", req.isMultipart());
-
+      console.log("req");
       if (!req.isMultipart()) {
+        console.error("The request should be a form-data");
         throw new HttpException(
           { message: "The request should be a form-data", statusCode: 400 },
           HttpStatus.BAD_REQUEST,
@@ -38,23 +37,18 @@ export function MultipartInterceptor(
       const files: Record<string, any[]> = {};
       const body: Record<string, any> = {};
 
-      //   console.log("req.parts()", req.parts());
       try {
         for await (const part of req.parts()) {
-          //   console.log("part", part);
-
           if (part.type !== "file") {
             body[part.fieldname] = (part as MultipartValue).value;
             continue;
           }
 
+          console.log("part", part);
+
           const file = await getFileFromPart(part);
 
-          //   console.log("file", file);
-
           const validationResult = validateFile(file, options);
-
-          //   console.log("validationResult", validationResult);
 
           if (validationResult) {
             throw new HttpException(
@@ -67,8 +61,7 @@ export function MultipartInterceptor(
           files[part.fieldname].push(file);
         }
 
-        // Agregar archivos y cuerpo procesado a la solicitud
-        (req as any).storedFiles = files;
+        req.storedFiles = files;
         req.body = body;
       } catch (error) {
         console.error("Error processing files", error);

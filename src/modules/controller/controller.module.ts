@@ -26,6 +26,8 @@ import { GetExplorerClientController } from "./infrastructure/routes/get-explore
 import { GetFriendsController } from "./infrastructure/routes/get-friends.controller";
 import { GetScreensClientController } from "./infrastructure/routes/screenshot-client.controller";
 import { AuthModule } from "../auth/auth.module";
+import { GetTasksController } from "./infrastructure/routes/events/get-tasks.controller";
+import { GetTasksUseCase } from "./application/events/get-tasks.use-case";
 
 @Module({
   controllers: [
@@ -38,6 +40,7 @@ import { AuthModule } from "../auth/auth.module";
     GetScreensClientController,
     SendCmdCommandController,
     GetExplorerClientController,
+    GetTasksController,
   ],
   providers: [
     ActivateControllerUseCase,
@@ -49,6 +52,7 @@ import { AuthModule } from "../auth/auth.module";
     ScreensClientUseCase,
     SendCmdCommandToClientUseCase,
     GetExplorerClientUseCase,
+    GetTasksUseCase,
   ],
   imports: [
     SharedModule,

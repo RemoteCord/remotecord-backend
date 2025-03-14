@@ -8,6 +8,7 @@ import { SharedModule } from "../shared/shared.module";
 import { WsClientModule } from "../ws-client/ws-client.module";
 import { ClientDataEncryptUseCase } from "./application/client-data-encrypt.use-case";
 import { JwtModule } from "@nestjs/jwt";
+import { UserRepository } from "@/src/repository/user/user.repository";
 
 @Module({
   imports: [

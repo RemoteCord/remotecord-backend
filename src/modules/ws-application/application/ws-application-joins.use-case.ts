@@ -25,9 +25,10 @@ export class WsApplicationJoinsUseCase {
 
       this.logger.info("Client joining application", token);
 
-      const clientid =
+      const { clientid, email, username } =
         await this.WsApplicationVerifyConnectionUseCase.execute(token);
 
+      console.log(clientid);
       const client_data = await this.userRepository.getUserById(clientid);
 
       if (!client_data) throw new ClientNotFoundException(clientid);

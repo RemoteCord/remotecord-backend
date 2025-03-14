@@ -12,6 +12,7 @@ export class AddFriendToControllerUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly logger: LoggerService,
+    private readonly controllerRepository: ControllerRepository,
     private readonly wsApplicationAddFriend: WsApplicationAddFriend,
     private readonly clientDataEncryptUseCase: ClientDataEncryptUseCase,
   ) {}
@@ -19,11 +20,27 @@ export class AddFriendToControllerUseCase {
   async execute(
     controllerid: string,
     dto: AddFriendToControllerDto,
-  ): Promise<{ status: boolean; message?: string }> {
+  ): Promise<{ status: boolean; message?: string; isAlreadyAdded: boolean }> {
     const { clientid, username, avatar } = dto;
     try {
       const existClient = await this.userRepository.getUserById(clientid);
       if (!existClient) throw new ClientNotFoundException();
+
+      const controllerData =
+        await this.controllerRepository.getControllerById(controllerid);
+
+      if (!controllerData) {
+        throw new Error("Controller not found");
+      }
+
+      this.logger.info(`Adding ${clientid} to controller ${controllerid}`);
+
+      if (controllerData.friends.includes(clientid)) {
+        return {
+          status: false,
+          isAlreadyAdded: true,
+        };
+      }
 
       const encryptedToken =
         this.clientDataEncryptUseCase.encrypt(controllerid);
@@ -40,7 +57,7 @@ export class AddFriendToControllerUseCase {
         controllerid,
       });
 
-      return { status: true };
+      return { status: true, isAlreadyAdded: false };
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
@@ -48,7 +65,7 @@ export class AddFriendToControllerUseCase {
       this.logger.error(
         `Error adding ${clientid} to controller ${controllerid}: ${errorMessage}`,
       );
-      return { status: false, message: errorMessage };
+      return { status: false, message: errorMessage, isAlreadyAdded: false };
     }
   }
 }

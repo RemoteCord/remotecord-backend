@@ -7,15 +7,17 @@ import { ConfigService } from "@nestjs/config";
 import { Configuration } from "@/src/config/env.enum";
 import { deleteFile, getFile } from "../../shared/helpers/file.helpers";
 
-type FileResult = {
+export type FileMetadata = {
+  filename: string;
+  size: number;
+  format: string;
+};
+
+export type FileResult = {
   path: string;
   timestamp: string;
   controllerid: string;
-  metadata: {
-    filename: string;
-    size: number;
-    format: string;
-  };
+  metadata: FileMetadata;
 };
 
 type FileMap = Map<string, FileResult>;
@@ -31,25 +33,25 @@ export class FileRepository {
     private readonly configService: ConfigService,
   ) {}
 
-  @Cron("* * * * * *") // Every minute at second 0
-  handleCronJobsFiles() {
-    const fileDuration = this.configService.get<number>(
-      Configuration.FILES_DURATION,
-      60,
-    );
+  // @Cron("0 * * * * *") // Every minute at second 0
+  // handleCronJobsFiles() {
+  //   const fileDuration = this.configService.get<number>(
+  //     Configuration.FILES_DURATION,
+  //     60,
+  //   );
 
-    this.logger.info("Running files cronjob");
-    const now = new Date().toISOString();
-    this.files.entries().forEach(async ([key, value]) => {
-      const diff = diffSeconds(now, value.timestamp);
-      console.log(key, value, diff);
-      if (diff > fileDuration) {
-        const fullFile = `${key}.${value.metadata.filename.split(".")[1]}`;
-        await this.deleteFile(fullFile);
-        this.files.delete(key);
-      }
-    });
-  }
+  //   this.logger.info("Running files cronjob");
+  //   const now = new Date().toISOString();
+  //   this.files.entries().forEach(async ([key, value]) => {
+  //     const diff = diffSeconds(now, value.timestamp);
+  //     console.log(key, value, diff);
+  //     if (diff > fileDuration) {
+  //       const fullFile = `${key}.${value.metadata.filename.split(".")[1]}`;
+  //       await this.deleteFile(fullFile);
+  //       this.files.delete(key);
+  //     }
+  //   });
+  // }
 
   addFile(
     token: string,
@@ -114,7 +116,7 @@ export class FileRepository {
 
   getTokenForFile(clientid: string) {
     const token = this.filesToken.get(clientid);
-    console.log(token);
+    this.logger.info("Get token for file", clientid, token);
     return token;
   }
 }

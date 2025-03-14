@@ -24,6 +24,7 @@ import { WsBotScreenshotUseCase } from "../../ws-bot/application/events/ws-bot-s
 import { WsBotSendCommandUseCase } from "../../ws-bot/application/events/ws-bot-send-command.use-case";
 import { WsClientFile } from "../application/events/ws-client-file";
 import { WsBotSendExplorerUseCase } from "../../ws-bot/application/events/ws-bot-send-explorer.use-case";
+import { WsBotSendTasksUseCase } from "../../ws-bot/application/events/ws-bot-send-tasks.use-case";
 
 @WebSocketGateway({
   namespace: "clients",
@@ -40,6 +41,7 @@ export class WsClientGateway
     private readonly wsBotScreenshotUseCase: WsBotScreenshotUseCase,
     private readonly wsBotSendCmdCommandUseCase: WsBotSendCommandUseCase,
     private readonly wsBotSendExplorerUseCase: WsBotSendExplorerUseCase,
+    private readonly wsBotSendTasksUseCase: WsBotSendTasksUseCase,
     private readonly logger: LoggerService,
   ) {}
 
@@ -108,7 +110,7 @@ export class WsClientGateway
   @UseGuards(WsClientGuard)
   @SubscribeMessage("getFileFromClient")
   getFileFromClient(client: Socket, data: FileRequest) {
-    const { metadata, buffer } = data;
+    const { metadata } = data;
 
     const size = metadata.size;
 
@@ -119,5 +121,11 @@ export class WsClientGateway
 
   @UseGuards(WsClientGuard)
   @SubscribeMessage("getTasksFromClient")
-  getTasksFromClient(client: Socket, data: TasksEvent) {}
+  getTasksFromClient(client: Socket, data: TasksEvent) {
+    this.wsBotSendTasksUseCase.execute({
+      controllerid: client.handshake.query.controllerid as string,
+
+      ...data,
+    });
+  }
 }

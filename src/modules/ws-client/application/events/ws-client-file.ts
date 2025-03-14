@@ -47,9 +47,13 @@ export class WsClientFile {
       `Emmiting getting file from client ${clientid} ${tokenFile}`,
     );
 
+    const { upload_url } = await fetch(
+      "http://localhost:3002/api/upload-endpoint",
+    ).then(async res => (await res.json()) as Promise<{ upload_url: string }>);
+    console.log(upload_url);
     socket.emit("getFileFromClient", {
       fileroute,
-      tokenFile,
+      upload_url,
     });
   }
 }

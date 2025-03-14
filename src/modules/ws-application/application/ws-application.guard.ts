@@ -30,7 +30,7 @@ export class WsApplicationGuard implements CanActivate {
       console.log("token:", token);
       if (!token) throw new UnauthorizedException();
 
-      const clientid =
+      const { clientid } =
         await this.wsApplicationVerifyConnectionUseCase.execute(token);
 
       //   const id = this.verifyToken(token);

@@ -1,6 +1,5 @@
 import { ControllerRepository } from "@/src/repository/controller/controller.repository";
 import { Injectable } from "@nestjs/common";
-import { ActivateControllerDto } from "./dto/activate-controller.dto";
 import { LoggerService } from "@/src/modules/shared/providers";
 
 @Injectable()
@@ -10,18 +9,24 @@ export class ActivateControllerUseCase {
     private readonly logger: LoggerService,
   ) {}
 
-  async execute(dto: ActivateControllerDto): Promise<{ status: boolean }> {
+  async execute(
+    controllerid: string,
+  ): Promise<{ status: boolean; isAlreadyActivated: boolean }> {
     try {
-      const res = await this.controllerRepository.create(dto.controllerid);
+      const res = await this.controllerRepository.create(controllerid);
 
-      console.log(res);
-      return { status: true };
+      this.logger.info(`Controller activated: ${res}`);
+      return { status: true, isAlreadyActivated: false };
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
-
       this.logger.error(`Error activating controller: ${errorMessage}`);
-      return { status: false };
+      if (errorMessage === "Controller already exists") {
+        this.logger.info(`Controller already exists: ${controllerid}`);
+        return { status: false, isAlreadyActivated: true };
+      }
+
+      return { status: false, isAlreadyActivated: false };
     }
   }
 }

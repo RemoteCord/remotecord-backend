@@ -10,11 +10,11 @@ export class WsApplicationVerifyConnectionUseCase {
   async execute(token: string) {
     if (!token) throw new Error("Token not provided");
 
-    const clientid = this.clientDataEncryptUseCase.decrypt(token);
-    if (!clientid) {
+    const data = this.clientDataEncryptUseCase.decryptUser(token);
+    if (!data) {
       throw new Error("Invalid token");
     }
 
-    return clientid;
+    return data;
   }
 }

@@ -27,7 +27,6 @@ export class GetExplorerClientUseCase {
     }
 
     const clientid = controller.activeclient;
-
-    await this.wsClientGetExplorer.execute(clientid, data);
+    return await this.wsClientGetExplorer.execute(clientid, data);
   }
 }

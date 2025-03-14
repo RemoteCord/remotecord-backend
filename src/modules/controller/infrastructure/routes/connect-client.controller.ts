@@ -9,6 +9,13 @@ export class ConnectClientController {
     private readonly wsApllicationConnectClientUseCase: WsApplicationConnectClientUseCase,
   ) {}
 
+  @Post(":controllerid/disconnect-client")
+  async disconnectClient(@Param("controllerid") controllerid: string) {
+    return await this.wsApllicationConnectClientUseCase.disconnect(
+      controllerid,
+    );
+  }
+
   @Post(":controllerid/connect-client")
   async connectClient(
     @Param("controllerid") controllerid: string,
@@ -18,7 +25,7 @@ export class ConnectClientController {
 
     console.log("running connect-client", controllerid, clientid);
 
-    return await this.wsApllicationConnectClientUseCase.execute(
+    return await this.wsApllicationConnectClientUseCase.connect(
       controllerid,
       clientid,
       {

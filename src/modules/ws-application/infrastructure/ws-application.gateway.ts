@@ -51,12 +51,14 @@ export class WsApplicationGateway
 
   @UseGuards(WsApplicationGuard)
   @SubscribeMessage("addFriend")
-  async addFriend(client: Socket, payload: { token: string }) {
+  async addFriend(client: Socket, payload: { token: string; accept: boolean }) {
     this.logger.info("addFriend", payload, client.handshake.query.clientid);
     if (client.handshake.query.clientid)
       this.wsApplicationAddFriendUseCase.execute(
         payload.token,
+        payload.accept,
         client.handshake.query.clientid as string,
+        client.handshake.query.controllerid as string,
       );
     return payload;
   }

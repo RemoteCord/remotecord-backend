@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Param, Post } from "@nestjs/common";
 
 import { CONTROLLER_ROUTE } from "../route.constants";
 import { ActivateControllerDto } from "../../application/dto/activate-controller.dto";
@@ -10,8 +10,8 @@ export class ActivateController {
     private readonly activateControllerUseCase: ActivateControllerUseCase,
   ) {}
 
-  @Post("activate")
-  async run(@Body() body: ActivateControllerDto) {
-    return await this.activateControllerUseCase.execute(body);
+  @Post(":controllerid/activate")
+  async run(@Param("controllerid") controllerid: string) {
+    return await this.activateControllerUseCase.execute(controllerid);
   }
 }

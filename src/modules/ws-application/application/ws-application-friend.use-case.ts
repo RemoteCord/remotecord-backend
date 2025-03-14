@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { LoggerService } from "../../shared/providers";
 import { ControllerRepository } from "@/src/repository/controller/controller.repository";
 import { WsApplicationRepository } from "../domain/ws-application.repository";
+import { WsBotSendFriendUseCase } from "../../ws-bot/application/events/ws-bot-send-friend.use-case";
 
 @Injectable()
 export class WsApplicationAddFriendUseCase {
@@ -10,9 +11,15 @@ export class WsApplicationAddFriendUseCase {
     private readonly controllerRepository: ControllerRepository,
 
     private readonly wsApplicationRepository: WsApplicationRepository,
+    private readonly wsBotSendFriendUseCase: WsBotSendFriendUseCase,
   ) {}
 
-  async execute(token: string, clientid: string) {
+  async execute(
+    token: string,
+    accept: boolean,
+    clientid: string,
+    controllerid: string,
+  ) {
     try {
       this.logger.info(`WsApplicationAddFriend ${clientid} `);
 
@@ -28,6 +35,11 @@ export class WsApplicationAddFriendUseCase {
       );
 
       this.wsApplicationRepository.removeRequest(clientid);
+      this.wsBotSendFriendUseCase.execute({
+        accept,
+        controllerid: request.controllerid,
+        clientid,
+      });
 
       return res;
     } catch (error) {

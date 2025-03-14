@@ -14,7 +14,7 @@ export class WsClientVerifyConnectionUseCase {
 
     if (!tokenController) throw new Error("Controller ID TOKEN not provided");
 
-    const clientid = this.clientDataEncryptUseCase.decrypt(token);
+    const { clientid } = this.clientDataEncryptUseCase.decryptUser(token);
     if (!clientid) {
       throw new Error("Invalid token");
     }

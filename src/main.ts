@@ -9,15 +9,15 @@ import cookieParser from "cookie-parser";
 import multiPart from "@fastify/multipart";
 
 import { AppModule } from "./app/app.module";
-import helmet from "helmet";
 import { CorsOptions } from "./cors";
-import cors from "@fastify/cors";
-import { LogInterceptor } from "./modules/shared/interceptors";
 
 declare const module: any;
 
 async function bootstrap() {
-  const fastifyModule = new FastifyAdapter({ debugger: true });
+  const fastifyModule = new FastifyAdapter({
+    bodyLimit: 1024 * 1024 * 1024, // 1GB
+    debugger: true,
+  });
 
   // await fastifyModule.register(cors, CorsOptions);
   // await fastifyModule.register(helmet);
@@ -27,21 +27,22 @@ async function bootstrap() {
     fastifyModule,
   );
 
-  app.enableCors(CorsOptions);
-
   // await app.register(cors, CorsOptions);
   app.setGlobalPrefix("api");
   app.useGlobalPipes(new ValidationPipe());
 
   const configService = app.get(ConfigService);
   const port = configService.get<string>("PORT", "3000");
+
   app.use(cookieParser());
 
   await app.register(multiPart, {
     limits: {
-      fileSize: 100 * 1024 * 1024, // 100MB in bytes
+      fileSize: 1024 * 1024 * 1024, // 1GB
     },
   });
+
+  app.enableCors(CorsOptions);
 
   await app.listen(port, "0.0.0.0");
 

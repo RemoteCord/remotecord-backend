@@ -4,7 +4,6 @@ import { AuthModule } from "../../auth/auth.module";
 import { SchemasModule } from "@/src/repository/schemas.module";
 import { WsBotModule } from "../../ws-bot/ws-bot.module";
 import { WsClientModule } from "../../ws-client/ws-client.module";
-import { FileUploaderUseCase } from "../application/file-uploader.use-case";
 import { FileRepository } from "../domain/file.repository";
 import { KeyLoggerRepository } from "../domain/keylogger.repository";
 
@@ -17,7 +16,7 @@ import { KeyLoggerRepository } from "../domain/keylogger.repository";
     forwardRef(() => WsClientModule),
   ],
   controllers: [FileUploaderController],
-  providers: [FileUploaderUseCase, FileRepository, KeyLoggerRepository],
+  providers: [FileRepository, KeyLoggerRepository],
   exports: [FileRepository, KeyLoggerRepository],
 })
 export class ClientModule {}

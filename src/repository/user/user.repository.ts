@@ -22,14 +22,22 @@ export class UserRepository {
       const existingUser = await this.userModel.findOne({ email: user.email });
       if (existingUser) {
         this.logger.info(`Login from ${user.id}. Account already exists`);
-        return this.clientEncrypt.encrypt(existingUser.id);
+        return this.clientEncrypt.encrypt(`
+        ${user.id},
+        ${user.email},
+        ${user.name},
+      `);
       }
 
       const result = await this.userModel.create(user);
       result.save();
       this.logger.info(`User with id ${user.id} created`);
 
-      const encryptToken = this.clientEncrypt.encrypt(user.id);
+      const encryptToken = this.clientEncrypt.encrypt(`
+        ${user.id},
+        ${user.email},
+        ${user.name},
+      `);
 
       // this.logger.info("Encrypted token:", encryptToken);
       return encryptToken;

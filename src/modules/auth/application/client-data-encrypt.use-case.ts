@@ -13,13 +13,35 @@ export class ClientDataEncryptUseCase {
     private readonly logger: LoggerService,
   ) {}
 
-  encrypt(id: string): string {
+  decryptUser(token: string) {
+    const secret = this.configService.get<string>(Configuration.SECRET);
+    if (!secret) throw new Error("Decryption secret not configured");
+
+    const decrypted = this.jwtService
+      .decode(token)
+      .replace(/\s/g, "")
+      .split(",");
+    this.logger.info("Decrypted User:", decrypted, token);
+    if (!decrypted) throw new Error("Failed to decrypt data");
+
+    const [clientid, email, username]: string[] = decrypted;
+
+    // console.log("Decrypted:", clientid, email, username);
+    if (!clientid || !email || !username) throw new Error("Invalid token data");
+    return {
+      clientid,
+      email,
+      username,
+    };
+  }
+
+  encrypt(data: string): string {
     try {
       const secret = this.configService.get<string>(Configuration.SECRET);
       if (!secret) throw new Error("Encryption secret not configured");
 
-      const signResult = this.jwtService.sign(id);
-      this.logger.info(`Encrypted token from ${id}: ${signResult}`);
+      const signResult = this.jwtService.sign(data);
+      this.logger.info(`Encrypted token from ${data}: ${signResult}`);
       return signResult;
     } catch (error) {
       const errorMessage =

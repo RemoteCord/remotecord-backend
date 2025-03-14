@@ -16,6 +16,7 @@ import { WsBotModule } from "../modules/ws-bot/ws-bot.module";
 import { WsApplicationModule } from "../modules/ws-application/ws-application.module";
 import { ClientModule } from "../modules/client/infrastructure/client.module";
 import { ScheduleModule } from "@nestjs/schedule";
+import { CdnModule } from "../modules/cdn/cdn.module";
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ScheduleModule } from "@nestjs/schedule";
     LoggerModule,
     HealthModule,
     WsClientModule,
+    CdnModule,
     WsBotModule,
     WsApplicationModule,
     SchemasModule,

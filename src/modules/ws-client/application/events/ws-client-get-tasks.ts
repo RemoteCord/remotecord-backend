@@ -4,13 +4,13 @@ import { Injectable } from "@nestjs/common";
 import { WsClientRepository } from "../../domain/ws-client.repository";
 
 @Injectable()
-export class WsClientGetExplorer {
+export class WsClientGetTasks {
   constructor(
     private readonly logger: LoggerService,
     private readonly wsClientRepository: WsClientRepository,
   ) {}
 
-  async execute(clientid: string, data: GetExplorerFromClientDto) {
+  async execute(clientid: string) {
     const client = this.wsClientRepository.getClient(clientid);
 
     if (!client) {
@@ -18,7 +18,7 @@ export class WsClientGetExplorer {
       throw new Error("Client not found");
     }
 
-    client.socket.emit("getFilesFolder", data);
+    client.socket.emit("getTasksFromClient");
 
     return { status: true };
   }
