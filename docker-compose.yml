@@ -1,4 +1,14 @@
 services:
+  mongodb_container:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: remotecord
+      MONGO_INITDB_ROOT_PASSWORD: P@ssw0rd
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data_container:/data/db
+
   my-service-production:
     container_name: my-service-production
     build:
@@ -35,7 +45,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "512m"
+          memory: "4096m"
         reservations:
           cpus: "0.25"
           memory: "256m"
@@ -60,3 +70,6 @@ services:
         "web-dashboard",
         "/tests/performance/contexts/users/get-users.mjs",
       ]
+
+volumes:
+  mongodb_data_container:
