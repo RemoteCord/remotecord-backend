@@ -9,7 +9,7 @@ coverage/
 .nyc_output
 k6-results
 
-
+data/
 
 .nx/cache
 .nx/workspace-data
