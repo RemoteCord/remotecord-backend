@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { LoggerService } from "../../shared/providers";
 import { ClientDataEncryptUseCase } from "../../auth/application/client-data-encrypt.use-case";
-import { FileRepository } from "../../client/domain/file.repository";
 import { UploadCallbackDto } from "../infrastructure/routes/dto/upload-cdn.dto";
 import { WsClientRepository } from "../../ws-client/domain/ws-client.repository";
 import { WsBotSendFileUseCase } from "../../ws-bot/application/events/ws-bot-send-file.use-case";
@@ -13,7 +12,6 @@ export class UploadCdnUseCase {
     private readonly clientDataEncrypt: ClientDataEncryptUseCase,
     private readonly wsClientRepository: WsClientRepository,
     private readonly wsBotSendFileUseCase: WsBotSendFileUseCase,
-    private readonly fileRepository: FileRepository,
   ) {}
 
   async uploadCallbackUseCase(
@@ -44,10 +42,8 @@ export class UploadCdnUseCase {
     try {
       const tokenFormated = token.replace("Bearer ", "").replace(" ", "");
       const userData = this.clientDataEncrypt.decryptUser(tokenFormated);
-      const realFileToken = this.fileRepository.getTokenForFile(
-        userData.clientid,
-      );
-      this.logger.info("Decode token", userData, realFileToken);
+
+      this.logger.info("Decode token", userData);
 
       return userData;
     } catch (error) {
@@ -58,7 +54,7 @@ export class UploadCdnUseCase {
 
   async verifyTokenFile(token: string, clientid: string) {
     this.logger.info("Verify token file", token, clientid);
-    return { status: token === this.fileRepository.getTokenForFile(clientid) };
+    return { status: true };
   }
 
   async uploadFile() {

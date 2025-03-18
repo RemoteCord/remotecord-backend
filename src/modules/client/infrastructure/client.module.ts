@@ -1,10 +1,8 @@
 import { forwardRef, Module } from "@nestjs/common";
-import { FileUploaderController } from "./routes/file-uploader.controller";
 import { AuthModule } from "../../auth/auth.module";
 import { SchemasModule } from "@/src/repository/schemas.module";
 import { WsBotModule } from "../../ws-bot/ws-bot.module";
 import { WsClientModule } from "../../ws-client/ws-client.module";
-import { FileRepository } from "../domain/file.repository";
 import { KeyLoggerRepository } from "../domain/keylogger.repository";
 
 @Module({
@@ -15,8 +13,8 @@ import { KeyLoggerRepository } from "../domain/keylogger.repository";
     forwardRef(() => WsBotModule),
     forwardRef(() => WsClientModule),
   ],
-  controllers: [FileUploaderController],
-  providers: [FileRepository, KeyLoggerRepository],
-  exports: [FileRepository, KeyLoggerRepository],
+  controllers: [],
+  providers: [KeyLoggerRepository],
+  exports: [KeyLoggerRepository],
 })
 export class ClientModule {}

@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import type { Model } from "mongoose";
 import { UserModel } from "./user.schema";
 import {
   ClientNotFoundException,
@@ -13,8 +13,10 @@ import { LoggerService } from "@/src/modules/shared/providers";
 export class UserRepository {
   constructor(
     @InjectModel(UserModel.name) private userModel: Model<UserModel>,
+
+    @Inject(forwardRef(() => ClientDataEncryptUseCase))
     private readonly clientEncrypt: ClientDataEncryptUseCase,
-    private logger: LoggerService,
+    private readonly logger: LoggerService,
   ) {}
 
   async createUser(user: UserModel): Promise<string> {
@@ -39,7 +41,6 @@ export class UserRepository {
         ${user.name},
       `);
 
-      // this.logger.info("Encrypted token:", encryptToken);
       return encryptToken;
     } catch (error) {
       const errorMessage =
@@ -61,6 +62,7 @@ export class UserRepository {
       this.logger.error("Error updating user:", errorMessage);
     }
   }
+
   async getUserById(id: string): Promise<UserModel | null> {
     const user = await this.userModel.findOne({ id });
 

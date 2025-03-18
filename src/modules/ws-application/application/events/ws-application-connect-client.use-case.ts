@@ -71,8 +71,13 @@ export class WsApplicationConnectClientUseCase {
       this.logger.info(
         `Encrypted controller id: ${encryptedControllerId} (${controllerid}) for connecting to ${clientid}`,
       );
+
+      const tokenConnection =
+        this.wsApplicationRepository.generateConnectionToken(clientid);
+
       client.socket.emit("emitConnectToController", {
         token: encryptedControllerId,
+        tokenConnection,
         controller: data,
       });
       return { status: true };

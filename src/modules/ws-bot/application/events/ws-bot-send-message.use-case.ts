@@ -9,10 +9,6 @@ export class WsBotSendMessageUseCase {
   async execute(data: WsBotSendMessage) {
     console.log("Bot sends message");
 
-    const { controllerid, ...rest } = data;
-
-    this.wsBotRepository.socket?.send({
-      ...rest,
-    });
+    this.wsBotRepository.socket?.emit("message", data);
   }
 }

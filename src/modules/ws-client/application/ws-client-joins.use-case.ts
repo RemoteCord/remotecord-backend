@@ -7,6 +7,7 @@ import { LoggerService } from "../../shared/providers";
 import { ClientNotFoundException } from "@/src/repository/user/exceptions";
 import { WsClientVerifyConnectionUseCase } from "./ws-client-verify-connection.use-case";
 import { WsBotConnectClientUseCase } from "../../ws-bot/application/events/ws-bot-connect-client.use-case";
+import { WsApplicationRepository } from "../../ws-application/domain/ws-application.repository";
 
 @Injectable()
 export class WsClientJoinsUseCase {
@@ -14,6 +15,7 @@ export class WsClientJoinsUseCase {
     private readonly controllerRepository: ControllerRepository,
     private readonly userRepository: UserRepository,
     private readonly wsClientRepository: WsClientRepository,
+    private readonly wsApplicationRepository: WsApplicationRepository,
     private readonly wsClientVerifyConnectionUseCase: WsClientVerifyConnectionUseCase,
     private readonly logger: LoggerService,
     private readonly wsBotConnectClientUseCase: WsBotConnectClientUseCase,
@@ -25,8 +27,9 @@ export class WsClientJoinsUseCase {
         tokenController: string;
       };
 
-      const { token } = client.handshake.auth as {
+      const { token, tokenConnection } = client.handshake.auth as {
         token: string;
+        tokenConnection: string;
       };
 
       const { clientid, controllerid } =
@@ -34,6 +37,14 @@ export class WsClientJoinsUseCase {
           tokenController,
           token,
         );
+
+      const verifiedTokenConnection =
+        this.wsApplicationRepository.getConnectionToken(clientid);
+
+      if (verifiedTokenConnection !== tokenConnection) {
+        throw new Error("Invalid connection token");
+      }
+
       this.logger.info(
         `Client joining controller ${controllerid} with token ${token}`,
       );

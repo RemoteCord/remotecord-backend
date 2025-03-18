@@ -4,7 +4,7 @@ const ALLOWED_ORIGINS: string[] = ["http://localhost:3007"];
 
 const CorsOptions: CorsOptions = {
   origin: (origin, cb) => {
-    // console.log("aaaaaaaaaaaaaaa"); // Log even if undefined
+    // console.log("aaaaaaaaaaaaaaa", origin); // Log even if undefined
 
     if (!origin) {
       // Handle requests with no origin (like same origin requests)

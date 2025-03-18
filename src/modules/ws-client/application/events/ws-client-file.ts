@@ -8,14 +8,14 @@ import type {
 import { ClientNotFoundException } from "@/src/repository/user/exceptions";
 import { WsBotRepository } from "@/src/modules/ws-bot/domain/ws-bot.repository";
 import { LoggerService } from "@/src/modules/shared/providers";
-import { FileRepository } from "@/src/modules/client/domain/file.repository";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class WsClientFile {
   constructor(
     private readonly wsClientRepository: WsClientRepository,
-    private readonly fileRepository: FileRepository,
     private readonly logger: LoggerService,
+    private readonly configService: ConfigService,
   ) {}
 
   async uploadFileToClient({ clientid, fileroute }: ClientUploadFile) {
@@ -42,18 +42,20 @@ export class WsClientFile {
 
       const { socket } = client;
 
-      const tokenFile = this.fileRepository.getTokenForFile(clientid);
+      // this.logger.info(
+      //   `Emmiting getting file from client ${clientid} ${tokenFile}`,
+      // );
 
       this.logger.info(
-        `Emmiting getting file from client ${clientid} ${tokenFile}`,
+        `Getting file from client eventtttt ${clientid} ${fileroute} `,
       );
+      // const { upload_url } = await fetch(
+      //   "http://localhost:3002/api/upload-endpoint",
+      // )
 
-      this.logger.info(
-        `Getting file from client eventtttt ${clientid} ${fileroute} ${tokenFile}`,
-      );
-      const { upload_url } = await fetch(
-        "http://localhost:3002/api/upload-endpoint",
-      )
+      const CDN_URL = this.configService.get<string>("CDN_URL");
+
+      const { upload_url } = await fetch(`${CDN_URL}/api/upload-endpoint`)
         .then(
           async res => (await res.json()) as Promise<{ upload_url: string }>,
         )

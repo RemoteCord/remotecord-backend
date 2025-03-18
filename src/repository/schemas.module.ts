@@ -11,7 +11,11 @@ import {
 import { ControllerRepository } from "./controller/controller.repository";
 import { SharedModule } from "../modules/shared/shared.module";
 import { AuthModule } from "../modules/auth/auth.module";
-
+import {
+  ClientPermissionModel,
+  ClientPermissionSchema,
+} from "./clientPermisions/clientPermission.schema";
+import { ClientPermissionRepository } from "./clientPermisions/clientPermission.repository";
 @Module({
   imports: [
     SharedModule,
@@ -25,10 +29,21 @@ import { AuthModule } from "../modules/auth/auth.module";
     MongooseModule.forFeature([
       { name: UserModel.name, schema: UserSchema },
       { name: ControllerModel.name, schema: ControllerSchema },
+      { name: ClientPermissionModel.name, schema: ClientPermissionSchema },
     ]),
     forwardRef(() => AuthModule),
   ],
-  providers: [UserRepository, ControllerRepository],
-  exports: [MongooseModule, UserRepository, ControllerRepository],
+  providers: [
+    UserRepository,
+    ControllerRepository,
+    ClientPermissionRepository,
+    // Add missing dependency here if it's a provider
+  ],
+  exports: [
+    MongooseModule,
+    UserRepository,
+    ControllerRepository,
+    ClientPermissionRepository,
+  ],
 })
 export class SchemasModule {}

@@ -6,12 +6,14 @@ import {
   FriendRequestValue,
 } from "../types/ws-application.type";
 import { Socket } from "socket.io";
+import { generateRandomHex } from "@/src/utils";
 
 @Injectable()
 export class WsApplicationRepository {
   clients = new Map() as WsApplicationsMap;
-
   friendsRequests = new Map() as FriendRequestsMap;
+
+  connections = new Map<string, string>();
 
   constructor() {}
 
@@ -46,5 +48,19 @@ export class WsApplicationRepository {
 
   getRequest(clientid: string) {
     return this.friendsRequests.get(clientid);
+  }
+
+  generateConnectionToken(clientid: string) {
+    const token = generateRandomHex();
+    this.connections.set(clientid, token);
+    console.log(this.connections);
+    return token;
+  }
+
+  getConnectionToken(clientid: string) {
+    return this.connections.get(clientid);
+  }
+  removeConnectionToken(clientid: string) {
+    this.connections.delete(clientid);
   }
 }

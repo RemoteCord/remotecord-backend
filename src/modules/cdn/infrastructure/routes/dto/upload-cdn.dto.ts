@@ -1,4 +1,4 @@
-import { FileMetadata } from "@/src/modules/client/domain/file.repository";
+import { FileMetadata } from "@/src/modules/client/types/file.types";
 import { IsNotEmpty, IsString } from "class-validator";
 
 export class DecodeTokenDto {

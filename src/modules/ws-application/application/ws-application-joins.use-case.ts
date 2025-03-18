@@ -10,7 +10,7 @@ import { WsApplicationVerifyConnectionUseCase } from "./ws-application-verify-co
 export class WsApplicationJoinsUseCase {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly wsApplicationRepsitory: WsApplicationRepository,
+    private readonly wsApplicationRepository: WsApplicationRepository,
     private readonly WsApplicationVerifyConnectionUseCase: WsApplicationVerifyConnectionUseCase,
     private readonly logger: LoggerService,
   ) {}
@@ -37,7 +37,7 @@ export class WsApplicationJoinsUseCase {
 
       client.handshake.query["clientid"] = clientid;
 
-      this.wsApplicationRepsitory.addClient(clientid, {
+      this.wsApplicationRepository.addClient(clientid, {
         socket: client,
         client_data,
       });
