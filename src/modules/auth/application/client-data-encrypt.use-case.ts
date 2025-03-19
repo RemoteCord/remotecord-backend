@@ -19,7 +19,7 @@ export class ClientDataEncryptUseCase {
 
     const decrypted = this.jwtService
       .decode(token)
-      .replace(/\s/g, "")
+      .replace(/\n\s*/g, "")
       .split(",");
     this.logger.info("Decrypted User:", decrypted, token);
     if (!decrypted) throw new Error("Failed to decrypt data");

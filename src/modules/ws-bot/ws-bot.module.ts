@@ -17,6 +17,7 @@ import { SchemasModule } from "@/src/repository/schemas.module";
 import { WsClientModule } from "../ws-client/ws-client.module";
 import { WsBotSendTasksUseCase } from "./application/events/ws-bot-send-tasks.use-case";
 import { WsBotSendFriendUseCase } from "./application/events/ws-bot-send-friend.use-case";
+import { WsApplicationModule } from "../ws-application/ws-application.module";
 
 @Module({
   providers: [
@@ -52,6 +53,8 @@ import { WsBotSendFriendUseCase } from "./application/events/ws-bot-send-friend.
   imports: [
     forwardRef(() => AuthModule),
     forwardRef(() => WsClientModule),
+    forwardRef(() => WsApplicationModule),
+
     ClientModule,
     SchemasModule,
   ],

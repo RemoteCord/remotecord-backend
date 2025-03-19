@@ -13,9 +13,12 @@ import { Configuration } from "@/src/config/env.enum";
 @Module({
   imports: [
     ConfigModule,
-    JwtModule.register({
-      secret: process.env.SECRET,
-      signOptions: { expiresIn: "60m" },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get(Configuration.SECRET),
+      }),
     }),
     forwardRef(() => SchemasModule),
     SharedModule,

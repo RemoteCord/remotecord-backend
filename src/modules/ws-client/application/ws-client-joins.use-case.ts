@@ -23,8 +23,8 @@ export class WsClientJoinsUseCase {
 
   async execute(client: Socket) {
     try {
-      const { tokenController } = client.handshake.query as {
-        tokenController: string;
+      const { controllerid } = client.handshake.query as {
+        controllerid: string;
       };
 
       const { token, tokenConnection } = client.handshake.auth as {
@@ -32,11 +32,14 @@ export class WsClientJoinsUseCase {
         tokenConnection: string;
       };
 
-      const { clientid, controllerid } =
-        await this.wsClientVerifyConnectionUseCase.execute(
-          tokenController,
-          token,
-        );
+      const { clientid } = await this.wsClientVerifyConnectionUseCase.execute(
+        controllerid,
+        token,
+      );
+
+      this.logger.info(
+        `Client joining controller ${controllerid} ${clientid} with token ${token} `,
+      );
 
       const verifiedTokenConnection =
         this.wsApplicationRepository.getConnectionToken(clientid);

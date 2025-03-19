@@ -32,6 +32,8 @@ export class CreateUserUseCase {
         name: user.user_metadata.full_name,
       });
 
+      console.log("User created", token);
+
       await this.clientPermissionsRepository.createPermissionDocument(user.id);
 
       // return { token: token };
@@ -39,6 +41,7 @@ export class CreateUserUseCase {
       return { status: true, token };
     } catch (error) {
       console.log(error);
+
       return { status: false };
     }
   }

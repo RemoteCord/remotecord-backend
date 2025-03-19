@@ -66,17 +66,15 @@ export class WsApplicationConnectClientUseCase {
       if (!client) throw new Error("Client not found"); // TODO: Create a exception
       //   console.log("client.socket", client.socket);
 
-      const encryptedControllerId =
-        this.clientDataEncryptUseCase.encrypt(controllerid);
       this.logger.info(
-        `Encrypted controller id: ${encryptedControllerId} (${controllerid}) for connecting to ${clientid}`,
+        `Encrypted controller id: (${controllerid}) for connecting to ${clientid}`,
       );
 
       const tokenConnection =
         this.wsApplicationRepository.generateConnectionToken(clientid);
 
       client.socket.emit("emitConnectToController", {
-        token: encryptedControllerId,
+        controllerid,
         tokenConnection,
         controller: data,
       });

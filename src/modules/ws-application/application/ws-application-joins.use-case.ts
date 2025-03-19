@@ -25,10 +25,13 @@ export class WsApplicationJoinsUseCase {
 
       this.logger.info("Client joining application", token);
 
-      const { clientid, email, username } =
+      const data =
         await this.WsApplicationVerifyConnectionUseCase.execute(token);
-
-      console.log(clientid);
+      const { clientid, email, username } = data;
+      this.logger.info(
+        "Decrypted ws application token: ",
+        JSON.stringify(data),
+      );
       const client_data = await this.userRepository.getUserById(clientid);
 
       if (!client_data) throw new ClientNotFoundException(clientid);
@@ -36,6 +39,8 @@ export class WsApplicationJoinsUseCase {
       this.logger.info(`Client connected with ID ${clientid} to application`);
 
       client.handshake.query["clientid"] = clientid;
+      client.handshake.query["email"] = email;
+      client.handshake.query["username"] = username;
 
       this.wsApplicationRepository.addClient(clientid, {
         socket: client,

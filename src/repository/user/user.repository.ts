@@ -8,6 +8,7 @@ import {
 } from "./exceptions";
 import { ClientDataEncryptUseCase } from "@/src/modules/auth/application/client-data-encrypt.use-case";
 import { LoggerService } from "@/src/modules/shared/providers";
+import { WsApplicationRepository } from "@/src/modules/ws-application/domain/ws-application.repository";
 
 @Injectable()
 export class UserRepository {
@@ -51,7 +52,7 @@ export class UserRepository {
     }
   }
 
-  async updateUser(clientid: string, user: UserModel): Promise<void> {
+  async updateUser(clientid: string, user: Partial<UserModel>): Promise<void> {
     try {
       await this.userModel.updateOne({ id: clientid }, user);
       this.logger.info(`User with id ${clientid} updated`);
@@ -60,6 +61,7 @@ export class UserRepository {
         error instanceof Error ? error.message : "Unknown error";
 
       this.logger.error("Error updating user:", errorMessage);
+      throw new ClientNotFoundException();
     }
   }
 

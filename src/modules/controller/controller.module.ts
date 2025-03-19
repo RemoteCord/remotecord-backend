@@ -16,32 +16,14 @@ import { GetCurrentClientUseCase } from "./application/get-current-client.use-ca
 import { GetFriendsUseCase } from "./application/get-friends.use-case";
 import { ScreensClientUseCase } from "./application/screenshot-client.use-case";
 import { SelectCurrentClientUseCase } from "./application/select-current-client.use-case";
-import { ActivateController } from "./infrastructure/routes/activate-controller.controller";
-import { AddFriendToController } from "./infrastructure/routes/add-friend-to-controller.controller";
-import { ConnectClientController } from "./infrastructure/routes/connect-client.controller";
-import { CurrentClientController } from "./infrastructure/routes/current-client.controller";
-import { FileController } from "./infrastructure/routes/events/file.controller";
-import { SendCmdCommandController } from "./infrastructure/routes/events/send-cmd-command.controller";
-import { GetExplorerClientController } from "./infrastructure/routes/get-explorer-client.controller";
-import { GetFriendsController } from "./infrastructure/routes/get-friends.controller";
-import { GetScreensClientController } from "./infrastructure/routes/screenshot-client.controller";
+
 import { AuthModule } from "../auth/auth.module";
-import { GetTasksController } from "./infrastructure/routes/events/get-tasks.controller";
 import { GetTasksUseCase } from "./application/events/get-tasks.use-case";
+import { ControllerRoutes } from "./infrastructure/routes/controller-routes.controller";
+import { ControllerEvents } from "./infrastructure/routes/controller-events.controller";
 
 @Module({
-  controllers: [
-    ActivateController,
-    AddFriendToController,
-    CurrentClientController,
-    GetFriendsController,
-    FileController,
-    ConnectClientController,
-    GetScreensClientController,
-    SendCmdCommandController,
-    GetExplorerClientController,
-    GetTasksController,
-  ],
+  controllers: [ControllerRoutes, ControllerEvents],
   providers: [
     ActivateControllerUseCase,
     AddFriendToControllerUseCase,

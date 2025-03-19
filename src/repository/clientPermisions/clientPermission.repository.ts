@@ -21,7 +21,7 @@ export class ClientPermissionRepository {
     } catch (error: any) {
       if (error?.code === 11000) {
         // console.log(error);
-        throw new Error("Permission document already exists");
+        return;
       }
       throw new Error("Failed to create permission document");
     }

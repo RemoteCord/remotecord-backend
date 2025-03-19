@@ -9,17 +9,17 @@ export class WsClientVerifyConnectionUseCase {
     private readonly controllerRepository: ControllerRepository,
   ) {}
 
-  async execute(tokenController: string, token: string) {
+  async execute(controllerid: string, token: string) {
     if (!token) throw new Error("Token not provided");
 
-    if (!tokenController) throw new Error("Controller ID TOKEN not provided");
+    if (!controllerid) throw new Error("Controller ID not provided");
 
     const { clientid } = this.clientDataEncryptUseCase.decryptUser(token);
     if (!clientid) {
       throw new Error("Invalid token");
     }
 
-    const controllerid = this.clientDataEncryptUseCase.decrypt(tokenController);
+    // const controllerid = this.clientDataEncryptUseCase.decrypt(tokenController);
 
     const controller =
       await this.controllerRepository.getControllerById(controllerid);
@@ -29,6 +29,6 @@ export class WsClientVerifyConnectionUseCase {
         "Client not authorized to join controller (is not a friend)",
       );
 
-    return { clientid, controllerid };
+    return { clientid };
   }
 }

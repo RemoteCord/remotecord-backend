@@ -31,15 +31,14 @@ export class WsClientGuard implements CanActivate {
       const { token } = client.handshake.auth;
       if (!token) throw new UnauthorizedException();
 
-      const { tokenController } = client.handshake.query as {
-        tokenController: string;
+      const { controllerid } = client.handshake.query as {
+        controllerid: string;
       };
 
-      const { clientid, controllerid } =
-        await this.wsClientVerifyConnectionUseCase.execute(
-          tokenController,
-          token,
-        );
+      const { clientid } = await this.wsClientVerifyConnectionUseCase.execute(
+        controllerid,
+        token,
+      );
 
       //   const id = this.verifyToken(token);
       //   client["clientid"] = id;

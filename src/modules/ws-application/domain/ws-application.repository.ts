@@ -7,6 +7,7 @@ import {
 } from "../types/ws-application.type";
 import { Socket } from "socket.io";
 import { generateRandomHex } from "@/src/utils";
+import { UserModel } from "@/src/repository/user/user.schema";
 
 @Injectable()
 export class WsApplicationRepository {
@@ -26,6 +27,17 @@ export class WsApplicationRepository {
   }
   getClient(clientid: string) {
     return this.clients.get(clientid);
+  }
+
+  updateClientData(clientid: string, data: Partial<UserModel>) {
+    const clientData = this.clients.get(clientid);
+    if (!clientData) return;
+    clientData.client_data = {
+      ...clientData.client_data,
+      ...data,
+    };
+
+    this.clients.set(clientid, clientData);
   }
 
   async removeAllClients() {

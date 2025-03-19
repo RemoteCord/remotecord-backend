@@ -37,7 +37,7 @@ import { WsBotModule } from "../ws-bot/ws-bot.module";
     WsApplicationAddFriendUseCase,
   ],
   imports: [
-    SchemasModule,
+    forwardRef(() => SchemasModule),
     forwardRef(() => AuthModule),
     forwardRef(() => WsClientModule),
     forwardRef(() => WsBotModule),
