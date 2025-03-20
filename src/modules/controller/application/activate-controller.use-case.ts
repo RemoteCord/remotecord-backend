@@ -11,9 +11,13 @@ export class ActivateControllerUseCase {
 
   async execute(
     controllerid: string,
+    picture: string,
   ): Promise<{ status: boolean; isAlreadyActivated: boolean }> {
     try {
-      const res = await this.controllerRepository.create(controllerid);
+      const res = await this.controllerRepository.create({
+        controllerid,
+        picture,
+      });
 
       this.logger.info(`Controller activated: ${res}`);
       return { status: true, isAlreadyActivated: false };

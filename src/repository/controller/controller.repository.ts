@@ -24,11 +24,9 @@ export class ControllerRepository {
     await this.controllerModel.updateMany({}, { activeclient: "" });
   }
 
-  async create(controllerid: string) {
+  async create(data: ControllerModel) {
     try {
-      return await this.controllerModel.create({
-        controllerid,
-      });
+      return await this.controllerModel.create(data);
     } catch (error: any) {
       if (error?.code === 11000) {
         // console.log(error);
@@ -42,11 +40,11 @@ export class ControllerRepository {
     const controller = await this.controllerModel.findOne({ controllerid });
     if (!controller) throw new ControllerNotFoundException();
 
-    if (controller.friends.includes(clientid)) {
+    if (controller.friends?.includes(clientid)) {
       throw new FriendAlreadyExist();
     }
 
-    controller.friends.push(clientid);
+    controller.friends?.push(clientid);
     await controller.save();
   }
 

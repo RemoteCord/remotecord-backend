@@ -8,11 +8,13 @@ export class ControllerModel {
   @Prop({ unique: true, required: true })
   controllerid!: string;
 
-  @Prop({ required: false, default: [] })
-  friends!: string[];
+  @Prop({ required: true })
+  picture!: string;
 
+  @Prop({ required: false, default: [] })
+  friends?: string[];
   @Prop({ required: false, default: "" })
-  activeclient!: string;
+  activeclient?: string;
 }
 
 export const ControllerSchema = SchemaFactory.createForClass(ControllerModel);

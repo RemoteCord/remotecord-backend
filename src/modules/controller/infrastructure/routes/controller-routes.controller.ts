@@ -12,6 +12,7 @@ import { GetExplorerFromClientDto } from "./dto/get-explorer-client.dto";
 import { GetExplorerClientUseCase } from "../../application/events/get-explorer-client.use-case";
 import { GetFriendsUseCase } from "../../application/get-friends.use-case";
 import { ScreensClientUseCase } from "../../application/screenshot-client.use-case";
+import { ActivateControllerDto } from "./dto/activate-controller.dto";
 
 @Controller(CONTROLLER_ROUTE)
 export class ControllerRoutes {
@@ -66,8 +67,14 @@ export class ControllerRoutes {
   }
 
   @Post(":controllerid/activate")
-  async activateController(@Param("controllerid") controllerid: string) {
-    return await this.activateControllerUseCase.execute(controllerid);
+  async activateController(
+    @Param("controllerid") controllerid: string,
+    @Body() body: ActivateControllerDto,
+  ) {
+    return await this.activateControllerUseCase.execute(
+      controllerid,
+      body.picture,
+    );
   }
 
   @Post(":controllerid/add-friend")
