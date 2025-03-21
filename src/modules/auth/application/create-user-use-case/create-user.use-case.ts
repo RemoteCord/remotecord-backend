@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 
 import type { CreateUserDto } from "./create-user.dto";
 import { SupabaseRepository } from "../../domain/supabase.repository";
-import { UserRepository } from "@/src/repository/user/user.repository";
-import { ClientPermissionRepository } from "@/src/repository/clientPermisions/clientPermission.repository";
+import { UserRepository } from "@/src/repository/db/user/user.repository";
+import { ClientPermissionRepository } from "@/src/repository/db/clientPermisions/clientPermission.repository";
 
 @Injectable()
 export class CreateUserUseCase {
@@ -34,7 +34,7 @@ export class CreateUserUseCase {
 
       console.log("User created", token);
 
-      await this.clientPermissionsRepository.createPermissionDocument(user.id);
+      // await this.clientPermissionsRepository.createPermissionDocument(user.id);
 
       // return { token: token };
       if (!token) throw new Error("Error generating token");

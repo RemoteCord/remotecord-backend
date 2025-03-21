@@ -9,7 +9,7 @@ import { LoggerModule } from "@/modules/shared/logger/logger.module";
 
 import { AuthModule } from "../modules/auth/auth.module";
 import { WsClientModule } from "../modules/ws-client/ws-client.module";
-import { SchemasModule } from "../repository/schemas.module";
+import { SchemasModule } from "../repository/db/schemas.module";
 import { configVar } from "../config/config-var";
 import { ControllerModule } from "../modules/controller/controller.module";
 import { WsBotModule } from "../modules/ws-bot/ws-bot.module";
@@ -17,6 +17,7 @@ import { WsApplicationModule } from "../modules/ws-application/ws-application.mo
 import { ClientModule } from "../modules/client/infrastructure/client.module";
 import { ScheduleModule } from "@nestjs/schedule";
 import { CdnModule } from "../modules/cdn/cdn.module";
+import { RedisServiceModule } from "../repository/redis/redis.module";
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CdnModule } from "../modules/cdn/cdn.module";
     SchemasModule,
     ControllerModule,
     ClientModule,
+    RedisServiceModule,
   ],
 })
 export class AppModule {}

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { WsClientRepository } from "../../domain/ws-client.repository";
 import { ClientUploadFile } from "./ws-events.type";
-import { ClientNotFoundException } from "@/src/repository/user/exceptions";
+import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
 import { LoggerService } from "@/src/modules/shared/providers";
 
 @Injectable()

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import {
   ClientPermissionModel,
+  PermissionsAllowed,
   type Permissions,
 } from "./clientPermission.schema";
 import { InjectModel } from "@nestjs/mongoose";
@@ -13,12 +14,14 @@ export class ClientPermissionRepository {
     private readonly clientPermissionModel: Model<ClientPermissionModel>,
   ) {}
 
-  async createPermissionDocument(clientid: string) {
+  async createPermissionDocument(clientid: string, controllerid: string) {
     try {
       return await this.clientPermissionModel.create({
         clientid,
+        controllerid,
       });
     } catch (error: any) {
+      console.log(error);
       if (error?.code === 11000) {
         // console.log(error);
         return;
@@ -27,26 +30,53 @@ export class ClientPermissionRepository {
     }
   }
 
-  async getPermission(clientid: string, permission: Permissions) {
+  async getAllUniquePermissions(clientid: string, controllerid: string) {
+    return await this.clientPermissionModel.findOne(
+      { clientid, controllerid },
+      { _id: 0, controllerid: 0, clientid: 0, __v: 0 },
+    );
+  }
+
+  async getPermission(
+    clientid: string,
+    controllerid: string,
+    permission: Permissions,
+  ) {
     return await this.clientPermissionModel
-      .findOne({
-        clientid,
-      })
+      .findOne(
+        {
+          clientid,
+          controllerid,
+        },
+        { _id: 0, controllerid: 0, clientid: 0, __v: 0 },
+      )
       .select(permission);
   }
 
   async getAllPermissions(clientid: string) {
-    return await this.clientPermissionModel.findOne({ clientid });
+    return await this.clientPermissionModel.find({ clientid });
   }
 
   async updatePermission(
     clientid: string,
+    controllerid: string,
     permission: Permissions,
     value: boolean,
   ) {
     return await this.clientPermissionModel.updateOne(
-      { clientid },
+      { clientid, controllerid },
       { [permission]: value },
+    );
+  }
+
+  async updatePermissions(
+    clientid: string,
+    controllerid: string,
+    permissions: Partial<PermissionsAllowed>,
+  ) {
+    return await this.clientPermissionModel.updateOne(
+      { clientid, controllerid },
+      { ...permissions },
     );
   }
 }

@@ -2,7 +2,7 @@ import { forwardRef, Module } from "@nestjs/common";
 import { WsClientGateway } from "./infrastructure/ws-client.gateway";
 import { WsClientRepository } from "./domain/ws-client.repository";
 import { WsClientJoinsUseCase } from "./application/ws-client-joins.use-case";
-import { SchemasModule } from "@/src/repository/schemas.module";
+import { SchemasModule } from "@/src/repository/db/schemas.module";
 import { AuthModule } from "../auth/auth.module";
 import { WsClientLeavesUseCase } from "./application/ws-client-leaves.use-case";
 import { WsClientVerifyConnectionUseCase } from "./application/ws-client-verify-connection.use-case";

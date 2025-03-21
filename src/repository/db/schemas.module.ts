@@ -1,7 +1,7 @@
 import { forwardRef, Global, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
-import { Configuration } from "../config/env.enum";
+import { Configuration } from "../../config/env.enum";
 import { UserModel, UserSchema } from "./user/user.schema";
 import { UserRepository } from "./user/user.repository";
 import {
@@ -9,8 +9,8 @@ import {
   ControllerSchema,
 } from "./controller/controller.schema";
 import { ControllerRepository } from "./controller/controller.repository";
-import { SharedModule } from "../modules/shared/shared.module";
-import { AuthModule } from "../modules/auth/auth.module";
+import { SharedModule } from "../../modules/shared/shared.module";
+import { AuthModule } from "../../modules/auth/auth.module";
 import {
   ClientPermissionModel,
   ClientPermissionSchema,

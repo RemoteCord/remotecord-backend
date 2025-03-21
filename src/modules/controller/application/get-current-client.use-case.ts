@@ -1,5 +1,5 @@
 import { LoggerService } from "@/src/modules/shared/providers";
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()

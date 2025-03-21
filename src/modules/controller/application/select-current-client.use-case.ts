@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { SelectCurrentClientDto } from "../infrastructure/routes/dto/current-client.dto";
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 
 @Injectable()
 export class SelectCurrentClientUseCase {

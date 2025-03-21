@@ -5,7 +5,7 @@ import { CreateUserUseCase } from "./application/create-user-use-case/create-use
 import { AuthGuard } from "./infrastructure/auth.guard";
 import { CreateUserController } from "./infrastructure/routes/create-user/create-user.controller";
 import { SupabaseRepository } from "./domain/supabase.repository";
-import { SchemasModule } from "@/src/repository/schemas.module";
+import { SchemasModule } from "@/src/repository/db/schemas.module";
 import { ClientDataEncryptUseCase } from "./application/client-data-encrypt.use-case";
 import { SharedModule } from "../shared/shared.module";
 import { Configuration } from "@/src/config/env.enum";

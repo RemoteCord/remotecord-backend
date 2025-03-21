@@ -8,4 +8,9 @@ export const configVar = () => ({
   SUPABASE_URL: process.env.SUPABASE_URL,
   FILES_DURATION: Number(process.env.FILES_DURATION) || 60,
   CDN_URL: process.env.CDN_URL,
+  REDIS_HOST: process.env.REDIS_HOST,
+  REDIS_USERNAME: process.env.REDIS_USERNAME,
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+  REDIS_DB: process.env.REDIS_DB,
+  REDIS_PORT: process.env.REDIS_PORT,
 });

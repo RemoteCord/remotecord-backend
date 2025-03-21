@@ -4,7 +4,7 @@ import type { WsBotConnectionEvent } from "./ws-bot-events.types";
 import { WsBotRepository } from "../../domain/ws-bot.repository";
 import { WsClientRepository } from "@/src/modules/ws-client/domain/ws-client.repository";
 import { WsApplicationRepository } from "@/src/modules/ws-application/domain/ws-application.repository";
-import { UserRepository } from "@/src/repository/user/user.repository";
+import { UserRepository } from "@/src/repository/db/user/user.repository";
 
 @Injectable()
 export class WsBotDisconnectClientUseCase {

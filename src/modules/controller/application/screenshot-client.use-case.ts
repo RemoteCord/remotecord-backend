@@ -1,6 +1,6 @@
 import { LoggerService } from "@/src/modules/shared/providers";
 import { WsClientScreens } from "@/src/modules/ws-client/application/events/ws-client-screens";
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
@@ -19,6 +19,8 @@ export class ScreensClientUseCase {
       await this.controllerRepository.getControllerById(controllerid)
     ).activeclient;
 
+    if (!activeclient) return;
+
     await this.wsClientScreens.getScreens(activeclient);
 
     return { status: true };
@@ -33,6 +35,7 @@ export class ScreensClientUseCase {
       await this.controllerRepository.getControllerById(controllerid)
     ).activeclient;
 
+    if (!activeclient) return;
     await this.wsClientScreens.getScreenshot(activeclient, screenid);
 
     return { status: true };

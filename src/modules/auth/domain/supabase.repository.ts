@@ -4,7 +4,7 @@ import { ConfigService } from "@nestjs/config";
 import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
 import { LoggerService } from "../../shared/providers";
 import { ClientDataEncryptUseCase } from "../application/client-data-encrypt.use-case";
-import { UserRepository } from "@/src/repository/user/user.repository";
+import { UserRepository } from "@/src/repository/db/user/user.repository";
 
 @Injectable()
 export class SupabaseRepository {

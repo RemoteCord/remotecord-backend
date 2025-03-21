@@ -9,6 +9,9 @@ export class ControllerModel {
   controllerid!: string;
 
   @Prop({ required: true })
+  name!: string;
+
+  @Prop({ required: true })
   picture!: string;
 
   @Prop({ required: false, default: [] })

@@ -2,7 +2,7 @@ import { LoggerService } from "@/src/modules/shared/providers";
 import { Injectable } from "@nestjs/common";
 import { GetExplorerFromClientDto } from "../../infrastructure/routes/dto/get-explorer-client.dto";
 import { WsClientGetExplorer } from "@/src/modules/ws-client/application/events/ws-client-get-explorer";
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 
 @Injectable()
 export class GetExplorerClientUseCase {
@@ -27,6 +27,9 @@ export class GetExplorerClientUseCase {
     }
 
     const clientid = controller.activeclient;
+
+    if (!clientid) return;
+
     return await this.wsClientGetExplorer.execute(clientid, data);
   }
 }

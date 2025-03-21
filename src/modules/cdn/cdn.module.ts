@@ -3,8 +3,8 @@ import { UploadCdnController } from "./infrastructure/routes/upload-cdn.controll
 import { UploadCdnUseCase } from "./application/upload-cdn.use-case";
 import { AuthModule } from "../auth/auth.module";
 import { ClientModule } from "../client/infrastructure/client.module";
-import { UserRepository } from "@/src/repository/user/user.repository";
-import { SchemasModule } from "@/src/repository/schemas.module";
+import { UserRepository } from "@/src/repository/db/user/user.repository";
+import { SchemasModule } from "@/src/repository/db/schemas.module";
 import { WsClientModule } from "../ws-client/ws-client.module";
 import { WsBotModule } from "../ws-bot/ws-bot.module";
 

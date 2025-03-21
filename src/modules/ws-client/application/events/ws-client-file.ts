@@ -5,7 +5,7 @@ import type {
   ClientGetFile,
   ClientUploadFile,
 } from "./ws-events.type";
-import { ClientNotFoundException } from "@/src/repository/user/exceptions";
+import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
 import { WsBotRepository } from "@/src/modules/ws-bot/domain/ws-bot.repository";
 import { LoggerService } from "@/src/modules/shared/providers";
 import { ConfigService } from "@nestjs/config";

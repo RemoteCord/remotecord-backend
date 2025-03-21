@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { UserModel } from "src/repository/user/user.schema";
+import { UserModel } from "@/src/repository/db/user/user.schema";
 
 export type ApplicationSockets = {
   socket: Socket;

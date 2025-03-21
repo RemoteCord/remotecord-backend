@@ -7,7 +7,7 @@ import {
 } from "../types/ws-application.type";
 import { Socket } from "socket.io";
 import { generateRandomHex } from "@/src/utils";
-import { UserModel } from "@/src/repository/user/user.schema";
+import { UserModel } from "@/src/repository/db/user/user.schema";
 
 @Injectable()
 export class WsApplicationRepository {

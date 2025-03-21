@@ -1,15 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { LoggerService } from "../../shared/providers";
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { WsApplicationRepository } from "../domain/ws-application.repository";
 import { WsBotSendFriendUseCase } from "../../ws-bot/application/events/ws-bot-send-friend.use-case";
+import { ClientPermissionRepository } from "@/src/repository/db/clientPermisions/clientPermission.repository";
 
 @Injectable()
 export class WsApplicationAddFriendUseCase {
   constructor(
     private readonly logger: LoggerService,
     private readonly controllerRepository: ControllerRepository,
-
+    private readonly clientPermissionsRepository: ClientPermissionRepository,
     private readonly wsApplicationRepository: WsApplicationRepository,
     private readonly wsBotSendFriendUseCase: WsBotSendFriendUseCase,
   ) {}
@@ -21,7 +22,7 @@ export class WsApplicationAddFriendUseCase {
     controllerid: string,
   ) {
     try {
-      this.logger.info(`WsApplicationAddFriend ${clientid} `);
+      this.logger.info(`WsApplicationAddFriend ${clientid} ${controllerid} `);
 
       const request = this.wsApplicationRepository.getRequest(clientid);
 
@@ -35,6 +36,12 @@ export class WsApplicationAddFriendUseCase {
       );
 
       this.wsApplicationRepository.removeRequest(clientid);
+
+      this.clientPermissionsRepository.createPermissionDocument(
+        clientid,
+        controllerid,
+      );
+
       this.wsBotSendFriendUseCase.execute({
         accept,
         controllerid: request.controllerid,

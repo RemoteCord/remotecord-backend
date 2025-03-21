@@ -1,6 +1,6 @@
 import { forwardRef, Module } from "@nestjs/common";
 import { AuthModule } from "../../auth/auth.module";
-import { SchemasModule } from "@/src/repository/schemas.module";
+import { SchemasModule } from "@/src/repository/db/schemas.module";
 import { WsBotModule } from "../../ws-bot/ws-bot.module";
 import { WsClientModule } from "../../ws-client/ws-client.module";
 import { KeyLoggerRepository } from "../domain/keylogger.repository";

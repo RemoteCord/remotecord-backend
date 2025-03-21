@@ -1,9 +1,9 @@
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { ClientDataEncryptUseCase } from "../../auth/application/client-data-encrypt.use-case";
 import { WsClientRepository } from "../domain/ws-client.repository";
-import { UserRepository } from "@/src/repository/user/user.repository";
+import { UserRepository } from "@/src/repository/db/user/user.repository";
 import { LoggerService } from "../../shared/providers";
 import { WsClientVerifyConnectionUseCase } from "./ws-client-verify-connection.use-case";
 

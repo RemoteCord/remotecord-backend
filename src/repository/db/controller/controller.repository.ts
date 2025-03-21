@@ -71,4 +71,22 @@ export class ControllerRepository {
   async getControllerByActiveClient(clientid: string) {
     return await this.controllerModel.findOne({ activeclient: clientid });
   }
+
+  async getFriendsControllersByClientId(clientid: string) {
+    return await this.controllerModel.find({
+      friends: {
+        $in: [clientid],
+      },
+    });
+  }
+
+  async deleteFriendFromController(controllerid: string, clientid: string) {
+    const controller = await this.controllerModel.findOne({ controllerid });
+    if (!controller) throw new ControllerNotFoundException();
+
+    controller.friends = controller.friends?.filter(
+      friend => friend !== clientid,
+    );
+    await controller.save();
+  }
 }

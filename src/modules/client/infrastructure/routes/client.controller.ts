@@ -1,25 +1,23 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Req,
   UseGuards,
-  UseInterceptors,
 } from "@nestjs/common";
 import { CLIENT_ROUTE } from "../route.constants";
 import { AuthGuard } from "@/src/modules/auth/infrastructure/auth.guard";
-import { MultipartInterceptor } from "@/src/modules/shared/interceptors/multipart.interceptor";
-import { Files } from "@/src/decorators/files.decorator";
 import type { FastifyRequest } from "fastify";
 
-import { WsBotRepository } from "@/src/modules/ws-bot/domain/ws-bot.repository";
-import { FileRequest } from "@/src/modules/ws-client/types/tasks.type";
-import { WsClientRepository } from "@/src/modules/ws-client/domain/ws-client.repository";
-import { FileUploadorDto } from "../dto/file-uploader.dto";
 import { LoggerService } from "@/src/modules/shared/providers";
 import { UserInfoUseCase } from "../../application/userinfo.use-case";
-import { UpdateUsernameDto } from "../dto/client.dto";
+import {
+  UpdateControllerPermissionsDto,
+  UpdateUsernameDto,
+} from "../dto/client.dto";
 
 @Controller(CLIENT_ROUTE)
 export class ClientController {
@@ -44,5 +42,39 @@ export class ClientController {
     const clientid: string = req.headers.clientid!;
     return await this.userInfoUseCase.updateUsername(clientid, body.username);
     // return await this.getUserInfoUseCase.getUserName(clientid);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("friends")
+  async getFriends(@Req() req: FastifyRequest) {
+    const clientid: string = req.headers.clientid!;
+    return await this.userInfoUseCase.getFriends(clientid);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete("friends/:controllerid")
+  async deleteFriend(
+    @Req() req: FastifyRequest,
+    @Param("controllerid") controllerid: string,
+  ) {
+    const clientid: string = req.headers.clientid!;
+    return await this.userInfoUseCase.deleteFriend(clientid, controllerid);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post("friends/permissions")
+  async updateControllerPermissions(
+    @Req() req: FastifyRequest,
+    @Body() body: UpdateControllerPermissionsDto,
+  ) {
+    const clientid: string = req.headers.clientid!;
+
+    const { permissions, controllerid } = body;
+
+    return await this.userInfoUseCase.updateControllerPermissions(
+      permissions,
+      controllerid,
+      clientid,
+    );
   }
 }

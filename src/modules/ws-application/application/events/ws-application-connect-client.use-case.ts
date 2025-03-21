@@ -5,7 +5,7 @@ import { WsApplicationRepository } from "../../domain/ws-application.repository"
 import { ClientDataEncryptUseCase } from "@/src/modules/auth/application/client-data-encrypt.use-case";
 import { ConnectClientDto } from "@/src/modules/controller/infrastructure/routes/dto/connect-client.dto";
 import { WsClientRepository } from "@/src/modules/ws-client/domain/ws-client.repository";
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 
 @Injectable()
 export class WsApplicationConnectClientUseCase {

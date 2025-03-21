@@ -74,6 +74,7 @@ export class ControllerRoutes {
     return await this.activateControllerUseCase.execute(
       controllerid,
       body.picture,
+      body.name,
     );
   }
 

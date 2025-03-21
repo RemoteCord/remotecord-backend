@@ -4,7 +4,7 @@ import { Socket } from "socket.io";
 import { LoggerService } from "../../shared/providers";
 import { WsBotDisconnectClientUseCase } from "../../ws-bot/application/events/ws-bot-disconnect-client.use-case";
 import { WsClientRepository } from "../domain/ws-client.repository";
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 
 @Injectable()
 export class WsClientLeavesUseCase {

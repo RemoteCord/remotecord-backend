@@ -11,6 +11,8 @@ export class WsApplicationVerifyConnectionUseCase {
     if (!token) throw new Error("Token not provided");
 
     const data = this.clientDataEncryptUseCase.decryptUser(token);
+
+    console.log("data:", data);
     if (!data) {
       throw new Error("Invalid token");
     }

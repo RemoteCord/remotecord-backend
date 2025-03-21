@@ -6,7 +6,7 @@ import { WsApplicationLeavesUseCase } from "./application/ws-application-leaves.
 import { WsApplicationVerifyConnectionUseCase } from "./application/ws-application-verify-connection.use-case";
 import { WsApplicationResetAllConnectionsUseCase } from "./application/ws-application-reset-all-connections-use-case";
 import { WsApplicationGuard } from "./application/ws-application.guard";
-import { SchemasModule } from "@/src/repository/schemas.module";
+import { SchemasModule } from "@/src/repository/db/schemas.module";
 import { AuthModule } from "../auth/auth.module";
 import { WsApplicationConnectClientUseCase } from "./application/events/ws-application-connect-client.use-case";
 import { WsApplicationAddFriend } from "./application/events/ws-application-add-friend";

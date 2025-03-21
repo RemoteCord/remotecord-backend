@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { SchemasModule } from "@/src/repository/schemas.module";
+import { SchemasModule } from "@/src/repository/db/schemas.module";
 
 import { ClientModule } from "../client/infrastructure/client.module";
 import { SharedModule } from "../shared/shared.module";

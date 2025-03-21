@@ -4,7 +4,7 @@ import {
   GetFileDto,
   SendFileToClientDto,
 } from "../../infrastructure/routes/dto/file.dto";
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { WsClientFile } from "@/src/modules/ws-client/application/events/ws-client-file";
 import { WsBotRepository } from "@/src/modules/ws-bot/domain/ws-bot.repository";
 import Crypto from "node:crypto";
@@ -25,8 +25,10 @@ export class FileToClientUseCase {
       `Sending file to client ${activeclient} from controller ${controllerid}`,
     );
 
-    if (!activeclient) this.logger.error("No active client found");
-
+    if (!activeclient) {
+      this.logger.error("No active client found");
+      return;
+    }
     await this.wsClientFile.uploadFileToClient({
       clientid: activeclient,
       fileroute: data.fileroute,
@@ -50,8 +52,10 @@ export class FileToClientUseCase {
       `Getting file from client ${activeclient} from controller ${controllerid} ${token}`,
     );
 
-    if (!activeclient) this.logger.error("No active client found");
-
+    if (!activeclient) {
+      this.logger.error("No active client found");
+      return;
+    }
     await this.wsClientFile.getFileFromClient({
       clientid: activeclient,
       fileroute: data.fileroute,

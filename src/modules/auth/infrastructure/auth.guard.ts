@@ -11,7 +11,7 @@ import { FastifyRequest } from "fastify";
 // import { UserModel } from 'src/schemas/user.schema';
 import { Model, Types } from "mongoose";
 import { LoggerService } from "../../shared/providers";
-import { UserRepository } from "@/src/repository/user/user.repository";
+import { UserRepository } from "@/src/repository/db/user/user.repository";
 import { CustomUnathorizedException } from "./exceptions";
 import { ClientDataEncryptUseCase } from "../application/client-data-encrypt.use-case";
 

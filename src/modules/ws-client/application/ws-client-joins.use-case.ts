@@ -1,14 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
-import { UserRepository } from "@/src/repository/user/user.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
+import { UserRepository } from "@/src/repository/db/user/user.repository";
 import { WsClientRepository } from "../domain/ws-client.repository";
 import { LoggerService } from "../../shared/providers";
-import { ClientNotFoundException } from "@/src/repository/user/exceptions";
+import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
 import { WsClientVerifyConnectionUseCase } from "./ws-client-verify-connection.use-case";
 import { WsBotConnectClientUseCase } from "../../ws-bot/application/events/ws-bot-connect-client.use-case";
 import { WsApplicationRepository } from "../../ws-application/domain/ws-application.repository";
-
+import { InjectRedis } from "@nestjs-modules/ioredis";
+import Redis from "ioredis";
 @Injectable()
 export class WsClientJoinsUseCase {
   constructor(
@@ -19,6 +20,8 @@ export class WsClientJoinsUseCase {
     private readonly wsClientVerifyConnectionUseCase: WsClientVerifyConnectionUseCase,
     private readonly logger: LoggerService,
     private readonly wsBotConnectClientUseCase: WsBotConnectClientUseCase,
+
+    @InjectRedis() private readonly redis: Redis,
   ) {}
 
   async execute(client: Socket) {
@@ -55,7 +58,7 @@ export class WsClientJoinsUseCase {
       const controller =
         await this.controllerRepository.getControllerById(controllerid);
 
-      if (!controller?.friends.includes(clientid))
+      if (!controller?.friends?.includes(clientid))
         throw new Error(
           "Client not authorized to join controller (is not a friend)",
         );
@@ -80,6 +83,8 @@ export class WsClientJoinsUseCase {
         socket: client,
         client_data,
       });
+
+      await this.redis.set(`client:${clientid}`, controllerid);
 
       return await this.wsBotConnectClientUseCase.execute({
         controllerid,

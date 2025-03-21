@@ -1,4 +1,4 @@
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { Injectable } from "@nestjs/common";
 import { WsApplicationRepository } from "../domain/ws-application.repository";
 import { LoggerService } from "../../shared/providers";

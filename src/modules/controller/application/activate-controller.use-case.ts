@@ -1,4 +1,4 @@
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { Injectable } from "@nestjs/common";
 import { LoggerService } from "@/src/modules/shared/providers";
 
@@ -12,10 +12,12 @@ export class ActivateControllerUseCase {
   async execute(
     controllerid: string,
     picture: string,
+    name: string,
   ): Promise<{ status: boolean; isAlreadyActivated: boolean }> {
     try {
       const res = await this.controllerRepository.create({
         controllerid,
+        name,
         picture,
       });
 

@@ -1,8 +1,8 @@
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { Injectable } from "@nestjs/common";
 import { LoggerService } from "@/src/modules/shared/providers";
-import { UserRepository } from "@/src/repository/user/user.repository";
-import { ClientNotFoundException } from "@/src/repository/user/exceptions";
+import { UserRepository } from "@/src/repository/db/user/user.repository";
+import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
 import { AddFriendToControllerDto } from "../infrastructure/routes/dto/add-friend-to-controller.dto";
 import { WsApplicationAddFriend } from "../../ws-application/application/events/ws-application-add-friend";
 import { ClientDataEncryptUseCase } from "../../auth/application/client-data-encrypt.use-case";
@@ -35,7 +35,7 @@ export class AddFriendToControllerUseCase {
 
       this.logger.info(`Adding ${clientid} to controller ${controllerid}`);
 
-      if (controllerData.friends.includes(clientid)) {
+      if (controllerData.friends?.includes(clientid)) {
         return {
           status: false,
           isAlreadyAdded: true,

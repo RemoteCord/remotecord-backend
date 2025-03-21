@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ClientDataEncryptUseCase } from "../../auth/application/client-data-encrypt.use-case";
-import { ControllerRepository } from "@/src/repository/controller/controller.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 
 @Injectable()
 export class WsClientVerifyConnectionUseCase {
@@ -24,7 +24,7 @@ export class WsClientVerifyConnectionUseCase {
     const controller =
       await this.controllerRepository.getControllerById(controllerid);
 
-    if (!controller?.friends.includes(clientid))
+    if (!controller?.friends?.includes(clientid))
       throw new Error(
         "Client not authorized to join controller (is not a friend)",
       );

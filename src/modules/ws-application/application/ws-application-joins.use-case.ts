@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { WsApplicationRepository } from "../domain/ws-application.repository";
-import { UserRepository } from "@/src/repository/user/user.repository";
+import { UserRepository } from "@/src/repository/db/user/user.repository";
 import { LoggerService } from "../../shared/providers";
-import { ClientNotFoundException } from "@/src/repository/user/exceptions";
+import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
 import { WsApplicationVerifyConnectionUseCase } from "./ws-application-verify-connection.use-case";
 
 @Injectable()
