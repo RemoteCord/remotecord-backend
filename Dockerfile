@@ -28,4 +28,4 @@ COPY src src
 
 USER node
 EXPOSE $PORT
-CMD ["dumb-init", "node", "dist/main.js"]
+CMD ["node", "dist/main.js"]
