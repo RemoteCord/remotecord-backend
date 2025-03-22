@@ -15,19 +15,14 @@ RUN apk add --no-cache python3 make g++ krb5-dev dumb-init
 
 RUN npm install -g pnpm@9.14.2
 
-COPY package.json pnpm-lock.yaml ./
+# Copy all project files for build
+COPY . .
 
-RUN echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ".npmrc" && \
-    pnpm install --frozen-lockfile && \
-    rm -f .npmrc
+# Install dependencies 
+RUN pnpm install --frozen-lockfile
 
-COPY tsconfig*.json .
-COPY .swcrc .
-COPY nest-cli.json .
-COPY src src
-
-# Add a build step to generate the dist folder
-RUN pnpm build
+# Build the application and make sure it produces output
+RUN pnpm build && ls -la dist/
 
 USER node
 EXPOSE $PORT
