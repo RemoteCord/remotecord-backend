@@ -10,8 +10,8 @@ FROM base AS dev
 ENV NODE_ENV=development
 ENV CI=true
 
-# Add these lines before npm install
-RUN apk add --no-cache python3 make g++ krb5-dev
+# Install dumb-init along with other dependencies
+RUN apk add --no-cache python3 make g++ krb5-dev dumb-init
 
 RUN npm install -g pnpm@9.14.2
 
@@ -26,6 +26,11 @@ COPY .swcrc .
 COPY nest-cli.json .
 COPY src src
 
+# Add a build step to generate the dist folder
+RUN pnpm build
+
 USER node
 EXPOSE $PORT
-CMD ["node", "dist/main.js"]
+
+# Use the full path to dumb-init
+CMD ["/usr/bin/dumb-init", "node", "dist/main.js"]
