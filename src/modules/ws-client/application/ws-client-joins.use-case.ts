@@ -20,8 +20,6 @@ export class WsClientJoinsUseCase {
     private readonly wsClientVerifyConnectionUseCase: WsClientVerifyConnectionUseCase,
     private readonly logger: LoggerService,
     private readonly wsBotConnectClientUseCase: WsBotConnectClientUseCase,
-
-    @InjectRedis() private readonly redis: Redis,
   ) {}
 
   async execute(client: Socket) {
@@ -83,8 +81,6 @@ export class WsClientJoinsUseCase {
         socket: client,
         client_data,
       });
-
-      await this.redis.set(`client:${clientid}`, controllerid);
 
       return await this.wsBotConnectClientUseCase.execute({
         controllerid,

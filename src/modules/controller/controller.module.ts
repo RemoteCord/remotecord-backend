@@ -21,6 +21,7 @@ import { AuthModule } from "../auth/auth.module";
 import { GetTasksUseCase } from "./application/events/get-tasks.use-case";
 import { ControllerRoutes } from "./infrastructure/routes/controller-routes.controller";
 import { ControllerEvents } from "./infrastructure/routes/controller-events.controller";
+import { RedisServiceModule } from "@/src/repository/redis/redis.module";
 
 @Module({
   controllers: [ControllerRoutes, ControllerEvents],
@@ -44,6 +45,7 @@ import { ControllerEvents } from "./infrastructure/routes/controller-events.cont
     WsBotModule,
     ClientModule,
     AuthModule,
+    RedisServiceModule,
   ],
 })
 export class ControllerModule {}

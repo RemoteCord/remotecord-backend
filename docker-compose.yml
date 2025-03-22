@@ -1,32 +1,4 @@
 services:
-  mongodb_container:
-    image: mongo:latest
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: remotecord
-      MONGO_INITDB_ROOT_PASSWORD: P@ssw0rd
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodb_data_container:/data/db
-
-  my-service-production:
-    container_name: my-service-production
-    build:
-      target: production
-      context: .
-      args:
-        - PORT=${PORT:-3003}
-    ports:
-      - "${PORT:-3003}:${PORT:-3003}"
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: "512m"
-        reservations:
-          cpus: "0.25"
-          memory: "256m"
-
   my-service-dev:
     container_name: my-service-dev
     restart: unless-stopped
@@ -34,42 +6,20 @@ services:
     build:
       target: dev
       context: .
+      dockerfile: Dockerfile
       args:
         - PORT=${PORT:-3003}
+    environment:
+      - NODE_OPTIONS=--max-old-space-size=4096
     ports:
       - "${PORT:-3003}:${PORT:-3003}"
-      - "9229:9229"
     volumes:
       - ./src:/app/src
     deploy:
       resources:
         limits:
-          cpus: "1"
+          cpus: "2"
           memory: "4096m"
         reservations:
-          cpus: "0.25"
-          memory: "256m"
-
-  k6:
-    image: ghcr.io/grafana/xk6-dashboard:0.7.2
-    container_name: k6
-    volumes:
-      - ./tests/performance:/tests/performance
-      - ./k6-results:/home/k6
-    ports:
-      - "5665:5665"
-    environment:
-      BASE_URL: "http://host.docker.internal:3003"
-      K6_WEB_DASHBOARD_EXPORT: "report.html"
-      K6_WEB_DASHBOARD_PERIOD: "1s"
-      K6_WEB_DASHBOARD_OPEN: "true"
-    command:
-      [
-        "run",
-        "--out",
-        "web-dashboard",
-        "/tests/performance/contexts/users/get-users.mjs",
-      ]
-
-volumes:
-  mongodb_data_container:
+          cpus: "0.5"
+          memory: "512m"

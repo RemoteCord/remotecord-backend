@@ -8,6 +8,7 @@ export default registerAs(REDIS_CONFIG_KEY, () => {
   if (port === 6380) {
     tls = {};
   }
+
   return {
     host: process.env.REDIS_HOST || "localhost",
     port,

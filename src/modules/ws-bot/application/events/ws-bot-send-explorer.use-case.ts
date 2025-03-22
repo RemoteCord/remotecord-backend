@@ -2,6 +2,8 @@ import { LoggerService } from "@/src/modules/shared/providers";
 import { Injectable } from "@nestjs/common";
 import { WsBotSendExplorerEvent } from "./ws-bot-events.types";
 import { WsBotRepository } from "../../domain/ws-bot.repository";
+import { InjectRedis } from "@nestjs-modules/ioredis";
+import Redis from "ioredis";
 
 @Injectable()
 export class WsBotSendExplorerUseCase {
