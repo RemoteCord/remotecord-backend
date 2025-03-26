@@ -1,5 +1,13 @@
 import { WsApplicationConnectClientUseCase } from "@/src/modules/ws-application/application/events/ws-application-connect-client.use-case";
-import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
 import { ConnectClientDto } from "./dto/connect-client.dto";
 import { SelectCurrentClientDto } from "./dto/current-client.dto";
 import { GetCurrentClientUseCase } from "../../application/get-current-client.use-case";
@@ -13,6 +21,8 @@ import { GetExplorerClientUseCase } from "../../application/events/get-explorer-
 import { GetFriendsUseCase } from "../../application/get-friends.use-case";
 import { ScreensClientUseCase } from "../../application/screenshot-client.use-case";
 import { ActivateControllerDto } from "./dto/activate-controller.dto";
+import { ClientPermissionRepository } from "@/src/repository/db/clientPermisions/clientPermission.repository";
+import { ClientPermissionGuard } from "@/src/repository/db/clientPermisions/clientPermission.guard";
 
 @Controller(CONTROLLER_ROUTE)
 export class ControllerRoutes {
@@ -25,6 +35,7 @@ export class ControllerRoutes {
     private readonly getExplorerClientUseCase: GetExplorerClientUseCase,
     private readonly getFriendsUseCase: GetFriendsUseCase,
     private readonly screensClientUseCase: ScreensClientUseCase,
+    private readonly clientPermissionRepository: ClientPermissionRepository,
   ) {}
 
   @Post(":controllerid/disconnect-client")
@@ -93,6 +104,7 @@ export class ControllerRoutes {
     return await this.getFriendsUseCase.execute(controllerid);
   }
 
+  @UseGuards(ClientPermissionGuard)
   @Post(":controllerid/explorer")
   async getExplorerClient(
     @Param("controllerid") controllerid: string,

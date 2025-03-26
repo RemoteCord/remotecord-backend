@@ -16,6 +16,7 @@ import {
   ClientPermissionSchema,
 } from "./clientPermisions/clientPermission.schema";
 import { ClientPermissionRepository } from "./clientPermisions/clientPermission.repository";
+import { ClientPermissionGuard } from "./clientPermisions/clientPermission.guard";
 @Module({
   imports: [
     SharedModule,
@@ -37,6 +38,7 @@ import { ClientPermissionRepository } from "./clientPermisions/clientPermission.
     UserRepository,
     ControllerRepository,
     ClientPermissionRepository,
+    ClientPermissionGuard,
     // Add missing dependency here if it's a provider
   ],
   exports: [
@@ -44,6 +46,7 @@ import { ClientPermissionRepository } from "./clientPermisions/clientPermission.
     UserRepository,
     ControllerRepository,
     ClientPermissionRepository,
+    ClientPermissionGuard,
   ],
 })
 export class SchemasModule {}

@@ -28,15 +28,13 @@ export class GetExplorerClientUseCase {
 
     const { relativepath, folder } = data;
 
-    const controller =
-      await this.controllerRepository.getControllerById(controllerid);
+    const clientid =
+      await this.controllerRepository.getActiveClient(controllerid);
 
-    if (!controller) {
+    if (!clientid) {
       this.logger.error(`Controller not found: ${controllerid}`);
       throw new Error("Controller not found");
     }
-
-    const clientid = controller.activeclient;
 
     console.log(clientid);
 

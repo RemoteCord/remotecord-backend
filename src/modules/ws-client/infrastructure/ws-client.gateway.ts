@@ -3,8 +3,9 @@ import {
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
+  WebSocketServer,
 } from "@nestjs/websockets";
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { WsClientJoinsUseCase } from "../application/ws-client-joins.use-case";
 import { WsClientResetAllConnectionsUseCase } from "../application/ws-client-reset-all-connections-use-case";
 import { LoggerService } from "../../shared/providers";
@@ -38,6 +39,8 @@ import { RedisRepository } from "@/src/repository/redis/domain/redis.repository"
 export class WsClientGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
+  @WebSocketServer()
+  server!: Server;
   constructor(
     private readonly wsClientJoinsUseCase: WsClientJoinsUseCase,
     private readonly wsClientLeavesUseCase: WsClientLeavesUseCase,
@@ -50,14 +53,37 @@ export class WsClientGateway
     private readonly redisRepository: RedisRepository,
   ) {}
 
+  async sendEventToClient(clientid: string, event: string, payload: any) {
+    // const client = this.server.sockets.sockets.get(clientid);
+    // console.log("client", client);
+    // if (client) {
+    //   client.emit(event, payload);
+    // }
+
+    const connectionid = await this.redisRepository.getEntity(
+      "ws-client-id",
+      clientid,
+    );
+
+    console.log("connectionid", connectionid);
+    if (!connectionid) return;
+    this.server.to(connectionid).emit(event, payload);
+  }
+
   async afterInit(client: Socket) {
     this.logger.info("Resetting all client connections");
     await this.wsClientResetAllConnectionsUseCase.execute();
+    await this.redisRepository.deleteAllFromCategory("ws-client-id");
   }
 
   async handleConnection(client: Socket) {
     try {
-      await this.wsClientJoinsUseCase.execute(client);
+      console.log(this.server);
+      const { clientid } = await this.wsClientJoinsUseCase.execute(client);
+
+      // console.log("clientid", this.server.sockets);
+      this.redisRepository.setEntity("ws-client-id", clientid, client.id);
+      this.server.to(client.id).emit("connected", "connected");
     } catch (error) {
       this.logger.error("Connection error:", error);
       client.disconnect();
@@ -65,7 +91,19 @@ export class WsClientGateway
   }
 
   handleDisconnect(client: Socket) {
-    this.wsClientLeavesUseCase.execute(client);
+    try {
+      this.wsClientLeavesUseCase.execute(client);
+    } catch (error) {
+      this.logger.error("Connection error:", error);
+      client.disconnect();
+    }
+
+    const clientid = client.handshake.query["clientid"] as string;
+    const controllerid = client.handshake.query["controllerid"] as string;
+
+    this.redisRepository.deleteEntity("ws-client-id", clientid);
+
+    this.redisRepository.deleteEntity("connection-ws", controllerid);
   }
 
   @UseGuards(WsClientGuard)
@@ -108,13 +146,13 @@ export class WsClientGateway
     client: Socket,
     data: GetExplorerFromClientEvent,
   ) {
-    this.logger.info("getExplorerFromClient Event", data);
+    this.logger.info("getExplorerFromClient Event");
 
     const { files, folder, relativepath } = data;
 
-    const { controllerid, clientid } = client.handshake.query;
+    const { clientid } = client.handshake.query;
 
-    const splitedPath = relativepath.split("/")[1];
+    const splitedPath = relativepath.split("/")[1] ?? relativepath;
 
     const resultPath = path.join(folder, splitedPath);
 
@@ -122,7 +160,12 @@ export class WsClientGateway
     console.log("key", key);
     // const timeKey = `${key}:timestamp`;
 
-    void this.redisRepository.addEntity("explorer", key, JSON.stringify(files));
+    void this.redisRepository.setEntity(
+      "explorer",
+      key,
+      JSON.stringify(files),
+      true,
+    );
 
     // await this.redis.set(key, JSON.stringify(files), "EX", 3600);
 

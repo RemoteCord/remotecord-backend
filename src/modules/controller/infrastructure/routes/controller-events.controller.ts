@@ -5,6 +5,7 @@ import { FileToClientUseCase } from "../../application/events/file-to-client.use
 import { GetTasksUseCase } from "../../application/events/get-tasks.use-case";
 import { SendCmdCommandToClientDto } from "./dto/send-command.dto";
 import { SendCmdCommandToClientUseCase } from "../../application/events/send-cmd-command.use-case";
+import { ClientPermissionRepository } from "@/src/repository/db/clientPermisions/clientPermission.repository";
 
 @Controller(CONTROLLER_ROUTE)
 export class ControllerEvents {
@@ -12,6 +13,7 @@ export class ControllerEvents {
     private readonly fileToClientUseCase: FileToClientUseCase,
     private readonly getTasksUseCase: GetTasksUseCase,
     private readonly sendCmdToClientUseCase: SendCmdCommandToClientUseCase,
+    private readonly clientPermissionRepository: ClientPermissionRepository,
   ) {}
 
   @Post(":controllerid/upload-file")

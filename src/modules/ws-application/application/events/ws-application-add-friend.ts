@@ -5,12 +5,14 @@ import { WsClientRepository } from "../../../ws-client/domain/ws-client.reposito
 import { AddFriend } from "../../../ws-client/application/events/ws-events.type";
 import { WsApplicationRepository } from "@/src/modules/ws-application/domain/ws-application.repository";
 import { AddFriendToControllerDto } from "@/src/modules/controller/infrastructure/routes/dto/add-friend-to-controller.dto";
+import { WsApplicationGateway } from "../../infrastructure/ws-application.gateway";
 
 @Injectable()
 export class WsApplicationAddFriend {
   constructor(
     private readonly logger: LoggerService,
     private readonly wsApplicationRepository: WsApplicationRepository,
+    private readonly wsApplicationGateway: WsApplicationGateway,
   ) {}
 
   async execute(
@@ -18,13 +20,6 @@ export class WsApplicationAddFriend {
     encryptedToken: string,
     data: AddFriendToControllerDto & { controllerid: string },
   ) {
-    const client = this.wsApplicationRepository.getClient(clientid);
-
-    if (!client) {
-      this.logger.error(`Client socket not found: ${clientid}`);
-      throw new Error("Client not found");
-    }
-
     this.logger.info(
       `Attempting Client ${clientid} emitting addFriend to ws-client with controller ${data.controllerid}`,
     );
@@ -34,9 +29,13 @@ export class WsApplicationAddFriend {
       token: encryptedToken,
     });
 
-    client.socket.emit("addFriend", {
-      ...data,
-      token: encryptedToken,
-    });
+    this.wsApplicationGateway.sendEventToApplication(
+      data.controllerid,
+      "addFriend",
+      {
+        ...data,
+        token: encryptedToken,
+      },
+    );
   }
 }

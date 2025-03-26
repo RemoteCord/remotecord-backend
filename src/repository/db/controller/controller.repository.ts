@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, OnModuleInit } from "@nestjs/common";
 import { ControllerModel } from "./controller.schema";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -7,17 +7,47 @@ import {
   ControllerNotFoundException,
   FriendAlreadyExist,
 } from "./exceptions";
+import { RedisRepository } from "../../redis/domain/redis.repository";
 
 @Injectable()
-export class ControllerRepository {
+export class ControllerRepository implements OnModuleInit {
   constructor(
     @InjectModel(ControllerModel.name)
     private readonly controllerModel: Model<ControllerModel>,
+
+    private readonly redisRepository: RedisRepository,
   ) {}
 
+  async onModuleInit() {
+    this.redisRepository.deleteAllFromCategory("connection-ws");
+  }
+
   async selectActiveClient(clientid: string, controllerid: string) {
-    const controller = await this.controllerModel.findOne({ controllerid });
-    console.log(controller);
+    await this.controllerModel.findOneAndUpdate(
+      { controllerid },
+      { activeclient: clientid },
+    );
+
+    await this.redisRepository.setEntity(
+      "connection-ws",
+      controllerid,
+      clientid,
+    );
+    // console.log(controller);
+  }
+
+  async getActiveClient(controllerid: string) {
+    const cache = await this.redisRepository.getEntity(
+      "connection-ws",
+      controllerid,
+    );
+
+    if (!cache) {
+      const controller = await this.controllerModel.findOne({ controllerid });
+      return controller?.activeclient;
+    } else {
+      return cache;
+    }
   }
 
   async resetAllActiveClients() {

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, OnModuleInit } from "@nestjs/common";
 import {
   ClientPermissionModel,
   PermissionsAllowed,
@@ -6,14 +6,39 @@ import {
 } from "./clientPermission.schema";
 import { InjectModel } from "@nestjs/mongoose";
 import type { Model } from "mongoose";
+import { RedisRepository } from "../../redis/domain/redis.repository";
 
 @Injectable()
-export class ClientPermissionRepository {
+export class ClientPermissionRepository implements OnModuleInit {
   constructor(
     @InjectModel(ClientPermissionModel.name)
     private readonly clientPermissionModel: Model<ClientPermissionModel>,
+    private readonly redisRepository: RedisRepository,
   ) {}
 
+  async onModuleInit() {
+    console.log(`The module has been initialized.`);
+
+    const permissions = await this.clientPermissionModel.find(
+      {},
+      { _id: 0, __v: 0 },
+    );
+
+    console.log(permissions);
+
+    await Promise.all(
+      permissions.map(async permission => {
+        const key = `${permission.clientid}:${permission.controllerid}`;
+        const { controllerid, clientid, ...rest } = permission.toJSON();
+        console.log("formatted", JSON.stringify(rest));
+        return this.redisRepository.setEntity(
+          "permissions",
+          key,
+          JSON.stringify(rest),
+        );
+      }),
+    );
+  }
   async createPermissionDocument(clientid: string, controllerid: string) {
     try {
       return await this.clientPermissionModel.create({
@@ -42,7 +67,7 @@ export class ClientPermissionRepository {
     controllerid: string,
     permission: Permissions,
   ) {
-    return await this.clientPermissionModel
+    const permissions = await this.clientPermissionModel
       .findOne(
         {
           clientid,
@@ -51,6 +76,10 @@ export class ClientPermissionRepository {
         { _id: 0, controllerid: 0, clientid: 0, __v: 0 },
       )
       .select(permission);
+
+    if (!permissions) return false;
+
+    return permissions[permission];
   }
 
   async getAllPermissions(clientid: string) {
@@ -63,10 +92,12 @@ export class ClientPermissionRepository {
     permission: Permissions,
     value: boolean,
   ) {
-    return await this.clientPermissionModel.updateOne(
+    const res = await this.clientPermissionModel.updateOne(
       { clientid, controllerid },
       { [permission]: value },
     );
+    console.log(res);
+    return res;
   }
 
   async updatePermissions(
@@ -74,9 +105,16 @@ export class ClientPermissionRepository {
     controllerid: string,
     permissions: Partial<PermissionsAllowed>,
   ) {
-    return await this.clientPermissionModel.updateOne(
+    const res = await this.clientPermissionModel.updateOne(
       { clientid, controllerid },
       { ...permissions },
     );
+
+    this.redisRepository.setEntity(
+      "permissions",
+      `${clientid}:${controllerid}`,
+      JSON.stringify(permissions),
+    );
+    return res;
   }
 }

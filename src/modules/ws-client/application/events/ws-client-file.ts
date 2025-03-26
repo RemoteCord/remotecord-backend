@@ -9,6 +9,7 @@ import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
 import { WsBotRepository } from "@/src/modules/ws-bot/domain/ws-bot.repository";
 import { LoggerService } from "@/src/modules/shared/providers";
 import { ConfigService } from "@nestjs/config";
+import { WsClientGateway } from "../../infrastructure/ws-client.gateway";
 
 @Injectable()
 export class WsClientFile {
@@ -16,32 +17,17 @@ export class WsClientFile {
     private readonly wsClientRepository: WsClientRepository,
     private readonly logger: LoggerService,
     private readonly configService: ConfigService,
+    private readonly wsClientGateway: WsClientGateway,
   ) {}
 
   async uploadFileToClient({ clientid, fileroute }: ClientUploadFile) {
-    const client = this.wsClientRepository.getClient(clientid);
-
-    if (!client) {
-      throw new ClientNotFoundException(clientid);
-    }
-
-    const { socket } = client;
-
-    socket.emit("uploadFile", {
+    this.wsClientGateway.sendEventToClient(clientid, "uploadFile", {
       fileroute,
     });
   }
 
   async getFileFromClient({ clientid, fileroute }: ClientGetFile) {
     try {
-      const client = this.wsClientRepository.getClient(clientid);
-
-      if (!client) {
-        throw new ClientNotFoundException(clientid);
-      }
-
-      const { socket } = client;
-
       // this.logger.info(
       //   `Emmiting getting file from client ${clientid} ${tokenFile}`,
       // );
@@ -55,7 +41,9 @@ export class WsClientFile {
 
       const CDN_URL = this.configService.get<string>("CDN_URL");
 
-      const { upload_url } = await fetch(`${CDN_URL}/api/upload-endpoint`)
+      const { upload_url } = await fetch(
+        `${CDN_URL}/api/upload-endpoint?clientid=${clientid}`,
+      )
         .then(
           async res => (await res.json()) as Promise<{ upload_url: string }>,
         )
@@ -64,7 +52,8 @@ export class WsClientFile {
           throw new Error("Error on get file from client");
         });
       this.logger.info(upload_url);
-      socket.emit("getFileFromClient", {
+
+      this.wsClientGateway.sendEventToClient(clientid, "getFileFromClient", {
         fileroute,
         upload_url,
       });

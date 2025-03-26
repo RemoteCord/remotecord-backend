@@ -6,6 +6,7 @@ import { ClientDataEncryptUseCase } from "@/src/modules/auth/application/client-
 import { ConnectClientDto } from "@/src/modules/controller/infrastructure/routes/dto/connect-client.dto";
 import { WsClientRepository } from "@/src/modules/ws-client/domain/ws-client.repository";
 import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
+import { WsApplicationGateway } from "../../infrastructure/ws-application.gateway";
 
 @Injectable()
 export class WsApplicationConnectClientUseCase {
@@ -14,26 +15,24 @@ export class WsApplicationConnectClientUseCase {
     private readonly controllerRepository: ControllerRepository,
     private readonly wsApplicationRepository: WsApplicationRepository,
     private readonly wsClientRepository: WsClientRepository,
-    private readonly clientDataEncryptUseCase: ClientDataEncryptUseCase,
+    private readonly wsApplicationGateway: WsApplicationGateway,
   ) {}
 
   async disconnect(controllerid: string) {
     try {
       this.logger.info(`Disconnecting controller ${controllerid}`);
-      const controller =
-        await this.controllerRepository.getControllerById(controllerid);
-      if (!controller) throw new Error("Controller not found");
-
-      const clientid = controller.activeclient;
-      if (!clientid) throw new Error("No active client found");
-
-      const client = this.wsClientRepository.getClient(clientid);
-      if (!client) throw new Error("Client not found");
+      const clientid =
+        await this.controllerRepository.getActiveClient(controllerid);
+      if (!clientid) throw new Error("Controller not found");
 
       this.logger.info(`Emitting disconnect to ws-client ${clientid}`);
-      client.socket.emit("emitDisconnectFromController", {
-        controller: controllerid,
-      });
+      this.wsApplicationGateway.sendEventToApplication(
+        clientid,
+        "emitDisconnectFromController",
+        {
+          controller: controllerid,
+        },
+      );
 
       return { status: true };
     } catch (error: unknown) {
@@ -54,17 +53,15 @@ export class WsApplicationConnectClientUseCase {
   ) {
     // const { username, avatar } = data;
     try {
-      if (this.wsClientRepository.getClient(clientid))
+      const activeclient =
+        await this.controllerRepository.getActiveClient(controllerid);
+      console.log(activeclient);
+      if (activeclient === clientid)
         throw new Error("Client already connected");
 
       this.logger.info(
         `Attempting Client ${clientid} emitting connect to ws-client with controller ${controllerid}`,
       );
-
-      const client = this.wsApplicationRepository.getClient(clientid);
-
-      if (!client) throw new Error("Client not found"); // TODO: Create a exception
-      //   console.log("client.socket", client.socket);
 
       this.logger.info(
         `Encrypted controller id: (${controllerid}) for connecting to ${clientid}`,
@@ -73,11 +70,16 @@ export class WsApplicationConnectClientUseCase {
       const tokenConnection =
         this.wsApplicationRepository.generateConnectionToken(clientid);
 
-      client.socket.emit("emitConnectToController", {
-        controllerid,
-        tokenConnection,
-        controller: data,
-      });
+      this.wsApplicationGateway.sendEventToApplication(
+        clientid,
+        "emitConnectToController",
+        {
+          controllerid,
+          tokenConnection,
+          controller: data,
+        },
+      );
+
       return { status: true };
     } catch (error: unknown) {
       const errorMessage =

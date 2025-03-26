@@ -10,6 +10,7 @@ import multiPart from "@fastify/multipart";
 
 import { AppModule } from "./app/app.module";
 import { CorsOptions } from "./cors";
+import { RedisIoAdapter } from "./adapters/redis-io.adapter";
 
 declare const module: any;
 
@@ -44,6 +45,10 @@ async function bootstrap() {
 
   app.enableCors(CorsOptions);
 
+  const redisIoAdapter = new RedisIoAdapter(app);
+  await redisIoAdapter.connectToRedis();
+  app.useWebSocketAdapter(redisIoAdapter);
+
   await app.listen(port, "0.0.0.0");
 
   const logger = new Logger("Main");
@@ -56,6 +61,7 @@ async function bootstrap() {
 }
 
 bootstrap().catch(handleError);
+// AppClusterService.clusterize(bootstrap);
 
 function handleError(error: unknown) {
   console.error(error);
