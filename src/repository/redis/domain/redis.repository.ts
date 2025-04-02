@@ -3,13 +3,16 @@ import { InjectRedis } from "@nestjs-modules/ioredis";
 import { Injectable } from "@nestjs/common";
 import Redis from "ioredis";
 
-type RedisCategories =
+export type RedisCategories =
   | "explorer"
   | "permissions"
   | "connection-ws"
-  | "ws-client-id"
   | "client-data"
-  | "ws-application-id";
+  | "client-commands-requests"
+  | "keylogger"
+  | "stats"
+  | "ws"
+  | "messages-bot";
 
 @Injectable()
 export class RedisRepository {
@@ -18,32 +21,84 @@ export class RedisRepository {
     @InjectRedis() private readonly redis: Redis,
   ) {}
 
-  async setEntity(
-    category: RedisCategories,
-    key: string,
-    data: string,
+  async HSET(
+    params: [RedisCategories, string[]] | [RedisCategories],
+    data: Record<string, any>,
     expire = false,
   ) {
-    try {
-      let res;
-      const stringifiedData =
-        typeof data === "object" ? JSON.stringify(data) : data;
-      this.logger.info(`Adding data to redis ${category} ${key}`);
+    const [category, keys] = params;
+    const formattedKey = keys ? `${category}:${keys.join(":")}` : category;
 
-      if (!expire) {
-        res = await this.redis.set(`${category}:${key}`, stringifiedData);
-      } else {
-        res = await this.redis.setex(
-          `${category}:${key}`,
-          3600,
-          stringifiedData,
-        );
-      }
-      this.logger.info(`Data added to redis ${category} ${key} result: ${res}`);
-    } catch (error) {
-      console.log(error);
-      this.logger.error(`Error adding data to redis ${category} ${key}`);
-    }
+    this.logger.info(`Adding data to redis ${category} ${keys?.join(":")}`);
+
+    await this.redis.hset(formattedKey, data);
+
+    if (expire) await this.redis.expire(formattedKey, 3600);
+  }
+
+  async HGET(
+    params: [RedisCategories, string[]] | [RedisCategories],
+    key: string,
+  ) {
+    const [category, keys] = params;
+    const formattedKey = keys ? `${category}:${keys.join(":")}` : category;
+
+    this.logger.info(`Getting data from redis ${formattedKey} ${key}`);
+
+    return await this.redis.hget(formattedKey, key);
+  }
+  async HGETALL<T>(params: [RedisCategories, string[]] | [RedisCategories]) {
+    const [category, keys] = params;
+    const formattedKey = keys ? `${category}:${keys.join(":")}` : category;
+
+    this.logger.info(`Getting all data from redis ${formattedKey}`);
+
+    return (await this.redis.hgetall(formattedKey)) as T;
+  }
+
+  async HLEN(params: [RedisCategories, string[]] | [RedisCategories]) {
+    const [category, keys] = params;
+    const formattedKey = keys ? `${category}:${keys.join(":")}` : category;
+
+    this.logger.info(`Getting length from redis ${formattedKey}`);
+
+    return await this.redis.hlen(formattedKey);
+  }
+
+  async HKEYS(params: [RedisCategories, string[]] | [RedisCategories]) {
+    const [category, keys] = params;
+    const formattedKey = keys ? `${category}:${keys.join(":")}` : category;
+
+    this.logger.info(`Getting keys from redis ${formattedKey}`);
+
+    return await this.redis.hkeys(formattedKey);
+  }
+  async HDEL(
+    params: [RedisCategories, string[]] | [RedisCategories],
+    key: string,
+  ) {
+    const [category, keys] = params;
+    const formattedKey = keys ? `${category}:${keys.join(":")}` : category;
+
+    this.logger.info(`Deleting data from redis ${formattedKey} ${key}`);
+
+    return await this.redis.hdel(formattedKey, key);
+  }
+  async HDELALL(params: [RedisCategories, string[]] | [RedisCategories]) {
+    const [category, keys] = params;
+    const formattedKey = keys ? `${category}:${keys.join(":")}` : category;
+
+    const elements = await this.redis.hkeys(formattedKey);
+    this.logger.info(
+      `Deleting all data from redis ${formattedKey} ${elements}`,
+    );
+    if (elements.length === 0) return;
+
+    await Promise.all(
+      elements.map(async element => {
+        await this.redis.hdel(formattedKey, element);
+      }),
+    );
   }
 
   async getEntity(category: RedisCategories, key: string) {
@@ -54,6 +109,25 @@ export class RedisRepository {
       console.log(error);
       this.logger.error(`Error getting data from redis ${category} ${key}`);
       return null;
+    }
+  }
+
+  async deleteEntityHash(
+    category: RedisCategories,
+    param: string,
+    key: string | null = null,
+  ) {
+    try {
+      this.logger.info(`Deleting hash data from redis ${category} ${key}`);
+      return await this.redis.hdel(
+        `${key ? `${category}:${key}` : category}`,
+        param,
+      );
+    } catch (error) {
+      console.log(error);
+      this.logger.error(
+        `Error deleting hash data from redis ${category} ${key}`,
+      );
     }
   }
 
@@ -81,6 +155,54 @@ export class RedisRepository {
     } catch (error) {
       console.log(error);
       this.logger.error(`Error deleting all data from redis ${category}`);
+    }
+  }
+
+  async deleteAllFromCategoryHash(category: RedisCategories) {
+    try {
+      this.logger.info(`Deleting all hash data from redis ${category}`);
+      const keys = await this.redis.keys(`${category}:*`);
+      const pipeline = this.redis.pipeline();
+
+      // Process each key
+      for (const key of keys) {
+        const type = await this.redis.type(key);
+        if (type === "hash") {
+          pipeline.del(key);
+        }
+      }
+
+      return pipeline.exec();
+    } catch (error) {
+      console.log(error);
+      this.logger.error(`Error deleting all hash data from redis ${category}`);
+      return null;
+    }
+  }
+
+  async getAllFromCategory<T>(
+    category: RedisCategories,
+    options = { parse: false, splitKey: false },
+  ) {
+    try {
+      this.logger.info(`Getting all data from redis ${category}`);
+      const keys = await this.redis.keys(`${category}:*`);
+
+      // console.log("keys", keys);
+
+      const result: { [key: string]: T } = {};
+      await Promise.all(
+        keys.map(async key => {
+          const value = await this.redis.get(key);
+          result[options.splitKey ? key.split(":")[1] : key] = (
+            options.parse && value ? JSON.parse(value) : value
+          ) as T;
+        }),
+      );
+      return result;
+    } catch (error) {
+      console.log(error);
+      this.logger.error(`Error getting all data from redis ${category}`);
     }
   }
 }

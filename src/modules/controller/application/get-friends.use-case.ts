@@ -5,6 +5,7 @@ import { Injectable } from "@nestjs/common";
 import { ClientDataEncryptUseCase } from "../../auth/application/client-data-encrypt.use-case";
 import { WsClientRepository } from "../../ws-client/domain/ws-client.repository";
 import { UserRepository } from "@/src/repository/db/user/user.repository";
+import { RedisRepository } from "@/src/repository/redis/domain/redis.repository";
 
 @Injectable()
 export class GetFriendsUseCase {
@@ -13,6 +14,7 @@ export class GetFriendsUseCase {
     private readonly logger: LoggerService,
     private readonly clientRepository: UserRepository,
     private readonly wsClientRepository: WsClientRepository,
+    private readonly redisRepository: RedisRepository,
     private readonly wsApplicationRepository: WsApplicationRepository,
   ) {}
   async execute(controllerid: string) {
@@ -34,7 +36,10 @@ export class GetFriendsUseCase {
             throw new Error("Client not found");
           }
 
-          const clientWs = this.wsClientRepository.getClient(friend);
+          const clientWs = await this.redisRepository.HGET(
+            ["ws", [friend]],
+            "client",
+          );
           const clientApplication =
             this.wsApplicationRepository.getClient(friend);
           // console.log("active:", active);

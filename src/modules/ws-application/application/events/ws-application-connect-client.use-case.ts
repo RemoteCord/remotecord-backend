@@ -3,10 +3,11 @@ import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { WsApplicationRepository } from "../../domain/ws-application.repository";
 import { ClientDataEncryptUseCase } from "@/src/modules/auth/application/client-data-encrypt.use-case";
-import { ConnectClientDto } from "@/src/modules/controller/infrastructure/routes/dto/connect-client.dto";
 import { WsClientRepository } from "@/src/modules/ws-client/domain/ws-client.repository";
 import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { WsApplicationGateway } from "../../infrastructure/ws-application.gateway";
+import { RedisRepository } from "@/src/repository/redis/domain/redis.repository";
+import { WsClientGateway } from "@/src/modules/ws-client/infrastructure/ws-client.gateway";
 
 @Injectable()
 export class WsApplicationConnectClientUseCase {
@@ -14,8 +15,9 @@ export class WsApplicationConnectClientUseCase {
     private readonly logger: LoggerService,
     private readonly controllerRepository: ControllerRepository,
     private readonly wsApplicationRepository: WsApplicationRepository,
-    private readonly wsClientRepository: WsClientRepository,
+    private readonly redisRepository: RedisRepository,
     private readonly wsApplicationGateway: WsApplicationGateway,
+    private readonly wsClientGateway: WsClientGateway,
   ) {}
 
   async disconnect(controllerid: string) {
@@ -26,13 +28,15 @@ export class WsApplicationConnectClientUseCase {
       if (!clientid) throw new Error("Controller not found");
 
       this.logger.info(`Emitting disconnect to ws-client ${clientid}`);
-      this.wsApplicationGateway.sendEventToApplication(
+      await this.wsClientGateway.sendEventToClient(
         clientid,
         "emitDisconnectFromController",
         {
           controller: controllerid,
         },
       );
+
+      // await this.redisRepository.HDEL(["ws", [clientid]], "client");
 
       return { status: true };
     } catch (error: unknown) {
@@ -46,6 +50,7 @@ export class WsApplicationConnectClientUseCase {
   async connect(
     controllerid: string,
     clientid: string,
+    identifier: string,
     data: {
       username: string;
       avatar: string;
@@ -77,6 +82,7 @@ export class WsApplicationConnectClientUseCase {
           controllerid,
           tokenConnection,
           controller: data,
+          identifier,
         },
       );
 

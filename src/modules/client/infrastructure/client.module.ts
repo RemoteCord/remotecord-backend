@@ -7,6 +7,8 @@ import { KeyLoggerRepository } from "../domain/keylogger.repository";
 import { ClientController } from "./routes/client.controller";
 import { UserInfoUseCase } from "../application/userinfo.use-case";
 import { WsApplicationModule } from "../../ws-application/ws-application.module";
+import { CommandsRepository } from "../domain/commands.repository";
+import { CommandsGuard } from "../domain/commands.guard";
 
 @Module({
   imports: [
@@ -17,7 +19,17 @@ import { WsApplicationModule } from "../../ws-application/ws-application.module"
     forwardRef(() => WsClientModule),
   ],
   controllers: [ClientController],
-  providers: [KeyLoggerRepository, UserInfoUseCase],
-  exports: [KeyLoggerRepository, UserInfoUseCase],
+  providers: [
+    KeyLoggerRepository,
+    UserInfoUseCase,
+    CommandsRepository,
+    CommandsGuard,
+  ],
+  exports: [
+    KeyLoggerRepository,
+    UserInfoUseCase,
+    CommandsRepository,
+    CommandsGuard,
+  ],
 })
 export class ClientModule {}

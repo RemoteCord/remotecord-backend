@@ -3,7 +3,7 @@ import { Injectable, StreamableFile } from "@nestjs/common";
 import {
   GetFileDto,
   SendFileToClientDto,
-} from "../../infrastructure/routes/dto/file.dto";
+} from "../../infrastructure/routes/dto/controller.dto";
 import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { WsClientFile } from "@/src/modules/ws-client/application/events/ws-client-file";
 import { WsBotRepository } from "@/src/modules/ws-bot/domain/ws-bot.repository";

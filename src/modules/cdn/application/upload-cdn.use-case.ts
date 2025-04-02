@@ -19,7 +19,9 @@ export class UploadCdnUseCase {
   ): Promise<{ status: boolean; error?: string }> {
     try {
       this.logger.info("Upload callback use case", JSON.stringify(dto));
-      const wsClientData = this.wsClientRepository.getClient(dto.clientid);
+      const wsClientData = await this.wsClientRepository.getClient(
+        dto.clientid,
+      );
 
       if (!wsClientData) throw new Error("Client not found");
 

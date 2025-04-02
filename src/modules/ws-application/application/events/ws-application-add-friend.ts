@@ -1,10 +1,7 @@
-import { GetExplorerFromClientDto } from "@/src/modules/controller/infrastructure/routes/dto/get-explorer-client.dto";
 import { LoggerService } from "@/src/modules/shared/providers";
 import { Injectable } from "@nestjs/common";
-import { WsClientRepository } from "../../../ws-client/domain/ws-client.repository";
-import { AddFriend } from "../../../ws-client/application/events/ws-events.type";
 import { WsApplicationRepository } from "@/src/modules/ws-application/domain/ws-application.repository";
-import { AddFriendToControllerDto } from "@/src/modules/controller/infrastructure/routes/dto/add-friend-to-controller.dto";
+import { AddFriendToControllerDto } from "@/src/modules/controller/infrastructure/routes/dto/controller.dto";
 import { WsApplicationGateway } from "../../infrastructure/ws-application.gateway";
 
 @Injectable()
@@ -29,13 +26,9 @@ export class WsApplicationAddFriend {
       token: encryptedToken,
     });
 
-    this.wsApplicationGateway.sendEventToApplication(
-      data.controllerid,
-      "addFriend",
-      {
-        ...data,
-        token: encryptedToken,
-      },
-    );
+    this.wsApplicationGateway.sendEventToApplication(clientid, "addFriend", {
+      ...data,
+      token: encryptedToken,
+    });
   }
 }

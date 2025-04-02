@@ -23,8 +23,9 @@ export class WsClientJoinsUseCase {
   ) {}
 
   async execute(client: Socket) {
-    const { controllerid } = client.handshake.query as {
+    const { controllerid, identifier } = client.handshake.query as {
       controllerid: string;
+      identifier: string;
     };
 
     const { token, tokenConnection } = client.handshake.auth as {
@@ -38,7 +39,7 @@ export class WsClientJoinsUseCase {
     );
 
     this.logger.info(
-      `Client joining controller ${controllerid} ${clientid} with token ${token} `,
+      `Client joining controller ${controllerid} ${clientid} with token ${token} ${identifier}`,
     );
 
     const verifiedTokenConnection =
@@ -47,10 +48,6 @@ export class WsClientJoinsUseCase {
     if (verifiedTokenConnection !== tokenConnection) {
       throw new Error("Invalid connection token");
     }
-
-    this.logger.info(
-      `Client joining controller ${controllerid} with token ${token}`,
-    );
 
     const client_data = await this.userRepository.getUserById(clientid);
 
@@ -63,11 +60,30 @@ export class WsClientJoinsUseCase {
     client.handshake.query["clientid"] = clientid;
     client.handshake.query["controllerid"] = controllerid;
 
-    await this.redisRepository.setEntity(
-      "connection-ws",
-      controllerid,
+    await this.redisRepository.HSET(["connection-ws"], {
+      [controllerid]: clientid,
+    });
+
+    const client_data_redis = await this.redisRepository.HGET(
+      ["client-data"],
       clientid,
     );
+
+    console.log("client_data_redis", client_data_redis);
+
+    if (client_data_redis) {
+      const parsedClientData = JSON.parse(client_data_redis) as {
+        clientid: string;
+        email: string;
+        name: string;
+      };
+      await this.redisRepository.HSET(["client-data"], {
+        [clientid]: JSON.stringify({
+          ...parsedClientData,
+          controllerid,
+        }),
+      });
+    }
 
     await this.controllerRepository.selectActiveClient(clientid, controllerid);
 
@@ -80,6 +96,7 @@ export class WsClientJoinsUseCase {
     await this.wsBotConnectClientUseCase.execute({
       controllerid,
       clientid,
+      identifier,
     });
 
     return { clientid };

@@ -1,8 +1,8 @@
-import { GetExplorerFromClientDto } from "@/src/modules/controller/infrastructure/routes/dto/get-explorer-client.dto";
 import { LoggerService } from "@/src/modules/shared/providers";
 import { Injectable } from "@nestjs/common";
 import { WsClientRepository } from "../../domain/ws-client.repository";
 import { WsClientGateway } from "../../infrastructure/ws-client.gateway";
+import { GetExplorerFromClientDto } from "@/src/modules/controller/infrastructure/routes/dto/controller.dto";
 
 @Injectable()
 export class WsClientGetExplorer {
@@ -13,13 +13,7 @@ export class WsClientGetExplorer {
   ) {}
 
   async execute(clientid: string, data: GetExplorerFromClientDto) {
-    const client = this.wsClientRepository.getClient(clientid);
-
-    if (!client) {
-      this.logger.error(`Client socket not found: ${clientid}`);
-      throw new Error("Client not found");
-    }
-
+    console.log("get explorer client", data);
     await this.wsClientGateway.sendEventToClient(
       clientid,
       "getFilesFolder",

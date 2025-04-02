@@ -6,23 +6,30 @@ import {
   Param,
   Post,
   Query,
+  Req,
   UseGuards,
 } from "@nestjs/common";
-import { ConnectClientDto } from "./dto/connect-client.dto";
-import { SelectCurrentClientDto } from "./dto/current-client.dto";
 import { GetCurrentClientUseCase } from "../../application/get-current-client.use-case";
 import { SelectCurrentClientUseCase } from "../../application/select-current-client.use-case";
 import { ActivateControllerUseCase } from "../../application/activate-controller.use-case";
 import { CONTROLLER_ROUTE } from "../route.constants";
 import { AddFriendToControllerUseCase } from "../../application/add-friend-to-controller.use-case";
-import { AddFriendToControllerDto } from "./dto/add-friend-to-controller.dto";
-import { GetExplorerFromClientDto } from "./dto/get-explorer-client.dto";
 import { GetExplorerClientUseCase } from "../../application/events/get-explorer-client.use-case";
 import { GetFriendsUseCase } from "../../application/get-friends.use-case";
 import { ScreensClientUseCase } from "../../application/screenshot-client.use-case";
-import { ActivateControllerDto } from "./dto/activate-controller.dto";
 import { ClientPermissionRepository } from "@/src/repository/db/clientPermisions/clientPermission.repository";
 import { ClientPermissionGuard } from "@/src/repository/db/clientPermisions/clientPermission.guard";
+import {
+  ActivateControllerDto,
+  AddFriendToControllerDto,
+  BaseControllerDto,
+  ConnectClientDto,
+  GetExplorerFromClientDto,
+  SelectCurrentClientDto,
+} from "./dto/controller.dto";
+import { LoggerService } from "@/src/modules/shared/providers";
+import { MessageBotGuard } from "../../application/guards/MessageBot.guard";
+import type { FastifyRequest } from "fastify";
 
 @Controller(CONTROLLER_ROUTE)
 export class ControllerRoutes {
@@ -35,9 +42,13 @@ export class ControllerRoutes {
     private readonly getExplorerClientUseCase: GetExplorerClientUseCase,
     private readonly getFriendsUseCase: GetFriendsUseCase,
     private readonly screensClientUseCase: ScreensClientUseCase,
-    private readonly clientPermissionRepository: ClientPermissionRepository,
+    private readonly logger: LoggerService,
   ) {}
 
+  @Get(":controllerid")
+  async getCurrentClient(@Param("controllerid") controllerid: string) {
+    return await this.getCurrentClientUseCase.execute(controllerid);
+  }
   @Post(":controllerid/disconnect-client")
   async disconnectClient(@Param("controllerid") controllerid: string) {
     return await this.wsApllicationConnectClientUseCase.disconnect(
@@ -45,28 +56,26 @@ export class ControllerRoutes {
     );
   }
 
+  @UseGuards(MessageBotGuard)
   @Post(":controllerid/connect-client")
   async connectClient(
     @Param("controllerid") controllerid: string,
     @Body() body: ConnectClientDto,
+    @Req() req: FastifyRequest,
   ) {
-    const { clientid, username, avatar } = body;
+    const { clientid, username, avatar, messageid } = body;
 
-    console.log("running connect-client", controllerid, clientid);
+    this.logger.info("running connect-client", JSON.stringify(body));
 
     return await this.wsApllicationConnectClientUseCase.connect(
       controllerid,
       clientid,
+      req.headers["identifier"] as string,
       {
         username,
         avatar,
       },
     );
-  }
-
-  @Get(":controllerid")
-  async getCurrentClient(@Param("controllerid") controllerid: string) {
-    return await this.getCurrentClientUseCase.execute(controllerid);
   }
 
   @Post(":controllerid/select-client")
@@ -113,11 +122,21 @@ export class ControllerRoutes {
     return await this.getExplorerClientUseCase.execute(controllerid, body);
   }
 
-  @Get(":controllerid/get-screens")
-  async getScreens(@Param("controllerid") controllerid: string) {
-    return await this.screensClientUseCase.getScreens(controllerid);
+  @UseGuards(MessageBotGuard)
+  @UseGuards(ClientPermissionGuard)
+  @Post(":controllerid/get-screens")
+  async getScreens(
+    @Param("controllerid") controllerid: string,
+    @Body() body: BaseControllerDto,
+    @Req() req: FastifyRequest,
+  ) {
+    return await this.screensClientUseCase.getScreens(
+      controllerid,
+      req.headers["identifier"] as string,
+    );
   }
 
+  @UseGuards(ClientPermissionGuard)
   @Get(":controllerid/send-screenshot")
   async sendScreenshot(
     @Param("controllerid") controllerid: string,

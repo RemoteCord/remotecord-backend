@@ -1,10 +1,13 @@
 import { type CorsOptions } from "@nestjs/common/interfaces/external/cors-options.interface";
 
-const ALLOWED_ORIGINS: string[] = ["http://localhost:3007"];
+const ALLOWED_ORIGINS: string[] = [
+  "http://localhost:3007",
+  "http://tauri.localhost",
+];
 
 const CorsOptions: CorsOptions = {
   origin: (origin, cb) => {
-    // console.log("aaaaaaaaaaaaaaa", origin); // Log even if undefined
+    console.log("aaaaaaaaaaaaaaa", origin); // Log even if undefined
 
     if (!origin) {
       // Handle requests with no origin (like same origin requests)

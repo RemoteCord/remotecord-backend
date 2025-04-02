@@ -9,7 +9,8 @@ export type Permissions =
   | "explorer"
   | "shell"
   | "process"
-  | "screenshot";
+  | "screenshot"
+  | "keylogger";
 
 export type PermissionsAllowed = Omit<
   ClientPermissionModel,
@@ -41,6 +42,9 @@ export class ClientPermissionModel {
 
   @Prop({ required: false, default: true })
   screenshot!: boolean;
+
+  @Prop({ required: false, default: true })
+  keylogger!: boolean;
 }
 
 export const ClientPermissionSchema = SchemaFactory.createForClass(

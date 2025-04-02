@@ -2,8 +2,8 @@ import { LoggerService } from "@/src/modules/shared/providers";
 import { Injectable } from "@nestjs/common";
 import { WsClientRepository } from "../../domain/ws-client.repository";
 import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
-import { SendCmdCommandToClientDto } from "@/src/modules/controller/infrastructure/routes/dto/send-command.dto";
 import { WsClientGateway } from "../../infrastructure/ws-client.gateway";
+import { SendCmdCommandToClientDto } from "@/src/modules/controller/infrastructure/routes/dto/controller.dto";
 
 @Injectable()
 export class WsClientSendCmdCommand {

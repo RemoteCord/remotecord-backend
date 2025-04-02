@@ -1,0 +1,186 @@
+192.168.192.84 6379 remotecord 1234 0
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +19ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRedisModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRedisHealthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTerminusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTerminusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mScheduleModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSharedModule dependencies initialized[39m[38;5;3m +8ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mLoggerModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRedisCoreModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mHealthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRedisServiceModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mCdnModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseCoreModule dependencies initialized[39m[38;5;3m +68ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +5ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSchemasModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWsBotModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWsApplicationModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mClientModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWsClientModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mControllerModule dependencies initialized[39m[38;5;3m +0ms[39m
+{"level":"info","message":"Resetting all client connections","timestamp":"2025-03-26T14:40:47.893Z"}
+{"level":"info","message":"Resetting all client connections","timestamp":"2025-03-26T14:40:47.894Z"}
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsClientGateway subscribed to the "runCmdCommand" message[39m[38;5;3m +92ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsClientGateway subscribed to the "getScreensFromClient" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsClientGateway subscribed to the "getScreenshotFromClient" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsClientGateway subscribed to the "getFilesFolder" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsClientGateway subscribed to the "getFileFromClient" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsClientGateway subscribed to the "getTasksFromClient" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsBotGateway subscribed to the "keylogger:start" message[39m[38;5;3m +1ms[39m
+{"level":"info","message":"Resetting all client connections","timestamp":"2025-03-26T14:40:47.895Z"}
+{"level":"info","message":"Resetting all client connections","timestamp":"2025-03-26T14:40:47.895Z"}
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsApplicationGateway subscribed to the "addFriend" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mCreateUserController {/api/auth}:[39m[38;5;3m +4ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/callback, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mHealthController {/api/health}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mClientController {/api/clients}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/clients/user-info, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/clients/user-name, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/clients/friends, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/clients/friends/:controllerid, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/clients/friends/permissions, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUploadCdnController {/api/cdn}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/cdn/upload, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/cdn/decode-token, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/cdn/verify-token-file, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mControllerRoutes {/api/controllers}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/disconnect-client, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/connect-client, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/select-client, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/activate, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/add-friend, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/friends, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/explorer, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/get-screens, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/send-screenshot, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mControllerEvents {/api/controllers}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/upload-file, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/file, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/tasks, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/cmd, POST} route[39m[38;5;3m +0ms[39m
+{"level":"info","message":"Deleting all data from redis connection-ws","timestamp":"2025-03-26T14:40:47.905Z"}
+The module has been initialized.
+{"level":"info","message":"Deleting all data from redis ws-application-id","timestamp":"2025-03-26T14:40:47.943Z"}
+[
+  {
+    clientid: 'f16937b4-a27d-4879-b03f-14c5445d3b01',
+    controllerid: '546000599267672074',
+    getFile: true,
+    uploadFile: true,
+    explorer: true,
+    shell: true,
+    process: true,
+    screenshot: true
+  }
+]
+formatted {"getFile":true,"uploadFile":true,"explorer":true,"shell":true,"process":true,"screenshot":true}
+{"level":"info","message":"Adding data to redis permissions f16937b4-a27d-4879-b03f-14c5445d3b01:546000599267672074","timestamp":"2025-03-26T14:40:47.946Z"}
+{"level":"info","message":"Data added to redis permissions f16937b4-a27d-4879-b03f-14c5445d3b01:546000599267672074 result: OK","timestamp":"2025-03-26T14:40:47.975Z"}
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +73ms[39m
+[32m[Nest] 27004  - [39m26/03/2025, 15:40:47 [32m    LOG[39m [38;5;3m[Main] [39m[32mApp is ready and listening on port 3003 🚀[39m
+{"level":"info","message":"Deleting all data from redis ws-client-id","timestamp":"2025-03-26T14:40:47.999Z"}
+192.168.192.84 6379 remotecord 1234 0
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +17ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRedisModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRedisHealthModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTerminusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTerminusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mScheduleModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSharedModule dependencies initialized[39m[38;5;3m +9ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mLoggerModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRedisCoreModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mHealthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRedisServiceModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mCdnModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseCoreModule dependencies initialized[39m[38;5;3m +67ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +4ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSchemasModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWsBotModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWsApplicationModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mClientModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWsClientModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mControllerModule dependencies initialized[39m[38;5;3m +1ms[39m
+{"level":"info","message":"Resetting all client connections","timestamp":"2025-03-26T14:41:50.229Z"}
+{"level":"info","message":"Resetting all client connections","timestamp":"2025-03-26T14:41:50.229Z"}
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsClientGateway subscribed to the "runCmdCommand" message[39m[38;5;3m +90ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsClientGateway subscribed to the "getScreensFromClient" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsClientGateway subscribed to the "getScreenshotFromClient" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsClientGateway subscribed to the "getFilesFolder" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsClientGateway subscribed to the "getFileFromClient" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsClientGateway subscribed to the "getTasksFromClient" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsBotGateway subscribed to the "keylogger:start" message[39m[38;5;3m +0ms[39m
+{"level":"info","message":"Resetting all client connections","timestamp":"2025-03-26T14:41:50.231Z"}
+{"level":"info","message":"Resetting all client connections","timestamp":"2025-03-26T14:41:50.231Z"}
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mWsApplicationGateway subscribed to the "addFriend" message[39m[38;5;3m +1ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mCreateUserController {/api/auth}:[39m[38;5;3m +3ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/callback, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mHealthController {/api/health}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mClientController {/api/clients}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/clients/user-info, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/clients/user-name, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/clients/friends, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/clients/friends/:controllerid, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/clients/friends/permissions, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUploadCdnController {/api/cdn}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/cdn/upload, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/cdn/decode-token, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/cdn/verify-token-file, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mControllerRoutes {/api/controllers}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/disconnect-client, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/connect-client, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/select-client, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/activate, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/add-friend, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/friends, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/explorer, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/get-screens, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/send-screenshot, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mControllerEvents {/api/controllers}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/upload-file, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/file, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/tasks, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/controllers/:controllerid/cmd, POST} route[39m[38;5;3m +0ms[39m
+{"level":"info","message":"Deleting all data from redis connection-ws","timestamp":"2025-03-26T14:41:50.240Z"}
+The module has been initialized.
+{"level":"info","message":"Deleting all data from redis ws-application-id","timestamp":"2025-03-26T14:41:50.280Z"}
+[
+  {
+    clientid: 'f16937b4-a27d-4879-b03f-14c5445d3b01',
+    controllerid: '546000599267672074',
+    getFile: true,
+    uploadFile: true,
+    explorer: true,
+    shell: true,
+    process: true,
+    screenshot: true
+  }
+]
+formatted {"getFile":true,"uploadFile":true,"explorer":true,"shell":true,"process":true,"screenshot":true}
+{"level":"info","message":"Adding data to redis permissions f16937b4-a27d-4879-b03f-14c5445d3b01:546000599267672074","timestamp":"2025-03-26T14:41:50.283Z"}
+{"level":"info","message":"Data added to redis permissions f16937b4-a27d-4879-b03f-14c5445d3b01:546000599267672074 result: OK","timestamp":"2025-03-26T14:41:50.313Z"}
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +77ms[39m
+[32m[Nest] 14072  - [39m26/03/2025, 15:41:50 [32m    LOG[39m [38;5;3m[Main] [39m[32mApp is ready and listening on port 3003 🚀[39m
+{"level":"info","message":"Deleting all data from redis ws-client-id","timestamp":"2025-03-26T14:41:50.334Z"}

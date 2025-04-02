@@ -30,6 +30,14 @@ export class LoggerService {
     this.instance.info(message.join(" "));
   }
 
+  public debug(...message: unknown[]) {
+    this.instance.debug(message.join(" "));
+  }
+
+  public warn(...message: unknown[]) {
+    this.instance.warn(message.join(" "));
+  }
+
   public error(...message: unknown[]) {
     this.instance.error(message.join(" "));
   }

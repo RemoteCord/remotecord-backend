@@ -13,23 +13,14 @@ import {
 import { InjectModel } from "@nestjs/mongoose";
 import { FastifyRequest } from "fastify";
 // import { UserModel } from 'src/schemas/user.schema';
-import { Model, Types } from "mongoose";
 import type { Permissions } from "@/src/repository/db/clientPermisions/clientPermission.schema";
 import { CustomNotAllowedException } from "./exceptions/customNotAllowed";
 import { ControllerRepository } from "../controller/controller.repository";
 import { ClientPermissionRepository } from "./clientPermission.repository";
 import { RedisRepository } from "../../redis/domain/redis.repository";
+import { permissionsAdapter } from "./clientPermission.constants";
+import { boolean } from "node_modules/@rspack/core/compiled/zod";
 // import { User, UserSchema } from "@/src/repository/user.schema";
-
-const permissionsAdapter: Record<string, Permissions> = {
-  "upload-file": "uploadFile",
-  "get-screens": "screenshot",
-  "send-screenshot": "screenshot",
-  explorer: "explorer",
-  file: "getFile",
-  tasks: "process",
-  cmd: "shell",
-};
 
 @Injectable()
 export class ClientPermissionGuard implements CanActivate {
@@ -41,92 +32,105 @@ export class ClientPermissionGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    try {
-      const request: FastifyRequest = context.switchToHttp().getRequest();
-      //   console.log("request:", request);
+    const request: FastifyRequest = context.switchToHttp().getRequest();
+    //   console.log("request:", request);
 
-      const urlParts = request.url.split("/");
-      const lastElement = urlParts[urlParts.length - 1];
-      const controllerid = urlParts[urlParts.length - 2];
-      this.logger.info("Running client permission guard", lastElement);
-      const controller =
-        await this.controllerRepository.getControllerById(controllerid);
+    const urlParts = request.url.split("/");
+    const lastElement = urlParts[urlParts.length - 1].split("?")[0];
+    const controllerid = urlParts[urlParts.length - 2];
+    this.logger.info("Running client permission guard", lastElement);
+    const activeClientId = await this.redisRepository.HGET(
+      ["connection-ws"],
+      controllerid,
+    );
 
-      if (!controller || !controller.activeclient) {
-        this.logger.error("Controller not found");
-        throw new CustomUnathorizedException();
-      }
+    if (!activeClientId) {
+      this.logger.error("Active client not found");
+      throw new HttpException(
+        {
+          status: HttpStatus.CONFLICT,
+          error: `ctive client not found`,
+        },
+        HttpStatus.CONFLICT,
+        {
+          cause: `Active client not found`,
+        },
+      );
+    }
 
-      const activeClientId = controller.activeclient;
+    const adaptedPermission = permissionsAdapter[lastElement];
+    if (!adaptedPermission) {
+      this.logger.error("Permission not found", lastElement);
+      throw new CustomNotAllowedException(
+        activeClientId,
+        controllerid,
+        adaptedPermission,
+      );
+    }
 
-      const adaptedPermission = permissionsAdapter[lastElement];
-      if (!adaptedPermission) {
-        this.logger.error("Permission not found", lastElement);
-        throw new CustomNotAllowedException(
-          activeClientId,
-          controllerid,
-          adaptedPermission,
-        );
-      }
+    // const permission = await this.clientPermissionRepository.getPermission(
+    //   activeClientId,
+    //   controllerid,
+    //   adaptedPermission,
+    // );
 
-      // const permission = await this.clientPermissionRepository.getPermission(
+    const permissionsRedisReq = await this.redisRepository.HGET(
+      ["permissions", [activeClientId, controllerid]],
+      adaptedPermission,
+    );
+
+    const permissionRedis = permissionsRedisReq === "true" ? true : false;
+    // console.log("permissionsRedis", permissionsRedis);
+
+    let permission = false;
+
+    if (!permissionRedis) {
+      permission = await this.clientPermissionRepository.getPermission(
+        activeClientId,
+        controllerid,
+        adaptedPermission,
+      );
+    } else {
+      permission = permissionRedis;
+    }
+
+    // const permission = JSON.parse(permissionRedis);
+
+    this.logger.info("Permission", permission);
+
+    const errorMessage = `Not allowed for permission ${adaptedPermission} by clientid ${activeClientId}`;
+
+    if (!permission) {
+      this.logger.error(adaptedPermission, errorMessage);
+      // throw new CustomNotAllowedException(
       //   activeClientId,
       //   controllerid,
       //   adaptedPermission,
       // );
 
-      const permissionsRedis = await this.redisRepository.getEntity(
-        "permissions",
-        `${activeClientId}:${controllerid}`,
+      throw new HttpException(
+        {
+          status: HttpStatus.CONFLICT,
+          error: errorMessage,
+        },
+        HttpStatus.CONFLICT,
+        {
+          cause: errorMessage,
+        },
       );
-
-      let permission = false;
-
-      if (!permissionsRedis) {
-        permission = await this.clientPermissionRepository.getPermission(
-          activeClientId,
-          controllerid,
-          adaptedPermission,
-        );
-      } else {
-        const permissions = JSON.parse(permissionsRedis);
-        console.log("permissions", permissions);
-        permission = permissions[adaptedPermission];
-      }
-
-      // const permission = JSON.parse(permissionRedis);
-
-      this.logger.info("Permission", permission);
-
-      const errorMessage = `Not allowed for permission ${adaptedPermission} by clientid ${activeClientId}`;
-
-      if (!permission) {
-        this.logger.error(adaptedPermission, errorMessage);
-        // throw new CustomNotAllowedException(
-        //   activeClientId,
-        //   controllerid,
-        //   adaptedPermission,
-        // );
-
-        throw new HttpException(
-          {
-            status: HttpStatus.UNAUTHORIZED,
-            error: errorMessage,
-          },
-          HttpStatus.FORBIDDEN,
-          {
-            cause: errorMessage,
-          },
-        );
-      }
-
-      return true;
-    } catch (error: unknown) {
-      //   this.logger.error("Error:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      this.logger.error("Error Auth Guard:", errorMessage);
-      throw new CustomUnathorizedException();
     }
+
+    const redisData = await this.redisRepository.HGET(
+      ["client-commands-requests"],
+      activeClientId,
+    );
+    let clientCommands = redisData ? JSON.parse(redisData) : [];
+
+    clientCommands.push(adaptedPermission);
+
+    await this.redisRepository.HSET(["client-commands-requests"], {
+      [activeClientId]: JSON.stringify(clientCommands),
+    });
+    return true;
   }
 }

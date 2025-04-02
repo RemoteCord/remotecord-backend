@@ -33,7 +33,7 @@ export class UserRepository {
       }
 
       const result = await this.userModel.create(user);
-      result.save();
+      await result.save();
       this.logger.info(`User with id ${user.id} created`);
 
       const encryptToken = this.clientEncrypt.encrypt(`

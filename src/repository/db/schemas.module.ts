@@ -17,6 +17,8 @@ import {
 } from "./clientPermisions/clientPermission.schema";
 import { ClientPermissionRepository } from "./clientPermisions/clientPermission.repository";
 import { ClientPermissionGuard } from "./clientPermisions/clientPermission.guard";
+import { ClientModule } from "@/src/modules/client/infrastructure/client.module";
+
 @Module({
   imports: [
     SharedModule,

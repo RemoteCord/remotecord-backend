@@ -1,4 +1,3 @@
-import { GetExplorerFromClientDto } from "@/src/modules/controller/infrastructure/routes/dto/get-explorer-client.dto";
 import { LoggerService } from "@/src/modules/shared/providers";
 import { Injectable } from "@nestjs/common";
 import { WsClientRepository } from "../../domain/ws-client.repository";

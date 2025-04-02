@@ -18,17 +18,17 @@ export class WsApplicationJoinsUseCase {
   ) {}
 
   async execute(client: Socket) {
-    console.log(client.handshake.headers);
+    // console.log(client.handshake.headers);
 
     const { token } = client.handshake.auth as {
       token: string;
     };
 
-    this.logger.info("Client joining application", token);
+    // this.logger.info("Client joining application", token);
 
     const data = await this.WsApplicationVerifyConnectionUseCase.execute(token);
     const { clientid, email, username } = data;
-    this.logger.info("Decrypted ws application token: ", JSON.stringify(data));
+    // this.logger.info("Decrypted ws application token: ", JSON.stringify(data));
     const client_data = await this.userRepository.getUserById(clientid);
 
     if (!client_data) throw new ClientNotFoundException(clientid);
@@ -44,11 +44,13 @@ export class WsApplicationJoinsUseCase {
       client_data,
     });
 
-    this.redisRepository.setEntity(
-      "client-data",
-      clientid,
-      JSON.stringify(client_data),
-    );
+    await this.redisRepository.HSET(["client-data"], {
+      [clientid]: JSON.stringify({
+        clientid,
+        email,
+        name: client_data.name,
+      }),
+    });
 
     return { clientid };
   }

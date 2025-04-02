@@ -3,14 +3,15 @@ import { Injectable } from "@nestjs/common";
 import type {
   WsBotConnectionEvent,
   WsBotSendCmdCommandEvent,
-} from "./ws-bot-events.types";
+} from "../../types/ws-bot-events.types";
 import { WsBotRepository } from "../../domain/ws-bot.repository";
+import { WsBotGateway } from "../../infrastructure/ws-bot.gateway";
 
 @Injectable()
 export class WsBotSendCommandUseCase {
   constructor(
     private readonly logger: LoggerService,
-    private readonly wsBotRepository: WsBotRepository,
+    private readonly wsBotGateway: WsBotGateway,
   ) {}
   async execute(data: WsBotSendCmdCommandEvent) {
     const { controllerid, pwd, stdout } = data;
@@ -19,8 +20,7 @@ export class WsBotSendCommandUseCase {
       `WSBOT Emiting emmiting command to controller ${controllerid}`,
     );
 
-    this.wsBotRepository.socket?.emit("getCmdCommand", {
-      controllerid,
+    this.wsBotGateway.sendEventToBot(controllerid, "getCmdCommand", {
       path: pwd,
       output: stdout,
     });

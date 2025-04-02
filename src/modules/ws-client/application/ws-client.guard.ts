@@ -9,6 +9,7 @@ import {
 import { Socket } from "socket.io";
 import { LoggerService } from "../../shared/providers";
 import { WsClientVerifyConnectionUseCase } from "./ws-client-verify-connection.use-case";
+import { CommandsRepository } from "../../client/domain/commands.repository";
 
 @Injectable()
 export class WsClientGuard implements CanActivate {
@@ -22,7 +23,7 @@ export class WsClientGuard implements CanActivate {
       // console.log('context:', context);
 
       const client: Socket = context.switchToWs().getClient();
-      // console.log('client:', client);
+      // console.log("client:", client);
 
       this.logger.info("Running ws client guard");
 
@@ -47,6 +48,8 @@ export class WsClientGuard implements CanActivate {
       client.handshake.query["controllerid"] = controllerid;
 
       this.logger.info("passed ws event client guard");
+
+      // await this.commandsRepository.deleteCommandEvent(clientid, );
 
       return true;
     } catch (error) {

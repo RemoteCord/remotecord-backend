@@ -1,14 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { WsBotRepository } from "../../domain/ws-bot.repository";
-import { WsBotSendMessage } from "./ws-bot-events.types";
+import { WsBotSendMessage } from "../../types/ws-bot-events.types";
+import { WsBotGateway } from "../../infrastructure/ws-bot.gateway";
 
 @Injectable()
 export class WsBotSendMessageUseCase {
-  constructor(private readonly wsBotRepository: WsBotRepository) {}
+  constructor(private readonly wsBotGateway: WsBotGateway) {}
 
-  async execute(data: WsBotSendMessage) {
+  async execute(controllerid: string, data: WsBotSendMessage) {
     console.log("Bot sends message");
 
-    this.wsBotRepository.socket?.emit("message", data);
+    this.wsBotGateway.sendEventToBot(controllerid, "message", data);
   }
 }

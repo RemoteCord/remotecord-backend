@@ -19,26 +19,35 @@ export class ControllerRepository implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this.redisRepository.deleteAllFromCategory("connection-ws");
+    this.redisRepository.HDELALL(["connection-ws"]);
   }
 
+  async getAllActiveClients() {
+    const controllers = await this.controllerModel.find({
+      activeclient: { $ne: "" },
+    });
+    const activeClients = controllers.map(controller => ({
+      controllerid: controller.controllerid,
+      activeclient: controller.activeclient,
+    }));
+
+    return activeClients;
+  }
   async selectActiveClient(clientid: string, controllerid: string) {
     await this.controllerModel.findOneAndUpdate(
       { controllerid },
       { activeclient: clientid },
     );
 
-    await this.redisRepository.setEntity(
-      "connection-ws",
-      controllerid,
-      clientid,
-    );
+    await this.redisRepository.HSET(["connection-ws"], {
+      [controllerid]: clientid,
+    });
     // console.log(controller);
   }
 
   async getActiveClient(controllerid: string) {
-    const cache = await this.redisRepository.getEntity(
-      "connection-ws",
+    const cache = await this.redisRepository.HGET(
+      ["connection-ws"],
       controllerid,
     );
 

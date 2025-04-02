@@ -18,6 +18,7 @@ import { ClientModule } from "../modules/client/infrastructure/client.module";
 import { ScheduleModule } from "@nestjs/schedule";
 import { CdnModule } from "../modules/cdn/cdn.module";
 import { RedisServiceModule } from "../repository/redis/redis.module";
+import { PublicModule } from "../modules/public/public.module";
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { RedisServiceModule } from "../repository/redis/redis.module";
     ControllerModule,
     ClientModule,
     RedisServiceModule,
+    PublicModule,
   ],
 })
 export class AppModule {}

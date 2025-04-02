@@ -4,7 +4,7 @@ import type {
   AddFileClient,
   ClientGetFile,
   ClientUploadFile,
-} from "./ws-events.type";
+} from "../../types/ws-client-events.type";
 import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
 import { WsBotRepository } from "@/src/modules/ws-bot/domain/ws-bot.repository";
 import { LoggerService } from "@/src/modules/shared/providers";

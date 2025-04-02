@@ -27,7 +27,7 @@ export class WsApplicationGuard implements CanActivate {
       if (!client) throw new UnauthorizedException();
 
       const { token } = client.handshake.auth;
-      console.log("token:", token);
+      // console.log("token:", token);
       if (!token) throw new UnauthorizedException();
 
       const { clientid } =
@@ -38,11 +38,11 @@ export class WsApplicationGuard implements CanActivate {
 
       client.handshake.query["clientid"] = clientid;
 
-      this.logger.info("passed ws event client guard");
+      this.logger.debug("passed ws event client guard with token", token);
 
       return true;
     } catch (error) {
-      this.logger.error("Error:", error);
+      // this.logger.error("Error:", error);
       throw new UnauthorizedException();
     }
   }

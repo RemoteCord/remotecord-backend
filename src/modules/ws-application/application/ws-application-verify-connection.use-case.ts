@@ -12,7 +12,7 @@ export class WsApplicationVerifyConnectionUseCase {
 
     const data = this.clientDataEncryptUseCase.decryptUser(token);
 
-    console.log("data:", data);
+    // console.log("data:", data);
     if (!data) {
       throw new Error("Invalid token");
     }

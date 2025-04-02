@@ -31,11 +31,7 @@ export class ClientPermissionRepository implements OnModuleInit {
         const key = `${permission.clientid}:${permission.controllerid}`;
         const { controllerid, clientid, ...rest } = permission.toJSON();
         console.log("formatted", JSON.stringify(rest));
-        return this.redisRepository.setEntity(
-          "permissions",
-          key,
-          JSON.stringify(rest),
-        );
+        return this.redisRepository.HSET(["permissions", [clientid]], rest);
       }),
     );
   }
@@ -110,10 +106,9 @@ export class ClientPermissionRepository implements OnModuleInit {
       { ...permissions },
     );
 
-    this.redisRepository.setEntity(
-      "permissions",
-      `${clientid}:${controllerid}`,
-      JSON.stringify(permissions),
+    this.redisRepository.HSET(
+      [`permissions`, [clientid, controllerid]],
+      permissions,
     );
     return res;
   }

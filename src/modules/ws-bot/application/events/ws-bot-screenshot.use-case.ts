@@ -2,29 +2,31 @@ import { Injectable } from "@nestjs/common";
 import {
   WsBotSendScreensEvent,
   WsBotSendScreenshotEvent,
-} from "./ws-bot-events.types";
+} from "../../types/ws-bot-events.types";
 import { LoggerService } from "@/src/modules/shared/providers";
 import { WsBotRepository } from "../../domain/ws-bot.repository";
+import { WsBotGateway } from "../../infrastructure/ws-bot.gateway";
 
 @Injectable()
 export class WsBotScreenshotUseCase {
   constructor(
-    private readonly wsBotRepository: WsBotRepository,
+    private readonly wsBotGateway: WsBotGateway,
     private readonly logger: LoggerService,
   ) {}
 
   async sendScreens(data: WsBotSendScreensEvent) {
-    this.logger.info(`Emiting send screens event to bot ${data.controllerid}`);
+    this.logger.info(
+      `Emiting send screens event to bot ${data.controllerid} ${JSON.stringify(data)}`,
+    );
 
-    if (!this.wsBotRepository.socket) {
-      this.logger.error("No ws-bot socket found");
-      return;
-    }
-
-    return this.wsBotRepository.socket.emit("sendScreensToBot", {
-      controllerid: data.controllerid,
-      screens: data.screens,
-    });
+    return await this.wsBotGateway.sendEventToBot(
+      data.controllerid,
+      "sendScreensToBot",
+      {
+        screens: data.screens,
+        messageid: data.identifier,
+      },
+    );
   }
 
   async sendScreenshot(data: WsBotSendScreenshotEvent) {
@@ -32,14 +34,12 @@ export class WsBotScreenshotUseCase {
       `Emiting send screenshot event to bot ${data.controllerid}`,
     );
 
-    if (!this.wsBotRepository.socket) {
-      this.logger.error("No ws-bot socket found");
-      return;
-    }
-
-    return this.wsBotRepository.socket.emit("sendScreenshotToBot", {
-      controllerid: data.controllerid,
-      screenshot: data.buffer,
-    });
+    return await this.wsBotGateway.sendEventToBot(
+      data.controllerid,
+      "sendScreenshotToBot",
+      {
+        screenshot: data.buffer,
+      },
+    );
   }
 }

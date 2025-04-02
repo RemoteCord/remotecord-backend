@@ -1,6 +1,6 @@
 import { LoggerService } from "@/src/modules/shared/providers";
 import { Injectable } from "@nestjs/common";
-import { SendCmdCommandToClientDto } from "../../infrastructure/routes/dto/send-command.dto";
+import { SendCmdCommandToClientDto } from "../../infrastructure/routes/dto/controller.dto";
 import { GetCurrentClientUseCase } from "../get-current-client.use-case";
 import { WsClientSendCmdCommand } from "@/src/modules/ws-client/application/events/ws-client-send-cmd-command";
 

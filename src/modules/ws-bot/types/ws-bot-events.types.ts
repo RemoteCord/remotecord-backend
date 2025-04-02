@@ -1,14 +1,14 @@
 import { DirEntry, Process } from "@/src/modules/ws-client/types/tasks.type";
 
 export interface WsBotSendMessage {
-  title?: string;
   message: string;
-  controllerid: string;
+  editReply: boolean;
 }
 
 export interface WsBotConnectionEvent {
   controllerid: string;
   clientid: string;
+  identifier: string;
 }
 export interface WsBotAddFriendEvent {
   accept: boolean;
@@ -18,6 +18,8 @@ export interface WsBotAddFriendEvent {
 
 export interface WsBotSendScreensEvent {
   controllerid: string;
+  identifier: string;
+
   screens: {
     id: number;
     resolution: [number, number];
