@@ -13,3 +13,7 @@ data/
 
 .nx/cache
 .nx/workspace-data
+
+logs/
+.env.test
+.env
