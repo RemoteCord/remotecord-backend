@@ -12,4 +12,5 @@ export enum Configuration {
   REDIS_PASSWORD = "REDIS_PASSWORD",
   REDIS_DB = "REDIS_DB",
   REDIS_PORT = "REDIS_PORT",
+  STRIPE_API_KEY = "STRIPE_API_KEY",
 }

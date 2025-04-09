@@ -54,7 +54,17 @@ export class UserRepository {
 
   async updateUser(clientid: string, user: Partial<UserModel>): Promise<void> {
     try {
-      await this.userModel.updateOne({ id: clientid }, user);
+      console.log("updateUser", clientid, user);
+      const result = await this.userModel.findOneAndUpdate(
+        { id: clientid },
+        user,
+        { new: true },
+      );
+      console.log("result", result);
+      if (!result) {
+        throw new ClientNotFoundException();
+      }
+
       this.logger.info(`User with id ${clientid} updated`);
     } catch (error) {
       const errorMessage =

@@ -43,7 +43,6 @@ export class CommandsGuard implements CanActivate {
     }
 
     await this.commandsRepository.deleteCommandEvent(clientid, command);
-
     return true;
   }
 }

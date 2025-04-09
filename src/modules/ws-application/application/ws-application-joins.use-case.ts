@@ -6,6 +6,7 @@ import { LoggerService } from "../../shared/providers";
 import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
 import { WsApplicationVerifyConnectionUseCase } from "./ws-application-verify-connection.use-case";
 import { RedisRepository } from "@/src/repository/redis/domain/redis.repository";
+import { JwtAuthGuard } from "../../auth/infrastructure/jwt.guard";
 
 @Injectable()
 export class WsApplicationJoinsUseCase {
@@ -15,6 +16,7 @@ export class WsApplicationJoinsUseCase {
     private readonly WsApplicationVerifyConnectionUseCase: WsApplicationVerifyConnectionUseCase,
     private readonly logger: LoggerService,
     private readonly redisRepository: RedisRepository,
+    private readonly jwtAuthGuard: JwtAuthGuard,
   ) {}
 
   async execute(client: Socket) {
@@ -24,10 +26,11 @@ export class WsApplicationJoinsUseCase {
       token: string;
     };
 
-    // this.logger.info("Client joining application", token);
+    this.logger.info("Client joining application");
 
     const data = await this.WsApplicationVerifyConnectionUseCase.execute(token);
     const { clientid, email, username } = data;
+
     // this.logger.info("Decrypted ws application token: ", JSON.stringify(data));
     const client_data = await this.userRepository.getUserById(clientid);
 
@@ -38,11 +41,6 @@ export class WsApplicationJoinsUseCase {
     client.handshake.query["clientid"] = clientid;
     client.handshake.query["email"] = email;
     client.handshake.query["username"] = username;
-
-    this.wsApplicationRepository.addClient(clientid, {
-      socket: client,
-      client_data,
-    });
 
     await this.redisRepository.HSET(["client-data"], {
       [clientid]: JSON.stringify({

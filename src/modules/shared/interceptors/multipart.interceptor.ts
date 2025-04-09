@@ -61,6 +61,7 @@ export function MultipartInterceptor(
           files[part.fieldname].push(file);
         }
 
+        //@ts-ignore
         req.storedFiles = files;
         req.body = body;
       } catch (error) {

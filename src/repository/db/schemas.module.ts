@@ -19,6 +19,14 @@ import { ClientPermissionRepository } from "./clientPermisions/clientPermission.
 import { ClientPermissionGuard } from "./clientPermisions/clientPermission.guard";
 import { ClientModule } from "@/src/modules/client/infrastructure/client.module";
 
+import { SubscriptionsRepository } from "./subscriptions/subscriptions.repository";
+import {
+  SubscriptionsModel,
+  SubscriptionsSchema,
+} from "./subscriptions/subscriptions.schema";
+import { CustomersModel, CustomersSchema } from "./customers/customers.schema";
+import { CustomersRepository } from "./customers/customers.repository";
+
 @Module({
   imports: [
     SharedModule,
@@ -33,6 +41,8 @@ import { ClientModule } from "@/src/modules/client/infrastructure/client.module"
       { name: UserModel.name, schema: UserSchema },
       { name: ControllerModel.name, schema: ControllerSchema },
       { name: ClientPermissionModel.name, schema: ClientPermissionSchema },
+      { name: SubscriptionsModel.name, schema: SubscriptionsSchema },
+      { name: CustomersModel.name, schema: CustomersSchema },
     ]),
     forwardRef(() => AuthModule),
   ],
@@ -40,6 +50,8 @@ import { ClientModule } from "@/src/modules/client/infrastructure/client.module"
     UserRepository,
     ControllerRepository,
     ClientPermissionRepository,
+    SubscriptionsRepository,
+    CustomersRepository,
     ClientPermissionGuard,
     // Add missing dependency here if it's a provider
   ],
@@ -49,6 +61,8 @@ import { ClientModule } from "@/src/modules/client/infrastructure/client.module"
     ControllerRepository,
     ClientPermissionRepository,
     ClientPermissionGuard,
+    SubscriptionsRepository,
+    CustomersRepository,
   ],
 })
 export class SchemasModule {}

@@ -2,6 +2,7 @@ import { LoggerService } from "@/src/modules/shared/providers";
 import { InjectRedis } from "@nestjs-modules/ioredis";
 import { Injectable } from "@nestjs/common";
 import Redis from "ioredis";
+import { unknown } from "node_modules/@rspack/core/compiled/zod";
 
 export type RedisCategories =
   | "explorer"
@@ -36,7 +37,7 @@ export class RedisRepository {
     if (expire) await this.redis.expire(formattedKey, 3600);
   }
 
-  async HGET(
+  async HGET<T = null>(
     params: [RedisCategories, string[]] | [RedisCategories],
     key: string,
   ) {
@@ -45,13 +46,13 @@ export class RedisRepository {
 
     this.logger.info(`Getting data from redis ${formattedKey} ${key}`);
 
-    return await this.redis.hget(formattedKey, key);
+    return (await this.redis.hget(formattedKey, key)) as T;
   }
   async HGETALL<T>(params: [RedisCategories, string[]] | [RedisCategories]) {
     const [category, keys] = params;
     const formattedKey = keys ? `${category}:${keys.join(":")}` : category;
 
-    this.logger.info(`Getting all data from redis ${formattedKey}`);
+    // this.logger.info(`Getting all data from redis ${formattedKey}`);
 
     return (await this.redis.hgetall(formattedKey)) as T;
   }

@@ -2,6 +2,7 @@ import { type CorsOptions } from "@nestjs/common/interfaces/external/cors-option
 
 const ALLOWED_ORIGINS: string[] = [
   "http://localhost:3007",
+  "http://localhost:3006",
   "http://tauri.localhost",
 ];
 

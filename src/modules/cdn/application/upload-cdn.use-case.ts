@@ -4,14 +4,17 @@ import { ClientDataEncryptUseCase } from "../../auth/application/client-data-enc
 import { UploadCallbackDto } from "../infrastructure/routes/dto/upload-cdn.dto";
 import { WsClientRepository } from "../../ws-client/domain/ws-client.repository";
 import { WsBotSendFileUseCase } from "../../ws-bot/application/events/ws-bot-send-file.use-case";
+import { JwtAuthGuard } from "../../auth/infrastructure/jwt.guard";
+import { RedisRepository } from "@/src/repository/redis/domain/redis.repository";
 
 @Injectable()
 export class UploadCdnUseCase {
   constructor(
     private readonly logger: LoggerService,
-    private readonly clientDataEncrypt: ClientDataEncryptUseCase,
+    private readonly redisRepository: RedisRepository,
     private readonly wsClientRepository: WsClientRepository,
     private readonly wsBotSendFileUseCase: WsBotSendFileUseCase,
+    private readonly jwtAuthGuard: JwtAuthGuard,
   ) {}
 
   async uploadCallbackUseCase(
@@ -19,15 +22,20 @@ export class UploadCdnUseCase {
   ): Promise<{ status: boolean; error?: string }> {
     try {
       this.logger.info("Upload callback use case", JSON.stringify(dto));
-      const wsClientData = await this.wsClientRepository.getClient(
-        dto.clientid,
-      );
+      const wsClientData = JSON.parse(
+        await this.redisRepository.HGET(["client-data"], dto.clientid),
+      ) as {
+        clientid: string;
+        email: string;
+        name: string;
+        controllerid: string;
+      };
 
       if (!wsClientData) throw new Error("Client not found");
 
-      wsClientData.controllerid;
+      // wsClientData.controllerid;
 
-      this.logger.info("Upload callback use case", dto);
+      this.logger.info("Upload callback use case", dto, wsClientData);
       this.wsBotSendFileUseCase.execute(
         wsClientData.controllerid,
         dto.fileurl,
@@ -43,7 +51,7 @@ export class UploadCdnUseCase {
   async decodeToken(token: string) {
     try {
       const tokenFormated = token.replace("Bearer ", "").replace(" ", "");
-      const userData = this.clientDataEncrypt.decryptUser(tokenFormated);
+      const userData = await this.jwtAuthGuard.decryptData(tokenFormated);
 
       this.logger.info("Decode token", userData);
 

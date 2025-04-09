@@ -7,35 +7,55 @@ import {
 } from "@nestjs/platform-fastify";
 import cookieParser from "cookie-parser";
 import multiPart from "@fastify/multipart";
-
+// import rawBody from "@fastify/raw-body";
 import { AppModule } from "./app/app.module";
 import { CorsOptions } from "./cors";
 import { RedisIoAdapter } from "./adapters/redis-io.adapter";
+import * as Sentry from "@sentry/nestjs";
 
 // declare const module: any;
 
 async function bootstrap() {
   const fastifyModule = new FastifyAdapter({
+    //@ts-ignore
     debugger: true,
   });
 
   // await fastifyModule.register(cors, CorsOptions);
   // await fastifyModule.register(helmet);
 
+  // await fastifyModule.register(rawBody, {
+  //   global: true,
+  //   runFirst: true,
+  //   encoding: "utf8",
+  // });
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     fastifyModule,
+    {
+      rawBody: true,
+    },
   );
 
   // await app.register(cors, CorsOptions);
   app.setGlobalPrefix("api");
   app.useGlobalPipes(new ValidationPipe());
 
+  Sentry.init({
+    dsn: "http://c5a0a09143ef4403899de95a30a54a06@192.168.192.84:8000/1",
+    // integrations: [Sentry.captureConsoleIntegration()],
+    //   release: "1.0.0",
+    environment: "production",
+    //   maxBreadcrumbs: 50,
+  });
+
   const configService = app.get(ConfigService);
   const port = configService.get<string>("PORT", "3000");
 
   app.use(cookieParser());
 
+  //@ts-ignore
   await app.register(multiPart, {
     limits: {
       fileSize: 1024 * 1024 * 1024, // 1GB

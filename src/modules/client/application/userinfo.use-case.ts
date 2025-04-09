@@ -71,9 +71,9 @@ export class UserInfoUseCase {
   ): Promise<{ status: boolean }> {
     try {
       await this.userRepository.updateUser(clientid, { name: username });
-      await this.wsApplicationRepository.updateClientData(clientid, {
-        name: username,
-      });
+      // await this.wsApplicationRepository.updateClientData(clientid, {
+      //   name: username,
+      // });
       return { status: true };
     } catch (error) {
       return { status: false };

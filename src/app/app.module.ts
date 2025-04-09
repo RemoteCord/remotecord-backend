@@ -19,6 +19,9 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { CdnModule } from "../modules/cdn/cdn.module";
 import { RedisServiceModule } from "../repository/redis/redis.module";
 import { PublicModule } from "../modules/public/public.module";
+import { SentryGlobalFilter, SentryModule } from "@sentry/nestjs/setup";
+import { APP_FILTER } from "@nestjs/core";
+import { StripeModule } from "../modules/stripe/stripe.module";
 
 @Module({
   imports: [
@@ -26,8 +29,9 @@ import { PublicModule } from "../modules/public/public.module";
       envFilePath: `./environments/${process.env.NODE_ENV}.env`,
       load: [configVar],
     }),
+    SentryModule.forRoot(),
+    StripeModule.forRootAsync(),
     ScheduleModule.forRoot(),
-
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true, cache: true }),
     LoggerModule,
@@ -41,6 +45,12 @@ import { PublicModule } from "../modules/public/public.module";
     ClientModule,
     RedisServiceModule,
     PublicModule,
+  ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: SentryGlobalFilter,
+    },
   ],
 })
 export class AppModule {}

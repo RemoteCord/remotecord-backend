@@ -4,6 +4,7 @@ import type { CreateUserDto } from "./create-user.dto";
 import { SupabaseRepository } from "../../domain/supabase.repository";
 import { UserRepository } from "@/src/repository/db/user/user.repository";
 import { ClientPermissionRepository } from "@/src/repository/db/clientPermisions/clientPermission.repository";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class CreateUserUseCase {
@@ -11,25 +12,35 @@ export class CreateUserUseCase {
     private readonly supabaseRepository: SupabaseRepository,
     private readonly userRepository: UserRepository,
     private readonly clientPermissionsRepository: ClientPermissionRepository,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async execute(
-    dto: CreateUserDto,
-  ): Promise<{ status: boolean; token?: string }> {
+  async execute(dto: {
+    name: string;
+    email: string;
+    picture: string;
+    clientid: string;
+  }): Promise<{ status: boolean; token?: string }> {
     try {
       // const res = await this.userRepository.create(dto.token);
 
       // console.log(res);
 
-      const user = await this.supabaseRepository.getClientDataFromSupabase(
-        dto.token,
-      );
+      // const decoded = this.jwtService.decode(dto.token);
+
+      // console.log("Decoded token", decoded);
+
+      // const user = await this.supabaseRepository.getClientDataFromSupabase(
+      //   dto.token,
+      // );
+
+      console.log("User data", dto);
 
       const token = await this.userRepository.createUser({
-        id: user.id,
-        email: user.email!,
-        avatar: user.user_metadata.avatar_url,
-        name: user.user_metadata.full_name,
+        id: dto.clientid,
+        email: dto.email!,
+        avatar: dto.picture,
+        name: dto.name,
       });
 
       console.log("User created", token);

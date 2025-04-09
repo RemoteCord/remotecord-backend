@@ -40,8 +40,10 @@ export class GetFriendsUseCase {
             ["ws", [friend]],
             "client",
           );
-          const clientApplication =
-            this.wsApplicationRepository.getClient(friend);
+          const clientApplication = await this.redisRepository.HGET(
+            ["ws", [friend]],
+            "application",
+          );
           // console.log("active:", active);
           return {
             clientid: friend,

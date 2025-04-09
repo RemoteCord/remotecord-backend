@@ -33,6 +33,8 @@ export class WsClientJoinsUseCase {
       tokenConnection: string;
     };
 
+    console.log(client.handshake.query);
+
     const { clientid } = await this.wsClientVerifyConnectionUseCase.execute(
       controllerid,
       token,
@@ -87,11 +89,11 @@ export class WsClientJoinsUseCase {
 
     await this.controllerRepository.selectActiveClient(clientid, controllerid);
 
-    this.wsClientRepository.addClient(clientid, {
-      controllerid,
-      socket: client,
-      client_data,
-    });
+    // this.wsClientRepository.addClient(clientid, {
+    //   controllerid,
+    //   socket: client,
+    //   client_data,
+    // });
 
     await this.wsBotConnectClientUseCase.execute({
       controllerid,

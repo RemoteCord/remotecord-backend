@@ -9,6 +9,7 @@ export const Files = createParamDecorator(
     const req = ctx.switchToHttp().getRequest() as fastify.FastifyRequest;
 
     // console.log("req.storedFiles", req.storedFiles);
+    //@ts-ignore
     return req.storedFiles;
   },
 );

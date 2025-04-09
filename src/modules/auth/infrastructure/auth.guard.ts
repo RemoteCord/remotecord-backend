@@ -30,21 +30,57 @@ export class AuthGuard implements CanActivate {
       const request: FastifyRequest = context.switchToHttp().getRequest();
       const token = this.extractTokenFromHeader(request);
 
-      // console.log("req", request);
       if (!token) {
         // this.logger.error("No token found in request");
         throw new Error("Token not found");
       }
 
+      const endpoint = request.headers["aud"] as string;
+      // console.log("endpoint", endpoint, token);
+      if (!endpoint) return false;
+
+      // Parse JWT if it's a string
+      const user_data = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(async response => {
+          // console.log("response", response);
+          if (!response.ok) {
+            throw new CustomUnathorizedException();
+          }
+
+          const res = await response.json();
+
+          return res;
+        })
+        .catch(error => {
+          console.log("error", error);
+          throw new CustomUnathorizedException();
+        });
+
+      console.log("user_data", user_data);
+      request.headers["user"] = user_data;
+
+      // console.log("req", request);
+
       //   const result = await this.verifyToken(token);
       //   //   request["user"] = result;
       // this.logger.info('token:', token);
 
-      const { clientid } = this.clientDataEncrypt.decryptUser(token);
+      // const data = this.clientDataEncrypt.decryptUser(token);
+      // const { clientid, email, username } = data;
+      const { sub: clientid, email, name, picture } = user_data;
 
-      this.logger.info("clientid:", clientid);
+      // this.logger.info("clientid:", clientid, email);
 
-      request.headers["clientid"] = clientid;
+      request.headers["clientid"] = clientid.split("|")[1];
+      request.headers["email"] = email;
+      request.headers["username"] = name;
+      request.headers["picture"] = picture;
 
       return true;
     } catch (error: unknown) {

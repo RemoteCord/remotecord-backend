@@ -18,7 +18,9 @@ import {
   UpdateControllerPermissionsDto,
   UpdateUsernameDto,
 } from "../dto/client.dto";
+import { JwtAuthGuard } from "@/src/modules/auth/infrastructure/jwt.guard";
 
+@UseGuards(JwtAuthGuard)
 @Controller(CLIENT_ROUTE)
 export class ClientController {
   constructor(
@@ -29,7 +31,7 @@ export class ClientController {
   @UseGuards(AuthGuard)
   @Get("user-info")
   async getUserInfo(@Req() req: FastifyRequest) {
-    const clientid: string = req.headers.clientid!;
+    const clientid = req.headers["clientid"] as string;
     return await this.userInfoUseCase.getUserInfo(clientid);
   }
 
@@ -39,7 +41,7 @@ export class ClientController {
     @Req() req: FastifyRequest,
     @Body() body: UpdateUsernameDto,
   ) {
-    const clientid: string = req.headers.clientid!;
+    const clientid = req.headers["clientid"] as string;
     return await this.userInfoUseCase.updateUsername(clientid, body.username);
     // return await this.getUserInfoUseCase.getUserName(clientid);
   }
@@ -47,7 +49,7 @@ export class ClientController {
   @UseGuards(AuthGuard)
   @Get("friends")
   async getFriends(@Req() req: FastifyRequest) {
-    const clientid: string = req.headers.clientid!;
+    const clientid = req.headers["clientid"] as string;
     return await this.userInfoUseCase.getFriends(clientid);
   }
 
@@ -57,7 +59,7 @@ export class ClientController {
     @Req() req: FastifyRequest,
     @Param("controllerid") controllerid: string,
   ) {
-    const clientid: string = req.headers.clientid!;
+    const clientid = req.headers["clientid"] as string;
     return await this.userInfoUseCase.deleteFriend(clientid, controllerid);
   }
 
@@ -67,7 +69,7 @@ export class ClientController {
     @Req() req: FastifyRequest,
     @Body() body: UpdateControllerPermissionsDto,
   ) {
-    const clientid: string = req.headers.clientid!;
+    const clientid = req.headers["clientid"] as string;
 
     const { permissions, controllerid } = body;
 
