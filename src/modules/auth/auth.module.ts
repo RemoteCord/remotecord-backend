@@ -4,7 +4,6 @@ import { JwtModule } from "@nestjs/jwt";
 import { CreateUserUseCase } from "./application/create-user-use-case/create-user.use-case";
 import { AuthGuard } from "./infrastructure/auth.guard";
 import { CreateUserController } from "./infrastructure/routes/create-user/create-user.controller";
-import { SupabaseRepository } from "./domain/supabase.repository";
 import { SchemasModule } from "@/src/repository/db/schemas.module";
 import { ClientDataEncryptUseCase } from "./application/client-data-encrypt.use-case";
 import { SharedModule } from "../shared/shared.module";
@@ -36,7 +35,6 @@ import { JwtAuthGuard } from "./infrastructure/jwt.guard";
     ClientDataEncryptUseCase,
     CreateUserUseCase,
     AuthGuard,
-    SupabaseRepository,
     JwtStrategy,
     JwtAuthGuard,
   ],

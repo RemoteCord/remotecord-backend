@@ -89,6 +89,7 @@ export class WsApplicationGateway
     const clientid = client.handshake.query["clientid"] as string;
 
     await this.redisRepository.HDEL(["ws", [clientid]], "application");
+    await this.redisRepository.HDEL(["client-data"], clientid);
   }
 
   @UseGuards(WsApplicationGuard)

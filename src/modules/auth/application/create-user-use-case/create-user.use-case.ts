@@ -1,19 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
-import type { CreateUserDto } from "./create-user.dto";
-import { SupabaseRepository } from "../../domain/supabase.repository";
 import { UserRepository } from "@/src/repository/db/user/user.repository";
-import { ClientPermissionRepository } from "@/src/repository/db/clientPermisions/clientPermission.repository";
-import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class CreateUserUseCase {
-  constructor(
-    private readonly supabaseRepository: SupabaseRepository,
-    private readonly userRepository: UserRepository,
-    private readonly clientPermissionsRepository: ClientPermissionRepository,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async execute(dto: {
     name: string;
