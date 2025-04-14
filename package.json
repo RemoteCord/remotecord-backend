@@ -34,7 +34,7 @@
     "lint:file": "eslint --ignore-path .gitignore",
     "lint:yaml": "powershell -File scripts/lint_yaml.ps1",
     "typos": "powershell -File scripts/check_typos.ps1",
-    "deploy:prod": "pnpm build && pm2 ecosystem.config.cjs"
+    "deploy:prod": "pnpm build && pm2 start ecosystem.config.cjs"
   },
   "dependencies": {
     "@aws-sdk/credential-providers": "^3.758.0",
