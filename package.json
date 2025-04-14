@@ -28,18 +28,11 @@
     "build": "node --run build:clean && nest build --path tsconfig.prod.json",
     "start": "nest start --watch ",
     "dev": "nest start --watch ",
-    "test": "rimraf coverage .nyc_output && concurrently 'node --run test:unit' 'node --run test:e2e' && node --run calculate-global-test-coverage",
-    "test:unit": "vitest run --coverage --config vitest.config.unit.ts",
-    "test:e2e": "vitest run --coverage --config ./vitest.config.e2e.ts",
-    "test:performance": "k6 run tests/performance/contexts/users/get-users.mjs",
-    "calculate-global-test-coverage": "tsx scripts/calculate-global-test-coverage.ts",
-    "prepare": "",
     "lint": "eslint --ignore-path .gitignore . --ext .js,.mjs,cjs,.ts,.mts",
     "lint:fix": "eslint --ignore-path .gitignore . --ext .js,.mjs,cjs,.ts,.mts --fix",
     "lint:file": "eslint --ignore-path .gitignore",
     "lint:yaml": "powershell -File scripts/lint_yaml.ps1",
-    "build:clean": "rimraf dist; exit 0",
-    "typos": "powershell -File scripts/check_typos.ps1"
+    "deploy:prod": "pnpm build && pm2 ecosystem.config.cjs"
   },
   "dependencies": {
     "@aws-sdk/credential-providers": "^3.758.0",

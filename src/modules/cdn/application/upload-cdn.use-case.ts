@@ -15,7 +15,7 @@ export class UploadCdnUseCase {
     private readonly wsClientRepository: WsClientRepository,
     private readonly wsBotSendFileUseCase: WsBotSendFileUseCase,
     private readonly jwtAuthGuard: JwtAuthGuard,
-  ) {}
+  ) { }
 
   async uploadCallbackUseCase(
     dto: UploadCallbackDto,
@@ -50,6 +50,8 @@ export class UploadCdnUseCase {
 
   async decodeToken(token: string) {
     try {
+
+
       const tokenFormated = token.replace("Bearer ", "").replace(" ", "");
       const userData = await this.jwtAuthGuard.decryptData(tokenFormated);
 

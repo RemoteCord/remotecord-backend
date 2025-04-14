@@ -31,7 +31,7 @@ export class WsBotGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly wsBotJoinsUseCase: WsBotJoinsUseCase,
     private readonly wsBotLeavesUseCase: WsBotLeavesUseCase,
-  ) {}
+  ) { }
 
   @WebSocketServer()
   server!: Server;
@@ -40,7 +40,7 @@ export class WsBotGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private botid: string = "";
 
-  afterInit(client: Socket) {}
+  afterInit(client: Socket) { }
 
   sendEventToBot(controllerid: string, event: BotEvents, payload?: any) {
     try {
@@ -53,7 +53,7 @@ export class WsBotGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.logger.debug(
         `message to bot from ${controllerid} with the event ${event}`,
       );
-      this.server.to(this.botid).emit(event, {
+      this.server.emit(event, {
         ...payload,
         controllerid,
       });
