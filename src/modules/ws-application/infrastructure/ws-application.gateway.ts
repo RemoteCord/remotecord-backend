@@ -10,13 +10,14 @@ import { Socket } from "socket.io";
 import { LoggerService } from "../../shared/providers";
 import { WsApplicationJoinsUseCase } from "../application/ws-application-joins.use-case";
 import { WsApplicationLeavesUseCase } from "../application/ws-application-leaves.use-case";
-import { WsApplicationResetAllConnectionsUseCase } from "../application/ws-application-reset-all-connections-use-case";
-import { UseGuards } from "@nestjs/common";
+import { Logger, UseGuards } from "@nestjs/common";
 import { WsApplicationGuard } from "../application/ws-application.guard";
 import { WsApplicationAddFriendUseCase } from "../application/ws-application-friend.use-case";
 import { RedisRepository } from "@/src/repository/redis/domain/redis.repository";
 import { InjectRedis } from "@nestjs-modules/ioredis";
 import Redis from "ioredis";
+import { WsApplicationRepository } from "../domain/ws-application.repository";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 
 @WebSocketGateway({
   namespace: "application",
@@ -29,12 +30,14 @@ export class WsApplicationGateway
   @WebSocketServer()
   server!: Socket;
 
+  private logger = new Logger("WsApplicationGateway");
+
   constructor(
+    // private readonly wsApplicationRepository: WsApplicationRepository,
+    private readonly controllerRepository: ControllerRepository,
     private readonly wsApplicationJoinsUseCase: WsApplicationJoinsUseCase,
     private readonly wsApplicationLeavesUseCase: WsApplicationLeavesUseCase,
-    private readonly wsApplicationResetAllConnectionsUseCase: WsApplicationResetAllConnectionsUseCase,
     private readonly wsApplicationAddFriendUseCase: WsApplicationAddFriendUseCase,
-    private readonly logger: LoggerService,
     private readonly redisRepository: RedisRepository,
   ) {}
 
@@ -59,8 +62,7 @@ export class WsApplicationGateway
     }
   }
   async afterInit(client: Socket) {
-    this.logger.info("Resetting all client connections");
-    await this.wsApplicationResetAllConnectionsUseCase.execute();
+    this.logger.log("Resetting all client connections");
   }
 
   async handleConnection(client: Socket) {
@@ -71,8 +73,11 @@ export class WsApplicationGateway
         application: client.id,
       });
 
+      this.logger.log(`Client ${clientid} connected to ws-application`);
+
       // await this.clientJoinsUseCase.execute()
     } catch (error) {
+      this.logger.error("Error on joining to ws-application", error);
       // console.error("Connection error:", error);
       client.disconnect();
     }
@@ -89,7 +94,9 @@ export class WsApplicationGateway
     const clientid = client.handshake.query["clientid"] as string;
 
     await this.redisRepository.HDEL(["ws", [clientid]], "application");
-    await this.redisRepository.HDEL(["client-data"], clientid);
+
+    this.logger.log(`Client ${clientid} disconnected from ws-application`);
+    // await this.redisRepository.HDEL(["client-data"], clientid);
   }
 
   @UseGuards(WsApplicationGuard)
@@ -98,7 +105,8 @@ export class WsApplicationGateway
     client: Socket,
     payload: { token: string; accept: boolean; controllerid: string },
   ) {
-    this.logger.info("addFriend", payload, client.handshake.query.clientid);
+    this.logger.log(`Client ${client.id} sending addFriend event`);
+
     if (client.handshake.query.clientid)
       this.wsApplicationAddFriendUseCase.execute(
         payload.token,

@@ -1,6 +1,5 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Socket } from "socket.io";
-import { WsApplicationRepository } from "../domain/ws-application.repository";
 import { UserRepository } from "@/src/repository/db/user/user.repository";
 import { LoggerService } from "../../shared/providers";
 import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
@@ -10,11 +9,10 @@ import { JwtAuthGuard } from "../../auth/infrastructure/jwt.guard";
 
 @Injectable()
 export class WsApplicationJoinsUseCase {
+  private logger = new Logger("WsApplicationJoinsUseCase");
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly wsApplicationRepository: WsApplicationRepository,
     private readonly WsApplicationVerifyConnectionUseCase: WsApplicationVerifyConnectionUseCase,
-    private readonly logger: LoggerService,
     private readonly redisRepository: RedisRepository,
     private readonly jwtAuthGuard: JwtAuthGuard,
   ) {}
@@ -26,8 +24,6 @@ export class WsApplicationJoinsUseCase {
       token: string;
     };
 
-    this.logger.info("Client joining application");
-
     const data = await this.WsApplicationVerifyConnectionUseCase.execute(token);
     const { clientid, email, username } = data;
 
@@ -35,8 +31,6 @@ export class WsApplicationJoinsUseCase {
     const client_data = await this.userRepository.getUserById(clientid);
 
     if (!client_data) throw new ClientNotFoundException(clientid);
-
-    this.logger.info(`Client connected with ID ${clientid} to application`);
 
     client.handshake.query["clientid"] = clientid;
     client.handshake.query["email"] = email;

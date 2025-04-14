@@ -38,7 +38,7 @@ export class WsApplicationGuard implements CanActivate {
 
       client.handshake.query["clientid"] = clientid;
 
-      this.logger.debug("passed ws event client guard with token", token);
+      this.logger.debug(`Passed WsApplicationGuard ${clientid}`);
 
       return true;
     } catch (error) {

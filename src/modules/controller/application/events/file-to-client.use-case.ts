@@ -1,5 +1,5 @@
 import { LoggerService } from "@/src/modules/shared/providers";
-import { Injectable, StreamableFile } from "@nestjs/common";
+import { Injectable, Logger, StreamableFile } from "@nestjs/common";
 import {
   GetFileDto,
   SendFileToClientDto,
@@ -8,11 +8,12 @@ import { ControllerRepository } from "@/src/repository/db/controller/controller.
 import { WsClientFile } from "@/src/modules/ws-client/application/events/ws-client-file";
 import { WsBotRepository } from "@/src/modules/ws-bot/domain/ws-bot.repository";
 import Crypto from "node:crypto";
-import { generateRandomHex } from "@/src/utils";
+import { generateRandomHash } from "@/src/utils";
 @Injectable()
 export class FileToClientUseCase {
+  private logger = new Logger("FileToClientUseCase");
   constructor(
-    private readonly logger: LoggerService,
+    // private readonly logger: LoggerService,
     private readonly controllerRepository: ControllerRepository,
     private readonly wsClientFile: WsClientFile,
   ) {}
@@ -21,7 +22,7 @@ export class FileToClientUseCase {
       await this.controllerRepository.getControllerById(controllerid)
     ).activeclient;
 
-    this.logger.info(
+    this.logger.log(
       `Sending file to client ${activeclient} from controller ${controllerid}`,
     );
 
@@ -36,21 +37,21 @@ export class FileToClientUseCase {
   }
 
   async getFileFromClient(controllerid: string, data: GetFileDto) {
-    const token = generateRandomHex();
+    // const token = generateRandomHash();
 
-    console.log(token);
+    // console.log(token);
 
-    this.logger.info(
-      `Unique token generating for file ${controllerid}: ${token}`,
-    );
+    // this.logger.log(
+    //   `Unique token generating for file ${controllerid}: ${token}`,
+    // );
 
     const activeclient = (
       await this.controllerRepository.getControllerById(controllerid)
     ).activeclient;
 
-    this.logger.info(
-      `Getting file from client ${activeclient} from controller ${controllerid} ${token}`,
-    );
+    // this.logger.log(
+    //   `Getting file from client ${activeclient} from controller ${controllerid} ${token}`,
+    // );
 
     if (!activeclient) {
       this.logger.error("No active client found");

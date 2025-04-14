@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { WsClientRepository } from "../../domain/ws-client.repository";
 import type {
   AddFileClient,
@@ -13,9 +13,10 @@ import { WsClientGateway } from "../../infrastructure/ws-client.gateway";
 
 @Injectable()
 export class WsClientFile {
+  private logger = new Logger("WsClientFile");
   constructor(
     private readonly wsClientRepository: WsClientRepository,
-    private readonly logger: LoggerService,
+    // private readonly logger: LoggerService,
     private readonly configService: ConfigService,
     private readonly wsClientGateway: WsClientGateway,
   ) {}
@@ -32,9 +33,6 @@ export class WsClientFile {
       //   `Emmiting getting file from client ${clientid} ${tokenFile}`,
       // );
 
-      this.logger.info(
-        `Getting file from client eventtttt ${clientid} ${fileroute} `,
-      );
       // const { upload_url } = await fetch(
       //   "http://localhost:3002/api/upload-endpoint",
       // )
@@ -43,15 +41,11 @@ export class WsClientFile {
 
       const { upload_url } = await fetch(
         `${CDN_URL}/api/upload-endpoint?clientid=${clientid}`,
-      )
-        .then(
-          async res => (await res.json()) as Promise<{ upload_url: string }>,
-        )
-        .catch(error => {
-          this.logger.error("Error on get file from client", error);
-          throw new Error("Error on get file from client");
-        });
-      this.logger.info(upload_url);
+      ).then(
+        async res => (await res.json()) as Promise<{ upload_url: string }>,
+      );
+
+      this.logger.log(`Upload url: ${upload_url}`);
 
       this.wsClientGateway.sendEventToClient(clientid, "getFileFromClient", {
         fileroute,

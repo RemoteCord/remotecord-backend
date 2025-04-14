@@ -16,7 +16,7 @@ export class CommandsRepository implements OnModuleInit {
       clientid,
     );
     let clientCommands = redisData ? JSON.parse(redisData) : [];
-    console.log("clientCommands", clientCommands);
+    // console.log("clientCommands", clientCommands);
     clientCommands.push(command);
 
     this.redisRepository.HSET(["client-commands-requests"], {
@@ -30,7 +30,7 @@ export class CommandsRepository implements OnModuleInit {
       clientid,
     );
     let clientCommands = redisData ? JSON.parse(redisData) : [];
-    console.log("clientCommands", clientCommands);
+    // console.log("clientCommands", clientCommands);
     return clientCommands.includes(command);
   }
 

@@ -1,7 +1,7 @@
 import { LoggerService } from "@/src/modules/shared/providers";
 import { WsApplicationRepository } from "@/src/modules/ws-application/domain/ws-application.repository";
 import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { ClientDataEncryptUseCase } from "../../auth/application/client-data-encrypt.use-case";
 import { WsClientRepository } from "../../ws-client/domain/ws-client.repository";
 import { UserRepository } from "@/src/repository/db/user/user.repository";
@@ -9,9 +9,9 @@ import { RedisRepository } from "@/src/repository/redis/domain/redis.repository"
 
 @Injectable()
 export class GetFriendsUseCase {
+  private logger = new Logger("GetFriendsUseCase");
   constructor(
     private readonly controllerRepository: ControllerRepository,
-    private readonly logger: LoggerService,
     private readonly clientRepository: UserRepository,
     private readonly wsClientRepository: WsClientRepository,
     private readonly redisRepository: RedisRepository,
@@ -23,9 +23,7 @@ export class GetFriendsUseCase {
         await this.controllerRepository.getControllerById(controllerid);
 
       // console.log("controller:", controller);
-      this.logger.info(
-        `Getting friends for controller ${controllerid} ${friends}`,
-      );
+      this.logger.log(`Getting friends for controller ${controllerid}`);
       if (!friends) return;
 
       const friendsResult = await Promise.all(
@@ -54,7 +52,7 @@ export class GetFriendsUseCase {
         }),
       );
 
-      console.log("friendsResult:", friendsResult);
+      // console.log("friendsResult:", friendsResult);
 
       return {
         clients: friendsResult,

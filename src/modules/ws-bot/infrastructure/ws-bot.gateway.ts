@@ -8,6 +8,7 @@ import {
 import { Server, Socket } from "socket.io";
 import { WsBotJoinsUseCase } from "../application/ws-bot-joins.use-case";
 import { WsBotLeavesUseCase } from "../application/ws-bot-leaves.use-case";
+import { Logger } from "@nestjs/common";
 
 type BotEvents =
   | "connectedClient"
@@ -35,22 +36,32 @@ export class WsBotGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
 
+  private logger = new Logger("WsBotGateway");
+
   private botid: string = "";
 
   afterInit(client: Socket) {}
 
-  async sendEventToBot(controllerid: string, event: BotEvents, payload?: any) {
-    // const client = this.server.sockets.sockets.get(clientid);
-    // console.log("client", client);
-    // if (client) {
-    //   client.emit(event, payload);
-    // }
+  sendEventToBot(controllerid: string, event: BotEvents, payload?: any) {
+    try {
+      // const client = this.server.sockets.sockets.get(clientid);
+      // console.log("client", client);
+      // if (client) {
+      //   client.emit(event, payload);
+      // }
 
-    console.log("message to bot", controllerid, event);
-    this.server.to(this.botid).emit(event, {
-      ...payload,
-      controllerid,
-    });
+      this.logger.debug(
+        `message to bot from ${controllerid} with the event ${event}`,
+      );
+      this.server.to(this.botid).emit(event, {
+        ...payload,
+        controllerid,
+      });
+
+      return;
+    } catch (error) {
+      this.logger.error(`Error sending event to bot: ${error}`);
+    }
   }
 
   async handleConnection(client: Socket) {
@@ -60,11 +71,13 @@ export class WsBotGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // await this.clientJoinsUseCase.execute()
     } catch (error) {
       // console.error("Connection error:", error);
+      this.logger.error(`Failed to connect bot: ${error}`);
       client.disconnect();
     }
   }
 
   handleDisconnect(client: Socket) {
+    this.logger.log(`Bot disconnected: ${client.id}`);
     this.wsBotLeavesUseCase.execute();
   }
 }

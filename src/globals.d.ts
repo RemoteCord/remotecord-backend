@@ -24,9 +24,3 @@ declare namespace Storage {
 declare module "redis-commander" {
   export type RedisKey = RedisCategories;
 }
-
-namespace NodeJS {
-  interface ProcessEnv {
-    DATABASE_URL: string;
-  }
-}

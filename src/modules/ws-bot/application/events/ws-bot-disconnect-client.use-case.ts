@@ -35,5 +35,7 @@ export class WsBotDisconnectClientUseCase {
       clientid,
       alias: clientData.name,
     });
+
+    return;
   }
 }

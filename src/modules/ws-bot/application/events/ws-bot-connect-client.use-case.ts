@@ -32,10 +32,11 @@ export class WsBotConnectClientUseCase {
 
     // console.log("messageid", messageid);
 
-    return this.wsBotGateway.sendEventToBot(controllerid, "connectedClient", {
+    this.wsBotGateway.sendEventToBot(controllerid, "connectedClient", {
       clientid,
       alias: wsClientData.name,
       messageid,
     });
+    return;
   }
 }

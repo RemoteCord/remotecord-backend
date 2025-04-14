@@ -17,7 +17,7 @@ export class PublicService {
     // this.redis.hset("ws-application-id", "users", 0);
     const connections = await this.controllerRepository.getAllActiveClients();
     const clientsNum = await this.redisRepository.HLEN(["client-data"]);
-    console.log("wsConnections", clientsNum);
+    // console.log("wsConnections", clientsNum);
     if (!connections) {
       this.redisRepository.HSET(["stats"], {
         users: 0,

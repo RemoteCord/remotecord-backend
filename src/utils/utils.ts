@@ -1,5 +1,5 @@
 import Crypto from "node:crypto";
-export const generateRandomHex = () =>
+export const generateRandomHash = () =>
   Crypto.randomBytes(48)
     .toString("base64")
     .replace(/\//g, "_")

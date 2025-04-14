@@ -17,23 +17,20 @@ export class ClientPermissionRepository implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    console.log(`The module has been initialized.`);
-
-    const permissions = await this.clientPermissionModel.find(
-      {},
-      { _id: 0, __v: 0 },
-    );
-
-    console.log(permissions);
-
-    await Promise.all(
-      permissions.map(async permission => {
-        const key = `${permission.clientid}:${permission.controllerid}`;
-        const { controllerid, clientid, ...rest } = permission.toJSON();
-        console.log("formatted", JSON.stringify(rest));
-        return this.redisRepository.HSET(["permissions", [clientid]], rest);
-      }),
-    );
+    // // console.log(`The module has been initialized.`);
+    // const permissions = await this.clientPermissionModel.find(
+    //   {},
+    //   { _id: 0, __v: 0 },
+    // );
+    // console.log(permissions);
+    // await Promise.all(
+    //   permissions.map(async permission => {
+    //     const key = `${permission.clientid}:${permission.controllerid}`;
+    //     const { controllerid, clientid, ...rest } = permission.toJSON();
+    //     console.log("formatted", JSON.stringify(rest));
+    //     return this.redisRepository.HSET(["permissions", [clientid]], rest);
+    //   }),
+    // );
   }
   async createPermissionDocument(clientid: string, controllerid: string) {
     try {
@@ -42,7 +39,7 @@ export class ClientPermissionRepository implements OnModuleInit {
         controllerid,
       });
     } catch (error: any) {
-      console.log(error);
+      // console.log(error);
       if (error?.code === 11000) {
         // console.log(error);
         return;
@@ -92,7 +89,7 @@ export class ClientPermissionRepository implements OnModuleInit {
       { clientid, controllerid },
       { [permission]: value },
     );
-    console.log(res);
+    // console.log(res);
     return res;
   }
 

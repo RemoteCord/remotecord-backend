@@ -20,5 +20,7 @@ export class WsBotSendTasksUseCase {
       controllerid,
       tasks,
     });
+
+    return;
   }
 }

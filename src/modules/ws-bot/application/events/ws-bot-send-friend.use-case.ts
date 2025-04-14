@@ -24,5 +24,7 @@ export class WsBotSendFriendUseCase {
     this.wsBotGateway.sendEventToBot(controllerid, "addFriend", {
       clientid,
     });
+
+    return;
   }
 }

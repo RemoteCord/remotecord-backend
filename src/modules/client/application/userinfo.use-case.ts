@@ -45,7 +45,7 @@ export class UserInfoUseCase {
   }
 
   async deleteFriend(clientid: string, controllerid: string) {
-    console.log("deleteFriend", clientid, controllerid);
+    // console.log("deleteFriend", clientid, controllerid);
     try {
       await this.controllerRepository.deleteFriendFromController(
         controllerid,

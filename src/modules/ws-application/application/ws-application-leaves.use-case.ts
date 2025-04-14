@@ -5,10 +5,7 @@ import { LoggerService } from "../../shared/providers";
 
 @Injectable()
 export class WsApplicationLeavesUseCase {
-  constructor(
-    private readonly wsApplicationRepository: WsApplicationRepository,
-    private readonly logger: LoggerService,
-  ) {}
+  constructor(private readonly logger: LoggerService) {}
 
   async execute(client: Socket) {
     try {
@@ -17,8 +14,6 @@ export class WsApplicationLeavesUseCase {
       };
 
       this.logger.info(`Client ${clientid} disconnected from application`);
-
-      await this.wsApplicationRepository.removeClient(clientid);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";

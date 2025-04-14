@@ -25,8 +25,6 @@ export class WsClientLeavesUseCase {
 
       this.logger.info(`Client ${clientid} disconnected`);
 
-      this.wsClientRepository.removeClient(clientid);
-
       await this.controllerRepository.updateController(controllerid, {
         activeclient: "",
       });

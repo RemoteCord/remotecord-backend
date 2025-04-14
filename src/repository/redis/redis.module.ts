@@ -22,7 +22,7 @@ export const REDIS_MICROSERVICE_KEY = "REDIS_MICROSERVICE";
         options: {
           username: configService.get(Configuration.REDIS_USERNAME),
           password: configService.get(Configuration.REDIS_PASSWORD),
-          db: configService.get(Configuration.REDIS_DB),
+          // db: configService.get(Configuration.REDIS_DB),
           clusterRetryStrategy: (times: any) => Math.min(times * 100, 3000),
         },
       }),

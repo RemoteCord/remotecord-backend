@@ -10,8 +10,12 @@ import multiPart from "@fastify/multipart";
 // import rawBody from "@fastify/raw-body";
 import { AppModule } from "./app/app.module";
 import { CorsOptions } from "./cors";
-import { RedisIoAdapter } from "./adapters/redis-io.adapter";
+// import { RedisIoAdapter } from "./adapters/redis-io.adapter";
 import * as Sentry from "@sentry/nestjs";
+import { IoAdapter } from "@nestjs/platform-socket.io";
+import { RedisIoAdapter } from "./adapters/redis-io.adapter";
+import { AppClusterService } from "./modules/app_cluster.service";
+// import { WsAdapter } from "@nestjs/platform-ws";
 
 // declare const module: any;
 
@@ -20,15 +24,6 @@ async function bootstrap() {
     //@ts-ignore
     debugger: true,
   });
-
-  // await fastifyModule.register(cors, CorsOptions);
-  // await fastifyModule.register(helmet);
-
-  // await fastifyModule.register(rawBody, {
-  //   global: true,
-  //   runFirst: true,
-  //   encoding: "utf8",
-  // });
 
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
@@ -41,14 +36,19 @@ async function bootstrap() {
   // await app.register(cors, CorsOptions);
   app.setGlobalPrefix("api");
   app.useGlobalPipes(new ValidationPipe());
+  const redisIoAdapter = new RedisIoAdapter(app);
+  await redisIoAdapter.connectToRedis();
+  app.useWebSocketAdapter(redisIoAdapter);
 
-  Sentry.init({
-    dsn: "http://c5a0a09143ef4403899de95a30a54a06@192.168.192.84:8000/1",
-    // integrations: [Sentry.captureConsoleIntegration()],
-    //   release: "1.0.0",
-    environment: "production",
-    //   maxBreadcrumbs: 50,
-  });
+  // app.useWebSocketAdapter(new IoAdapter(app));
+
+  // Sentry.init({
+  //   dsn: "http://c5a0a09143ef4403899de95a30a54a06@192.168.192.84:8000/1",
+  //   // integrations: [Sentry.captureConsoleIntegration()],
+  //   //   release: "1.0.0",
+  //   environment: "production",
+  //   //   maxBreadcrumbs: 50,
+  // });
 
   const configService = app.get(ConfigService);
   const port = configService.get<string>("PORT", "3000");
@@ -64,10 +64,6 @@ async function bootstrap() {
 
   app.enableCors(CorsOptions);
 
-  const redisIoAdapter = new RedisIoAdapter(app);
-  await redisIoAdapter.connectToRedis();
-  app.useWebSocketAdapter(redisIoAdapter);
-
   await app.listen(port);
 
   const logger = new Logger("Main");
@@ -79,12 +75,16 @@ async function bootstrap() {
   // }
 }
 
-bootstrap().catch(handleError);
-// AppClusterService.clusterize(bootstrap);
+// bootstrap().catch(handleError);
+AppClusterService.clusterize(bootstrap);
 
 function handleError(error: unknown) {
   console.error(error);
   process.exit(1);
 }
 
-process.on("uncaughtException", handleError);
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  // Optionally terminate the process
+  // process.exit(1);
+});

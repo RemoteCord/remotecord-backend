@@ -24,5 +24,7 @@ export class WsBotSendCommandUseCase {
       path: pwd,
       output: stdout,
     });
+
+    return;
   }
 }

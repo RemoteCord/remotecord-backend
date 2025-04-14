@@ -29,7 +29,7 @@ import { StripeModule } from "../modules/stripe/stripe.module";
       envFilePath: `./environments/${process.env.NODE_ENV}.env`,
       load: [configVar],
     }),
-    SentryModule.forRoot(),
+    // SentryModule.forRoot(),
     StripeModule.forRootAsync(),
     ScheduleModule.forRoot(),
     AuthModule,

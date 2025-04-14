@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  Logger,
   Param,
   Post,
   Query,
@@ -33,6 +34,7 @@ import type { FastifyRequest } from "fastify";
 
 @Controller(CONTROLLER_ROUTE)
 export class ControllerRoutes {
+  private logger = new Logger("ControllerRoutes");
   constructor(
     private readonly wsApllicationConnectClientUseCase: WsApplicationConnectClientUseCase,
     private readonly getCurrentClientUseCase: GetCurrentClientUseCase,
@@ -42,7 +44,6 @@ export class ControllerRoutes {
     private readonly getExplorerClientUseCase: GetExplorerClientUseCase,
     private readonly getFriendsUseCase: GetFriendsUseCase,
     private readonly screensClientUseCase: ScreensClientUseCase,
-    private readonly logger: LoggerService,
   ) {}
 
   @Get(":controllerid")
@@ -65,7 +66,7 @@ export class ControllerRoutes {
   ) {
     const { clientid, username, avatar, messageid } = body;
 
-    this.logger.info("running connect-client", JSON.stringify(body));
+    // this.logger.log(`Running connect-client for clientid`);
 
     return await this.wsApllicationConnectClientUseCase.connect(
       controllerid,

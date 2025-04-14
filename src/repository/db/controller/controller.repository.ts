@@ -20,6 +20,7 @@ export class ControllerRepository implements OnModuleInit {
 
   async onModuleInit() {
     this.redisRepository.HDELALL(["connection-ws"]);
+    await this.controllerModel.updateMany({}, { activeclient: "" });
   }
 
   async getAllActiveClients() {
@@ -59,10 +60,6 @@ export class ControllerRepository implements OnModuleInit {
     }
   }
 
-  async resetAllActiveClients() {
-    await this.controllerModel.updateMany({}, { activeclient: "" });
-  }
-
   async create(data: ControllerModel) {
     try {
       return await this.controllerModel.create(data);
@@ -88,11 +85,7 @@ export class ControllerRepository implements OnModuleInit {
   }
 
   async updateController(controllerid: string, data: Partial<ControllerModel>) {
-    await this.controllerModel
-      .findOneAndUpdate({ controllerid }, { ...data })
-      .catch(() => {
-        throw new Error("Failed to update controller");
-      });
+    await this.controllerModel.findOneAndUpdate({ controllerid }, { ...data });
 
     // if (!controller) throw new ControllerNotFoundException();
 

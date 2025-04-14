@@ -11,5 +11,6 @@ export class WsBotSendMessageUseCase {
     console.log("Bot sends message");
 
     this.wsBotGateway.sendEventToBot(controllerid, "message", data);
+    return;
   }
 }

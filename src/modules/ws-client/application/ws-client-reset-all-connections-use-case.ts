@@ -20,8 +20,6 @@ export class WsClientResetAllConnectionsUseCase {
   async execute() {
     try {
       this.logger.info("Resetting all client connections");
-      await this.wsClientRepsitory.removeAllClients();
-      await this.controllerRepository.resetAllActiveClients();
 
       const keys = await this.redisRepository.HKEYS(["client-data"]);
 

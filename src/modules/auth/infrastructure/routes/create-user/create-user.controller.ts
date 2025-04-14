@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Logger, Post, Req, UseGuards } from "@nestjs/common";
 
 import { CreateUserDto } from "../../../application/create-user-use-case/create-user.dto";
 import { CreateUserUseCase } from "../../../application/create-user-use-case/create-user.use-case";
@@ -9,6 +9,8 @@ import { AuthGuard } from "../../auth.guard";
 
 @Controller(AUTH_ROUTE)
 export class CreateUserController {
+  private logger = new Logger("CreateUserController");
+
   constructor(private readonly createUserUseCase: CreateUserUseCase) {}
 
   @UseGuards(JwtAuthGuard, AuthGuard)
@@ -17,12 +19,14 @@ export class CreateUserController {
     @Body() body: CreateUserDto,
     @Req() req: FastifyRequest,
   ): Promise<{ status: boolean; token?: string }> {
-    console.log("request", req.headers["user"]);
+    // console.log("request", req.headers["user"]);
 
     const { clientid, email, username, picture } = req.headers as Record<
       string,
       string
     >;
+
+    this.logger.log(`Running CreateUserController for user ${username}`);
 
     return await this.createUserUseCase.execute({
       name: username,

@@ -9,9 +9,11 @@ export class WsBotSendFileUseCase {
 
   async execute(controllerid: string, fileurl: string, metadata: FileMetadata) {
     console.log("Emitting send file to bot", controllerid, fileurl, metadata);
-    await this.wsBotGateway.sendEventToBot(controllerid, "downloadFile", {
+    this.wsBotGateway.sendEventToBot(controllerid, "downloadFile", {
       file: fileurl,
       fileMetadata: metadata,
     });
+
+    return;
   }
 }

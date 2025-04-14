@@ -11,7 +11,6 @@ import {
 import { CDN_ROUTE } from "../route.constants";
 import { UploadCdnUseCase } from "../../application/upload-cdn.use-case";
 import { DecodeTokenDto, UploadCallbackDto } from "./dto/upload-cdn.dto";
-import { AuthGuard } from "@/src/modules/auth/infrastructure/auth.guard";
 import type { FastifyRequest } from "fastify";
 
 @Controller(CDN_ROUTE)

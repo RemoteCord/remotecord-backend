@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import type { Model } from "mongoose";
 import { UserModel } from "./user.schema";
@@ -12,19 +12,21 @@ import { WsApplicationRepository } from "@/src/modules/ws-application/domain/ws-
 
 @Injectable()
 export class UserRepository {
+  private logger = new Logger("UserRepository");
+
   constructor(
     @InjectModel(UserModel.name) private userModel: Model<UserModel>,
 
     @Inject(forwardRef(() => ClientDataEncryptUseCase))
     private readonly clientEncrypt: ClientDataEncryptUseCase,
-    private readonly logger: LoggerService,
+    // private readonly logger: LoggerService,
   ) {}
 
   async createUser(user: UserModel): Promise<string> {
     try {
       const existingUser = await this.userModel.findOne({ email: user.email });
       if (existingUser) {
-        this.logger.info(`Login from ${user.id}. Account already exists`);
+        this.logger.log(`Login from ${user.id}. Account already exists`);
         return this.clientEncrypt.encrypt(`
         ${user.id},
         ${user.email},
@@ -34,7 +36,7 @@ export class UserRepository {
 
       const result = await this.userModel.create(user);
       await result.save();
-      this.logger.info(`User with id ${user.id} created`);
+      this.logger.log(`User with id ${user.id} created`);
 
       const encryptToken = this.clientEncrypt.encrypt(`
         ${user.id},
@@ -54,18 +56,18 @@ export class UserRepository {
 
   async updateUser(clientid: string, user: Partial<UserModel>): Promise<void> {
     try {
-      console.log("updateUser", clientid, user);
+      // console.log("updateUser", clientid, user);
       const result = await this.userModel.findOneAndUpdate(
         { id: clientid },
         user,
         { new: true },
       );
-      console.log("result", result);
+      // console.log("result", result);
       if (!result) {
         throw new ClientNotFoundException();
       }
 
-      this.logger.info(`User with id ${clientid} updated`);
+      this.logger.log(`User with id ${clientid} updated ${Object.keys(user)}`);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
@@ -80,7 +82,7 @@ export class UserRepository {
 
     if (!user) return null;
 
-    this.logger.info(`Getting user with id ${id}`);
+    this.logger.log(`Getting user with id ${id}`);
     return user;
   }
 }

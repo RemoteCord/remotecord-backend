@@ -12,7 +12,7 @@ export class WsClientVerifyConnectionUseCase {
   ) {}
 
   async execute(controllerid: string, token: string) {
-    console.log("WS CLIENT VERIFY", token, controllerid);
+    // console.log("WS CLIENT VERIFY", token, controllerid);
     if (!token) throw new Error("Token not provided");
     if (!controllerid) throw new Error("Controller ID not provided");
 

@@ -19,14 +19,11 @@ export class WsBotScreenshotUseCase {
       `Emiting send screens event to bot ${data.controllerid} ${JSON.stringify(data)}`,
     );
 
-    return await this.wsBotGateway.sendEventToBot(
-      data.controllerid,
-      "sendScreensToBot",
-      {
-        screens: data.screens,
-        messageid: data.identifier,
-      },
-    );
+    this.wsBotGateway.sendEventToBot(data.controllerid, "sendScreensToBot", {
+      screens: data.screens,
+      messageid: data.identifier,
+    });
+    return;
   }
 
   async sendScreenshot(data: WsBotSendScreenshotEvent) {
@@ -34,12 +31,9 @@ export class WsBotScreenshotUseCase {
       `Emiting send screenshot event to bot ${data.controllerid}`,
     );
 
-    return await this.wsBotGateway.sendEventToBot(
-      data.controllerid,
-      "sendScreenshotToBot",
-      {
-        screenshot: data.buffer,
-      },
-    );
+    this.wsBotGateway.sendEventToBot(data.controllerid, "sendScreenshotToBot", {
+      screenshot: data.buffer,
+    });
+    return;
   }
 }

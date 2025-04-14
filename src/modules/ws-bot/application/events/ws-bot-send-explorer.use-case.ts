@@ -23,5 +23,7 @@ export class WsBotSendExplorerUseCase {
       folder,
       relativepath,
     });
+
+    return;
   }
 }

@@ -4,7 +4,6 @@ import { WsApplicationRepository } from "./domain/ws-application.repository";
 import { WsApplicationJoinsUseCase } from "./application/ws-application-joins.use-case";
 import { WsApplicationLeavesUseCase } from "./application/ws-application-leaves.use-case";
 import { WsApplicationVerifyConnectionUseCase } from "./application/ws-application-verify-connection.use-case";
-import { WsApplicationResetAllConnectionsUseCase } from "./application/ws-application-reset-all-connections-use-case";
 import { WsApplicationGuard } from "./application/ws-application.guard";
 import { SchemasModule } from "@/src/repository/db/schemas.module";
 import { AuthModule } from "../auth/auth.module";
@@ -21,7 +20,6 @@ import { WsBotModule } from "../ws-bot/ws-bot.module";
     WsApplicationJoinsUseCase,
     WsApplicationLeavesUseCase,
     WsApplicationVerifyConnectionUseCase,
-    WsApplicationResetAllConnectionsUseCase,
     WsApplicationConnectClientUseCase,
     WsApplicationGuard,
     WsApplicationAddFriend,
@@ -30,7 +28,6 @@ import { WsBotModule } from "../ws-bot/ws-bot.module";
   exports: [
     WsApplicationJoinsUseCase,
     WsApplicationLeavesUseCase,
-    WsApplicationResetAllConnectionsUseCase,
     WsApplicationConnectClientUseCase,
     WsApplicationRepository,
     WsApplicationAddFriend,

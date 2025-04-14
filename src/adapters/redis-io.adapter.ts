@@ -1,39 +1,49 @@
 import { IoAdapter } from "@nestjs/platform-socket.io";
 import { ServerOptions } from "socket.io";
 import { createAdapter } from "@socket.io/redis-adapter";
+import { Logger } from "@nestjs/common";
 import { createClient } from "redis";
 
-const REDIS_HOST = process.env.REDIS_HOST || "localhost";
-const REDIS_PORT = process.env.REDIS_PORT
-  ? parseInt(process.env.REDIS_PORT)
-  : 6379;
-const REDIS_USERNAME = process.env.REDIS_USERNAME || "admin";
-const REDIS_PASSWORD = process.env.REDIS_PASSWORD || "password";
-const REDIS_DB: number = process.env.REDIS_DB
-  ? parseInt(process.env.REDIS_DB)
-  : 0;
-
-console.log(REDIS_HOST, REDIS_PORT, REDIS_USERNAME, REDIS_PASSWORD, REDIS_DB);
 export class RedisIoAdapter extends IoAdapter {
-  private adapterConstructor!: ReturnType<typeof createAdapter>;
+  private adapterConstructor: ReturnType<typeof createAdapter> | undefined;
+  private readonly logger = new Logger("RedisIoAdapter");
 
   async connectToRedis(): Promise<void> {
-    const pubClient = createClient({
-      url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
-      username: REDIS_USERNAME,
-      password: REDIS_PASSWORD,
-      database: REDIS_DB,
-    });
-    const subClient = pubClient.duplicate();
+    try {
+      const pubClient = createClient({
+        url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+        username: process.env.REDIS_USERNAME,
+        password: process.env.REDIS_PASSWORD,
 
-    await Promise.all([pubClient.connect(), subClient.connect()]);
+        // Don't set a DB number for pubsub - use default
+      });
 
-    this.adapterConstructor = createAdapter(pubClient, subClient);
+      const subClient = pubClient.duplicate();
+
+      await Promise.all([pubClient.connect(), subClient.connect()]);
+
+      this.adapterConstructor = createAdapter(pubClient, subClient);
+      this.logger.log("Redis adapter initialized successfully");
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      this.logger.error(`Failed to connect to Redis: ${errorMessage}`);
+      throw error;
+    }
   }
 
   createIOServer(port: number, options?: ServerOptions): any {
     const server = super.createIOServer(port, options);
-    server.adapter(this.adapterConstructor);
-    return server;
+
+    try {
+      server.adapter(this.adapterConstructor);
+      return server;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      this.logger.error(`Failed to set Redis adapter: ${errorMessage}`);
+      throw error;
+    }
   }
 }

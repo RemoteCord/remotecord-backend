@@ -1,14 +1,19 @@
+import { Logger } from "@nestjs/common";
 import { type CorsOptions } from "@nestjs/common/interfaces/external/cors-options.interface";
 
 const ALLOWED_ORIGINS: string[] = [
   "http://localhost:3007",
   "http://localhost:3002",
   "http://tauri.localhost",
+  "http://localhost:3006",
+  "https://remotecord.app",
 ];
+
+const logger = new Logger("CorsOptions");
 
 const CorsOptions: CorsOptions = {
   origin: (origin, cb) => {
-    console.log("aaaaaaaaaaaaaaa", origin); // Log even if undefined
+    // console.log("ORIGIN REQUEST", origin); // Log even if undefined
 
     if (!origin) {
       // Handle requests with no origin (like same origin requests)
@@ -17,8 +22,8 @@ const CorsOptions: CorsOptions = {
     }
 
     try {
-      const hostname = new URL(origin).hostname;
-      console.log("Hostname: ", hostname, origin);
+      // const hostname = new URL(origin).hostname;
+      logger.log(`REQUEST FROM: ${origin}`);
 
       if (ALLOWED_ORIGINS.includes(origin)) {
         //  Request from localhost will pass

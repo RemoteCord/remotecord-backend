@@ -25,24 +25,24 @@ export class CreateUserUseCase {
       //   dto.token,
       // );
 
-      console.log("User data", dto);
+      // console.log("User data", dto);
 
-      const token = await this.userRepository.createUser({
+      await this.userRepository.createUser({
         id: dto.clientid,
         email: dto.email!,
         avatar: dto.picture,
         name: dto.name,
       });
 
-      console.log("User created", token);
+      // console.log("User created", token);
 
       // await this.clientPermissionsRepository.createPermissionDocument(user.id);
 
       // return { token: token };
-      if (!token) throw new Error("Error generating token");
-      return { status: true, token };
+      // if (!token) throw new Error("Error generating token");
+      return { status: true };
     } catch (error) {
-      console.log(error);
+      // console.log(error);
 
       return { status: false };
     }

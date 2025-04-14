@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  Logger,
+} from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Observable } from "rxjs";
 import { CommandsRepository } from "./commands.repository";
@@ -8,26 +13,22 @@ import { Permissions } from "@/src/repository/db/clientPermisions/clientPermissi
 
 @Injectable()
 export class CommandsGuard implements CanActivate {
+  private logger = new Logger("CommandsGuard");
   constructor(
     private reflector: Reflector,
     private readonly commandsRepository: CommandsRepository,
-    private readonly logger: LoggerService,
+    // private readonly logger: LoggerService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const client: Socket = context.switchToWs().getClient();
-
+    const clientid = client.handshake.query["clientid"] as string;
+    const controllerid = client.handshake.query["controllerid"] as string;
+    this.logger.log(`Running Commands Guard ${clientid}`);
     const command = this.reflector.get<string>(
       "command",
       context.getHandler(),
     ) as Permissions;
-
-    if (!command) {
-      this.logger.error("Missing command decorator in ws-client gateway event");
-      return false;
-    }
-
-    const clientid = client.handshake.query["clientid"] as string;
 
     const allowed = await this.commandsRepository.verifyPermissionEvent(
       clientid,
@@ -36,13 +37,16 @@ export class CommandsGuard implements CanActivate {
 
     if (!allowed) {
       this.logger.error(
-        `Client ${clientid} not allowed to execute command:`,
-        command,
+        `Client ${clientid} not allowed to execute command: ${command}`,
       );
       return false;
     }
 
     await this.commandsRepository.deleteCommandEvent(clientid, command);
+
+    this.logger.log(
+      `Sending command event: ${command} from client ${clientid} to controller ${controllerid}`,
+    );
     return true;
   }
 }

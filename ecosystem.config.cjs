@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ path: "./.env" });
 
 const PORT = process.env.PORT || 3003;
 
@@ -6,11 +6,11 @@ module.exports = {
   apps: [
     {
       script: "bun", // Cambiado a dist/main.js
-      args: "run start",
-      cwd: process.cwd(),
-      instances: 1,
+      args: "start",
+      // cwd: process.cwd(),
+      // instances: 1,
 
-      exec_mode: "fork",
+      exec_mode: "cluster",
       watch: ["dist"],
       // ignore_watch: ["node_modules", "src"],
       env: {
@@ -29,6 +29,10 @@ module.exports = {
         REDIS_USERNAME: process.env.REDIS_USERNAME,
         REDIS_PASSWORD: process.env.REDIS_PASSWORD,
         REDIS_DB: process.env.REDIS_DB,
+        AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
+        AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
+        AUTH0_CLIENT_SECRET: process.env.AUTH0_CLIENT_SECRET,
+        AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE,
       },
       env_development: {
         NODE_ENV: "development",

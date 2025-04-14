@@ -1,5 +1,5 @@
 import { LoggerService } from "@/src/modules/shared/providers";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { WsApplicationRepository } from "../../domain/ws-application.repository";
 import { ClientDataEncryptUseCase } from "@/src/modules/auth/application/client-data-encrypt.use-case";
@@ -8,11 +8,12 @@ import { ControllerRepository } from "@/src/repository/db/controller/controller.
 import { WsApplicationGateway } from "../../infrastructure/ws-application.gateway";
 import { RedisRepository } from "@/src/repository/redis/domain/redis.repository";
 import { WsClientGateway } from "@/src/modules/ws-client/infrastructure/ws-client.gateway";
+import { generateRandomHash } from "@/src/utils";
 
 @Injectable()
 export class WsApplicationConnectClientUseCase {
+  private logger = new Logger("WsApplicationConnectClientUseCase");
   constructor(
-    private readonly logger: LoggerService,
     private readonly controllerRepository: ControllerRepository,
     private readonly wsApplicationRepository: WsApplicationRepository,
     private readonly redisRepository: RedisRepository,
@@ -22,12 +23,10 @@ export class WsApplicationConnectClientUseCase {
 
   async disconnect(controllerid: string) {
     try {
-      this.logger.info(`Disconnecting controller ${controllerid}`);
       const clientid =
         await this.controllerRepository.getActiveClient(controllerid);
       if (!clientid) throw new Error("Controller not found");
 
-      this.logger.info(`Emitting disconnect to ws-client ${clientid}`);
       await this.wsClientGateway.sendEventToClient(
         clientid,
         "emitDisconnectFromController",
@@ -35,6 +34,8 @@ export class WsApplicationConnectClientUseCase {
           controller: controllerid,
         },
       );
+
+      // this.logger.log(`Disconnecting controller ${controllerid}`);
 
       // await this.redisRepository.HDEL(["ws", [clientid]], "client");
 
@@ -64,16 +65,15 @@ export class WsApplicationConnectClientUseCase {
       if (activeclient === clientid)
         throw new Error("Client already connected");
 
-      this.logger.info(
-        `Attempting Client ${clientid} emitting connect to ws-client with controller ${controllerid}`,
-      );
+      const tokenConnection = generateRandomHash();
 
-      this.logger.info(
-        `Encrypted controller id: (${controllerid}) for connecting to ${clientid}`,
+      this.redisRepository.HSET(
+        ["token-connections"],
+        {
+          [controllerid]: tokenConnection,
+        },
+        true,
       );
-
-      const tokenConnection =
-        this.wsApplicationRepository.generateConnectionToken(clientid);
 
       this.wsApplicationGateway.sendEventToApplication(
         clientid,
