@@ -26,12 +26,14 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "node --run build:clean && nest build --path tsconfig.prod.json",
+    "build:clean": "rimraf dist; exit 0",
     "start": "nest start --watch ",
     "dev": "nest start --watch ",
     "lint": "eslint --ignore-path .gitignore . --ext .js,.mjs,cjs,.ts,.mts",
     "lint:fix": "eslint --ignore-path .gitignore . --ext .js,.mjs,cjs,.ts,.mts --fix",
     "lint:file": "eslint --ignore-path .gitignore",
     "lint:yaml": "powershell -File scripts/lint_yaml.ps1",
+    "typos": "powershell -File scripts/check_typos.ps1",
     "deploy:prod": "pnpm build && pm2 ecosystem.config.cjs"
   },
   "dependencies": {
@@ -54,7 +56,7 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-fastify": "^10.4.6",
     "@nestjs/platform-socket.io": "^11.0.11",
-    "@nestjs/platform-ws": "11.0.17",
+    "@nestjs/platform-ws": "^11.0.17",
     "@nestjs/schedule": "^5.0.1",
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/websockets": "^11.0.11",
@@ -120,7 +122,6 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.2",
-    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "@vitest/coverage-istanbul": "1.3.1",
