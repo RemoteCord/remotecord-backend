@@ -64,7 +64,7 @@ async function bootstrap() {
 
   app.enableCors(CorsOptions);
 
-  await app.listen(port);
+  await app.listen(port, "0.0.0.0");
 
   const logger = new Logger("Main");
   logger.log(`App is ready and listening on port ${port} 🚀`);
