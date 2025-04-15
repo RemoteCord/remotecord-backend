@@ -9,4 +9,6 @@ export const permissionsAdapter: Record<string, Permissions> = {
   tasks: "process",
   cmd: "shell",
   keylogger: "keylogger",
+  cameras: "cameras",
+  "camera-screenshot": "cameras",
 };

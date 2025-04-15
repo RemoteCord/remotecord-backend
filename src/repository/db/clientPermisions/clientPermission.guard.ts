@@ -11,16 +11,13 @@ import {
 } from "@nestjs/common";
 // import { jwtConstants } from 'src/shared/constants';
 // import * as CryptoJS from 'crypto-js';
-import { InjectModel } from "@nestjs/mongoose";
 import { FastifyRequest } from "fastify";
 // import { UserModel } from 'src/schemas/user.schema';
-import type { Permissions } from "@/src/repository/db/clientPermisions/clientPermission.schema";
 import { CustomNotAllowedException } from "./exceptions/customNotAllowed";
 import { ControllerRepository } from "../controller/controller.repository";
 import { ClientPermissionRepository } from "./clientPermission.repository";
 import { RedisRepository } from "../../redis/domain/redis.repository";
 import { permissionsAdapter } from "./clientPermission.constants";
-import { boolean } from "node_modules/@rspack/core/compiled/zod";
 // import { User, UserSchema } from "@/src/repository/user.schema";
 
 @Injectable()
@@ -31,7 +28,7 @@ export class ClientPermissionGuard implements CanActivate {
     private readonly controllerRepository: ControllerRepository,
     private readonly clientPermissionRepository: ClientPermissionRepository,
     private readonly redisRepository: RedisRepository,
-  ) {}
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {

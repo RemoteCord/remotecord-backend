@@ -25,13 +25,17 @@ import {
   AddFriendToControllerDto,
   BaseControllerDto,
   ConnectClientDto,
+  DeleteFriendFromControllerDto,
   GetExplorerFromClientDto,
   SelectCurrentClientDto,
 } from "./dto/controller.dto";
 import { LoggerService } from "@/src/modules/shared/providers";
 import { MessageBotGuard } from "../../application/guards/MessageBot.guard";
 import type { FastifyRequest } from "fastify";
+import { ControllerAuthorizationGuard } from "../../application/guards/ControllerAuthorization.guard";
+import { DeleteFriendFromControrllerUseCase } from "../../application/delete-friend-from-controller.use-case";
 
+@UseGuards(ControllerAuthorizationGuard)
 @Controller(CONTROLLER_ROUTE)
 export class ControllerRoutes {
   private logger = new Logger("ControllerRoutes");
@@ -41,10 +45,11 @@ export class ControllerRoutes {
     private readonly selectCurrentClientUseCase: SelectCurrentClientUseCase,
     private readonly activateControllerUseCase: ActivateControllerUseCase,
     private readonly addFriendtoControllerUseCase: AddFriendToControllerUseCase,
+    private readonly deleteFriendFromControllerUseCase: DeleteFriendFromControrllerUseCase,
     private readonly getExplorerClientUseCase: GetExplorerClientUseCase,
     private readonly getFriendsUseCase: GetFriendsUseCase,
     private readonly screensClientUseCase: ScreensClientUseCase,
-  ) {}
+  ) { }
 
   @Get(":controllerid")
   async getCurrentClient(@Param("controllerid") controllerid: string) {
@@ -109,6 +114,16 @@ export class ControllerRoutes {
     return await this.addFriendtoControllerUseCase.execute(controllerid, body);
   }
 
+  @Post(":controllerid/delete-friend")
+  async deleteFriend(
+    @Param("controllerid") controllerid: string,
+    @Body() body: DeleteFriendFromControllerDto,
+  ) {
+    // console.log(body, controllerid);
+
+    return await this.deleteFriendFromControllerUseCase.execute(controllerid, body);
+  }
+
   @Get(":controllerid/friends")
   async getFriendsController(@Param("controllerid") controllerid: string) {
     return await this.getFriendsUseCase.execute(controllerid);
@@ -123,8 +138,7 @@ export class ControllerRoutes {
     return await this.getExplorerClientUseCase.execute(controllerid, body);
   }
 
-  @UseGuards(MessageBotGuard)
-  @UseGuards(ClientPermissionGuard)
+  @UseGuards(MessageBotGuard, ClientPermissionGuard)
   @Post(":controllerid/get-screens")
   async getScreens(
     @Param("controllerid") controllerid: string,

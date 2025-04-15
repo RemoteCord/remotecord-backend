@@ -12,13 +12,13 @@ export class WsBotSendCommandUseCase {
   constructor(
     private readonly logger: LoggerService,
     private readonly wsBotGateway: WsBotGateway,
-  ) {}
+  ) { }
   async execute(data: WsBotSendCmdCommandEvent) {
     const { controllerid, pwd, stdout } = data;
 
-    this.logger.info(
-      `WSBOT Emiting emmiting command to controller ${controllerid}`,
-    );
+    // this.logger.info(
+    //   `WSBOT Emiting emmiting command to controller ${controllerid}`,
+    // );
 
     this.wsBotGateway.sendEventToBot(controllerid, "getCmdCommand", {
       path: pwd,

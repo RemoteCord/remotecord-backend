@@ -13,7 +13,7 @@ export class WsBotSendFriendUseCase {
   constructor(
     private readonly logger: LoggerService,
     private readonly wsBotGateway: WsBotGateway,
-  ) {}
+  ) { }
   async execute(data: WsBotAddFriendEvent) {
     const { controllerid, clientid } = data;
 
@@ -21,9 +21,7 @@ export class WsBotSendFriendUseCase {
       `Emiting connect client event ${clientid} to controller ${controllerid}`,
     );
 
-    this.wsBotGateway.sendEventToBot(controllerid, "addFriend", {
-      clientid,
-    });
+    this.wsBotGateway.sendEventToBot(controllerid, "addFriend", data);
 
     return;
   }

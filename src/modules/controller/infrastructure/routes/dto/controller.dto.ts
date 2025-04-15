@@ -6,6 +6,9 @@ export class BaseControllerDto {
   messageid!: string;
 }
 
+export class CamerasControllerDto extends BaseControllerDto {
+}
+
 export class ActivateControllerDto extends BaseControllerDto {
   @IsString()
   @IsNotEmpty()
@@ -23,11 +26,18 @@ export class AddFriendToControllerDto extends BaseControllerDto {
 
   @IsString()
   @IsNotEmpty()
-  username!: string;
+  name!: string;
 
   @IsString()
   @IsNotEmpty()
-  avatar!: string;
+  picture!: string;
+}
+
+export class DeleteFriendFromControllerDto extends BaseControllerDto {
+  @IsString()
+  @IsNotEmpty()
+  clientid!: string;
+
 }
 
 export class ConnectClientDto extends BaseControllerDto {

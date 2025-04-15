@@ -11,7 +11,7 @@ export class WsBotConnectClientUseCase {
     private readonly wsClientRepository: WsClientRepository,
     private readonly redisRepository: RedisRepository,
     private readonly wsBotGateway: WsBotGateway,
-  ) {}
+  ) { }
   async execute(data: WsBotConnectionEvent) {
     const { controllerid, clientid } = data;
 
@@ -22,7 +22,7 @@ export class WsBotConnectClientUseCase {
     }
 
     this.logger.info(
-      `Emiting connect client event ${clientid} to controller ${controllerid}`,
+      `Emiting connect client event ${clientid} to controller ${controllerid} ${data.identifier}`,
     );
 
     const messageid = await this.redisRepository.HGET(

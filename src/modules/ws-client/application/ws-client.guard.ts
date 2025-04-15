@@ -2,6 +2,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from "@nestjs/common";
 // import { jwtConstants } from 'src/shared/constants';
@@ -13,10 +14,10 @@ import { CommandsRepository } from "../../client/domain/commands.repository";
 
 @Injectable()
 export class WsClientGuard implements CanActivate {
+  private logger = new Logger("WsClientGuard");
   constructor(
-    private readonly logger: LoggerService,
     private readonly wsClientVerifyConnectionUseCase: WsClientVerifyConnectionUseCase,
-  ) {} // @InjectModel(UserModel.name) private userModel: Model<UserModel>,
+  ) { } // @InjectModel(UserModel.name) private userModel: Model<UserModel>,
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
@@ -25,7 +26,6 @@ export class WsClientGuard implements CanActivate {
       const client: Socket = context.switchToWs().getClient();
       // console.log("client:", client);
 
-      this.logger.info("Running ws client guard");
 
       if (!client) throw new UnauthorizedException();
 
@@ -47,7 +47,7 @@ export class WsClientGuard implements CanActivate {
       client.handshake.query["clientid"] = clientid;
       client.handshake.query["controllerid"] = controllerid;
 
-      this.logger.info("passed ws event client guard");
+      this.logger.log("Passed WsClientGuard");
 
       // await this.commandsRepository.deleteCommandEvent(clientid, );
 

