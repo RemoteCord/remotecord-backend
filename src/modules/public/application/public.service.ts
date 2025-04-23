@@ -60,11 +60,7 @@ export class PublicService {
         platforms: JSON.stringify(platformKeys),
       });
     } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error fetching download endpoints", error.message);
-      } else {
-        console.error("Error fetching download endpoints", error);
-      }
+
     }
   }
 
