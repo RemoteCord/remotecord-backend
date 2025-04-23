@@ -26,6 +26,12 @@ export class PublicController {
     };
   }
 
+  @Get("download")
+  async getDownloadLinks() {
+    return await this.publicService.getDownloadEndpoints();
+
+  }
+
   @Get("download/:platform")
   async downloadAppList(@Param("platform") platform: PlatformsKeys,
     @Res({ passthrough: true }) reply: FastifyReply) {
