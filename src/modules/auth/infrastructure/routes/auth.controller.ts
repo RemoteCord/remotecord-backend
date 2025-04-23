@@ -15,7 +15,9 @@ export class AuthController {
     async callback(@Res() res: FastifyReply, @Query('code') code: string,
     ) {
 
-        const redirectUri = 'https://api2.luqueee.dev/api/auth/callback';
+        const BASE_API_URL = this.configService.get(Configuration.BASE_API_URL);
+
+        const redirectUri = `${BASE_API_URL}/api/auth/callback`;
         try {
 
             const client_id = this.configService.get(Configuration.GOOGLE_CLIENT_ID);
