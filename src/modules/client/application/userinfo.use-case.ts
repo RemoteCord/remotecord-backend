@@ -39,6 +39,8 @@ export class UserInfoUseCase {
         }),
       );
 
+      console.log("friends", friends);
+
       return { friends };
     } catch (error) {
       return { friends: [] };
