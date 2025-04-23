@@ -18,13 +18,16 @@ export class ControllerDiscordRoutes {
 
 
         const BASE_API_URL = this.configService.get(Configuration.BASE_API_URL);
+
+        const client_id = this.configService.get(Configuration.DISCORD_CLIENT_ID) as string;
+        const client_secret = this.configService.get(Configuration.DISCORD_CLIENT_SECRET) as string;
         const tokens = await fetch(
             "https://discord.com/api/oauth2/token",
             {
                 method: "POST",
                 body: new URLSearchParams({
-                    client_id: "1043524973517615164",
-                    client_secret: "d140s1ucKHQ1ADPaTDj0tnGiT4OH__iu",
+                    client_id,
+                    client_secret,
                     grant_type: "authorization_code",
                     code,
                     redirect_uri: `${BASE_API_URL}/api/controllers/get-email`,
@@ -69,7 +72,7 @@ export class ControllerDiscordRoutes {
             picture: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`,
             locale: userData.locale,
         }).catch((error) => {
-            console.error("Error creating controller", error);
+            // console.error("Error creating controller", error);
         }
         );
 
