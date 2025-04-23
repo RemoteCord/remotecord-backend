@@ -68,7 +68,10 @@ export class ControllerDiscordRoutes {
             name: userData.username,
             picture: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`,
             locale: userData.locale,
-        })
+        }).catch((error) => {
+            console.error("Error creating controller", error);
+        }
+        );
 
 
 
