@@ -22,8 +22,6 @@ const CorsOptions: CorsOptions = {
     }
 
     try {
-      // const hostname = new URL(origin).hostname;
-      logger.log(`REQUEST FROM: ${origin}`);
 
       if (ALLOWED_ORIGINS.includes(origin)) {
         //  Request from localhost will pass

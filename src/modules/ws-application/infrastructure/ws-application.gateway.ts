@@ -47,8 +47,7 @@ export class WsApplicationGateway
       // if (client) {
       //   client.emit(event, payload);
       // }
-      this.logger.log(`
-      message to application ${clientid} with the event ${event} and payload ${payload}`);
+      this.logger.debug(`message to application ${clientid} with the event ${event} and payload ${payload}`);
 
       const connectionid = await this.redisRepository.HGET(
         ["ws", [clientid]],
