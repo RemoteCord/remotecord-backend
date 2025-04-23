@@ -9,11 +9,11 @@ const ALLOWED_ORIGINS: string[] = [
   "https://remotecord.app",
 ];
 
-const logger = new Logger("CorsOptions");
+const logger = new Logger("CORS");
 
 const CorsOptions: CorsOptions = {
   origin: (origin, cb) => {
-    console.log("ORIGIN REQUEST", origin); // Log even if undefined
+    logger.debug("ORIGIN REQUEST", origin); // Log even if undefined
 
     if (!origin) {
       // Handle requests with no origin (like same origin requests)

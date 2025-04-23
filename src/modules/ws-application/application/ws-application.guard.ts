@@ -8,14 +8,14 @@ import {
 // import * as CryptoJS from 'crypto-js';
 import { Socket } from "socket.io";
 import { LoggerService } from "../../shared/providers";
-import { WsApplicationVerifyConnectionUseCase } from "./ws-application-verify-connection.use-case";
+import { JwtAuthGuard } from "../../auth/infrastructure/jwt.guard";
 
 @Injectable()
 export class WsApplicationGuard implements CanActivate {
   constructor(
     private readonly logger: LoggerService,
-    private readonly wsApplicationVerifyConnectionUseCase: WsApplicationVerifyConnectionUseCase,
-  ) {} // @InjectModel(UserModel.name) private userModel: Model<UserModel>,
+    private readonly jwtAuthGuard: JwtAuthGuard,
+  ) { } // @InjectModel(UserModel.name) private userModel: Model<UserModel>,
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
@@ -31,7 +31,7 @@ export class WsApplicationGuard implements CanActivate {
       if (!token) throw new UnauthorizedException();
 
       const { clientid } =
-        await this.wsApplicationVerifyConnectionUseCase.execute(token);
+        await this.jwtAuthGuard.decryptData(token);
 
       //   const id = this.verifyToken(token);
       //   client["clientid"] = id;

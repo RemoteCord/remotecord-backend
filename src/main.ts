@@ -75,8 +75,8 @@ async function bootstrap() {
   // }
 }
 
-// bootstrap().catch(handleError);
-AppClusterService.clusterize(bootstrap);
+bootstrap().catch(handleError);
+// AppClusterService.clusterize(bootstrap);
 
 function handleError(error: unknown) {
   console.error(error);

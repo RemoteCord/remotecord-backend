@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { CreateUserUseCase } from "./application/create-user-use-case/create-user.use-case";
 import { AuthGuard } from "./infrastructure/auth.guard";
-import { CreateUserController } from "./infrastructure/routes/create-user/create-user.controller";
 import { SchemasModule } from "@/src/repository/db/schemas.module";
 import { ClientDataEncryptUseCase } from "./application/client-data-encrypt.use-case";
 import { SharedModule } from "../shared/shared.module";
@@ -12,6 +11,8 @@ import { PassportModule } from "@nestjs/passport";
 import { JwtStrategy } from "./jwt.stratergy";
 import authConfig from "./auth.config";
 import { JwtAuthGuard } from "./infrastructure/jwt.guard";
+import { AuthController } from "./infrastructure/routes/auth.controller";
+import { AuthUseCase } from "./application/auth.use-case";
 
 @Global()
 @Module({
@@ -30,13 +31,14 @@ import { JwtAuthGuard } from "./infrastructure/jwt.guard";
     forwardRef(() => SchemasModule),
     SharedModule,
   ],
-  controllers: [CreateUserController],
+  controllers: [AuthController],
   providers: [
     ClientDataEncryptUseCase,
     CreateUserUseCase,
     AuthGuard,
     JwtStrategy,
     JwtAuthGuard,
+    AuthUseCase
   ],
   exports: [
     AuthGuard,
@@ -44,6 +46,7 @@ import { JwtAuthGuard } from "./infrastructure/jwt.guard";
     PassportModule,
     JwtStrategy,
     JwtAuthGuard,
+    AuthUseCase
   ],
 })
-export class AuthModule {}
+export class AuthModule { }

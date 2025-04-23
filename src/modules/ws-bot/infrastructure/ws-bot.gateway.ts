@@ -73,7 +73,12 @@ export class WsBotGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // console.error("Connection error:", error);
       this.logger.error(`Failed to connect bot: ${error}`);
       client.disconnect();
+      this.logger.error(
+        `Unauthorized bot connection attempt: ${client.id}`,)
+      return
     }
+
+    this.logger.debug(`BOT CONNECTED: ${client.id}`);
   }
 
   handleDisconnect(client: Socket) {

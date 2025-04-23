@@ -15,10 +15,11 @@ import { LoggerService } from "../../shared/providers";
 import { UserRepository } from "@/src/repository/db/user/user.repository";
 import { CustomUnathorizedException } from "./exceptions";
 import { ClientDataEncryptUseCase } from "../application/client-data-encrypt.use-case";
+import { jwtDecode } from "jwt-decode";
 
 // import { User, UserSchema } from "@/src/repository/user.schema";
 
-interface User {
+export interface User {
   sub: string;
   email: string;
   name: string;
@@ -32,12 +33,16 @@ export class AuthGuard implements CanActivate {
     // private readonly logger: LoggerService,
     private readonly userRepository: UserRepository,
     private readonly clientDataEncrypt: ClientDataEncryptUseCase,
-  ) {}
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const request: FastifyRequest = context.switchToHttp().getRequest();
-      const token = this.extractTokenFromHeader(request);
+      // const token = this.extractTokenFromHeader(request);
+
+      // if(!token) return false
+      // const user_data = await jwtDecode(token) as User;
+
 
       return true;
     } catch (error: unknown) {

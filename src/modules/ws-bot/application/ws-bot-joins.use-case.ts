@@ -11,7 +11,7 @@ export class WsBotJoinsUseCase {
     private readonly configService: ConfigService,
     private readonly logger: LoggerService,
     private readonly wsBotRepository: WsBotRepository,
-  ) {}
+  ) { }
 
   async execute(client: Socket) {
     // console.log("bot", client.handshake.headers);
@@ -24,7 +24,6 @@ export class WsBotJoinsUseCase {
       client.disconnect();
     }
 
-    this.logger.info("Bot connected");
 
     this.wsBotRepository.generateClient(client);
   }

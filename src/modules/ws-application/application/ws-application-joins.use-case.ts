@@ -3,7 +3,6 @@ import { Socket } from "socket.io";
 import { UserRepository } from "@/src/repository/db/user/user.repository";
 import { LoggerService } from "../../shared/providers";
 import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
-import { WsApplicationVerifyConnectionUseCase } from "./ws-application-verify-connection.use-case";
 import { RedisRepository } from "@/src/repository/redis/domain/redis.repository";
 import { JwtAuthGuard } from "../../auth/infrastructure/jwt.guard";
 
@@ -12,10 +11,9 @@ export class WsApplicationJoinsUseCase {
   private logger = new Logger("WsApplicationJoinsUseCase");
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly WsApplicationVerifyConnectionUseCase: WsApplicationVerifyConnectionUseCase,
     private readonly redisRepository: RedisRepository,
     private readonly jwtAuthGuard: JwtAuthGuard,
-  ) {}
+  ) { }
 
   async execute(client: Socket) {
     // console.log(client.handshake.headers);
@@ -24,8 +22,10 @@ export class WsApplicationJoinsUseCase {
       token: string;
     };
 
-    const data = await this.WsApplicationVerifyConnectionUseCase.execute(token);
+
+    const data = await this.jwtAuthGuard.decryptData(token);
     const { clientid, email, username } = data;
+
 
     // this.logger.info("Decrypted ws application token: ", JSON.stringify(data));
     const client_data = await this.userRepository.getUserById(clientid);

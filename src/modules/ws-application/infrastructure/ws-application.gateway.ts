@@ -25,8 +25,7 @@ import { ControllerRepository } from "@/src/repository/db/controller/controller.
   maxHttpBufferSize: 1e8,
 })
 export class WsApplicationGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
-{
+  implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Socket;
 
@@ -39,7 +38,7 @@ export class WsApplicationGateway
     private readonly wsApplicationLeavesUseCase: WsApplicationLeavesUseCase,
     private readonly wsApplicationAddFriendUseCase: WsApplicationAddFriendUseCase,
     private readonly redisRepository: RedisRepository,
-  ) {}
+  ) { }
 
   async sendEventToApplication(clientid: string, event: string, payload: any) {
     try {
@@ -48,6 +47,8 @@ export class WsApplicationGateway
       // if (client) {
       //   client.emit(event, payload);
       // }
+      this.logger.log(`
+      message to application ${clientid} with the event ${event} and payload ${payload}`);
 
       const connectionid = await this.redisRepository.HGET(
         ["ws", [clientid]],
@@ -56,6 +57,8 @@ export class WsApplicationGateway
       console.log("connectionid", connectionid);
 
       if (!connectionid) return;
+
+
       this.server.to(connectionid).emit(event, payload);
     } catch (error) {
       this.logger.error("Error sending event to application", error);
@@ -66,21 +69,23 @@ export class WsApplicationGateway
   }
 
   async handleConnection(client: Socket) {
+    const { clientid } = await this.wsApplicationJoinsUseCase.execute(client);
     try {
-      const { clientid } = await this.wsApplicationJoinsUseCase.execute(client);
 
       await this.redisRepository.HSET(["ws", [clientid]], {
         application: client.id,
       });
 
-      this.logger.log(`Client ${clientid} connected to ws-application`);
 
       // await this.clientJoinsUseCase.execute()
     } catch (error) {
-      this.logger.error("Error on joining to ws-application", error);
+      this.logger.debug("Error on joining to ws-application", error);
       // console.error("Connection error:", error);
       client.disconnect();
+      return
     }
+    this.logger.debug(`Client ${clientid} connected to ws-application`);
+
   }
 
   async handleDisconnect(client: Socket) {
@@ -95,7 +100,7 @@ export class WsApplicationGateway
 
     await this.redisRepository.HDEL(["ws", [clientid]], "application");
 
-    this.logger.log(`Client ${clientid} disconnected from ws-application`);
+    this.logger.debug(`Client ${clientid} disconnected from ws-application`);
     // await this.redisRepository.HDEL(["client-data"], clientid);
   }
 

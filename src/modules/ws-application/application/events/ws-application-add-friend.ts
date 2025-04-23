@@ -8,7 +8,7 @@ export class WsApplicationAddFriend {
   constructor(
     private readonly logger: LoggerService,
     private readonly wsApplicationGateway: WsApplicationGateway,
-  ) {}
+  ) { }
 
   async execute(
     clientid: string,
