@@ -88,12 +88,6 @@ export class WsApplicationGateway
   }
 
   async handleDisconnect(client: Socket) {
-    try {
-      await this.wsApplicationLeavesUseCase.execute(client);
-    } catch (error) {
-      // console.error("Connection error:", error);
-      client.disconnect();
-    }
 
     const clientid = client.handshake.query["clientid"] as string;
 
