@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 
@@ -23,6 +23,7 @@ import { SentryGlobalFilter, SentryModule } from "@sentry/nestjs/setup";
 import { APP_FILTER } from "@nestjs/core";
 import { StripeModule } from "../modules/stripe/stripe.module";
 import { PatreonModule } from "../modules/patreon/patreon.module";
+import { LoggerMiddleware } from "../modules/shared/middlewares/logger.middleware";
 
 @Module({
   imports: [
@@ -55,4 +56,8 @@ import { PatreonModule } from "../modules/patreon/patreon.module";
     },
   ],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*'); // Apply to all routes
+  }
+}

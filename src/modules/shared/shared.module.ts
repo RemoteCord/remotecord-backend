@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 
 import { LogInterceptor } from "./interceptors";
 import { LoggerService } from "./providers/logger.service";
+import { LoggerMiddleware } from "./middlewares/logger.middleware";
 
 const loggerProvider: Provider = {
   provide: Logger,
@@ -18,7 +19,7 @@ const loggerProvider: Provider = {
 @Global()
 @Module({
   imports: [],
-  providers: [loggerProvider, LoggerService, LogInterceptor],
+  providers: [loggerProvider, LoggerService, LogInterceptor, LoggerMiddleware],
   exports: [loggerProvider, LoggerService, LogInterceptor],
 })
-export class SharedModule {}
+export class SharedModule { }

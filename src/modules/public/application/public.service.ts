@@ -43,21 +43,29 @@ export class PublicService {
 
   @Interval(10000)
   async fetchDownloadEndpoints() {
-    const endpoints = await fetch("https://github.com/remotecord/remotecord-app/releases/latest/download/latest.json")
-      .then(async (res) => await res.json()) as DownloadAppResponse;
+    try {
+      const endpoints = await fetch("https://github.com/remotecord/remotecord-app/releases/latest/download/latest.json")
+        .then(async (res) => await res.json()) as DownloadAppResponse;
 
-    // console.log("endpoints", endpoints);
-    const platformKeys = Object.keys(endpoints.platforms);
-    const downloads = Object.entries(endpoints.platforms).reduce((acc, [key, value]) => {
-      // console.log(key, value);
-      acc[key] = value.url;
-      return acc;
-    }, {} as Record<string, string>);
+      // console.log("endpoints", endpoints);
+      const platformKeys = Object.keys(endpoints.platforms);
+      const downloads = Object.entries(endpoints.platforms).reduce((acc, [key, value]) => {
+        // console.log(key, value);
+        acc[key] = value.url;
+        return acc;
+      }, {} as Record<string, string>);
 
-    await this.redisRepository.HSET(["app"], {
-      downloads: JSON.stringify(downloads),
-      platforms: JSON.stringify(platformKeys),
-    });
+      await this.redisRepository.HSET(["app"], {
+        downloads: JSON.stringify(downloads),
+        platforms: JSON.stringify(platformKeys),
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error fetching download endpoints", error.message);
+      } else {
+        console.error("Error fetching download endpoints", error);
+      }
+    }
   }
 
   async getWsConnections() {
