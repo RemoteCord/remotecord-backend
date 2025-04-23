@@ -4,10 +4,12 @@ import type { FastifyReply } from "fastify";
 import axios from "axios";
 import { CreateUserUseCase } from "../../application/create-user-use-case/create-user.use-case";
 import { AuthUseCase } from "../../application/auth.use-case";
+import { ConfigService } from "@nestjs/config";
+import { Configuration } from "@/src/config/env.enum";
 
 @Controller(AUTH_ROUTE)
 export class AuthController {
-    constructor(private readonly createUserUseCase: CreateUserUseCase, private readonly authUseCase: AuthUseCase) { }
+    constructor(private readonly createUserUseCase: CreateUserUseCase, private readonly authUseCase: AuthUseCase, private readonly configService: ConfigService) { }
 
     @Get("callback")
     async callback(@Res() res: FastifyReply, @Query('code') code: string,
@@ -15,11 +17,15 @@ export class AuthController {
 
         const redirectUri = 'https://api2.luqueee.dev/api/auth/callback';
         try {
+
+            const client_id = this.configService.get(Configuration.GOOGLE_CLIENT_ID);
+            const client_secret = this.configService.get(Configuration.GOOGLE_CLIENT_SECRET);
+
             const tokens = (await axios.post('https://oauth2.googleapis.com/token', null, {
                 params: {
                     code,
-                    client_id: process.env.GOOGLE_CLIENT_ID,
-                    client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                    client_id,
+                    client_secret,
                     redirect_uri: redirectUri,
                     grant_type: 'authorization_code',
                 },
