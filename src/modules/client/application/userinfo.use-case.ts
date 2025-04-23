@@ -12,7 +12,7 @@ export class UserInfoUseCase {
     private readonly wsApplicationRepository: WsApplicationRepository,
     private readonly clientPermissionsRepository: ClientPermissionRepository,
     private readonly controllerRepository: ControllerRepository,
-  ) {}
+  ) { }
 
   async getFriends(clientid: string) {
     try {
@@ -23,6 +23,7 @@ export class UserInfoUseCase {
 
       const friends = await Promise.all(
         controllers.map(async controller => {
+          console.log("controller", controller);
           const permissions =
             await this.clientPermissionsRepository.getAllUniquePermissions(
               clientid,

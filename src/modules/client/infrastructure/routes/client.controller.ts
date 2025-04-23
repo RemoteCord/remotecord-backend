@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Post,
   Req,
@@ -23,10 +24,10 @@ import { JwtAuthGuard } from "@/src/modules/auth/infrastructure/jwt.guard";
 @UseGuards(JwtAuthGuard)
 @Controller(CLIENT_ROUTE)
 export class ClientController {
+  private logger = new Logger("ClientController");
   constructor(
     private readonly userInfoUseCase: UserInfoUseCase,
-    private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   @UseGuards(AuthGuard)
   @Get("user-info")
@@ -50,6 +51,7 @@ export class ClientController {
   @Get("friends")
   async getFriends(@Req() req: FastifyRequest) {
     const clientid = req.headers["clientid"] as string;
+    this.logger.log(`Running getFriends ${clientid}`);
     return await this.userInfoUseCase.getFriends(clientid);
   }
 
