@@ -7,7 +7,7 @@ import { AuthModule } from "../auth/auth.module";
 import { WsClientLeavesUseCase } from "./application/ws-client-leaves.use-case";
 import { WsClientVerifyConnectionUseCase } from "./application/ws-client-verify-connection.use-case";
 import { WsClientResetAllConnectionsUseCase } from "./application/ws-client-reset-all-connections-use-case";
-import { WsClientGuard } from "./application/ws-client.guard";
+import { WsClientGuard } from "./application/guards/ws-client.guard";
 import { WsClientFile } from "./application/events/ws-client-file";
 import { WsBotModule } from "../ws-bot/ws-bot.module";
 import { WsClientScreens } from "./application/events/ws-client-screens";
@@ -57,4 +57,4 @@ import { WsClientSendKeylogger } from "./application/events/ws-client-send-keylo
     forwardRef(() => WsApplicationModule),
   ],
 })
-export class WsClientModule {}
+export class WsClientModule { }

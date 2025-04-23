@@ -22,6 +22,7 @@ import { PublicModule } from "../modules/public/public.module";
 import { SentryGlobalFilter, SentryModule } from "@sentry/nestjs/setup";
 import { APP_FILTER } from "@nestjs/core";
 import { StripeModule } from "../modules/stripe/stripe.module";
+import { PatreonModule } from "../modules/patreon/patreon.module";
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { StripeModule } from "../modules/stripe/stripe.module";
     ClientModule,
     RedisServiceModule,
     PublicModule,
+    PatreonModule,
   ],
   providers: [
     {
@@ -53,4 +55,4 @@ import { StripeModule } from "../modules/stripe/stripe.module";
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

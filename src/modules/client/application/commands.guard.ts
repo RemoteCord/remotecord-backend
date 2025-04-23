@@ -6,10 +6,11 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Observable } from "rxjs";
-import { CommandsRepository } from "./commands.repository";
+import { CommandsRepository } from "../domain/commands.repository";
 import { LoggerService } from "../../shared/providers";
 import { Socket } from "socket.io";
 import { Permissions } from "@/src/repository/db/clientPermisions/clientPermission.schema";
+import { CommandsLogsRepository } from "@/src/repository/db/commands/commands-log.repository";
 
 @Injectable()
 export class CommandsGuard implements CanActivate {
@@ -17,8 +18,9 @@ export class CommandsGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private readonly commandsRepository: CommandsRepository,
+    private readonly commandsLogsRepository: CommandsLogsRepository
     // private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const client: Socket = context.switchToWs().getClient();
@@ -43,6 +45,7 @@ export class CommandsGuard implements CanActivate {
     }
 
     await this.commandsRepository.deleteCommandEvent(clientid, command);
+
 
     this.logger.log(
       `Sending command event: ${command} from client ${clientid} to controller ${controllerid}`,

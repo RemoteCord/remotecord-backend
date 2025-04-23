@@ -8,7 +8,7 @@ import { ClientController } from "./routes/client.controller";
 import { UserInfoUseCase } from "../application/userinfo.use-case";
 import { WsApplicationModule } from "../../ws-application/ws-application.module";
 import { CommandsRepository } from "../domain/commands.repository";
-import { CommandsGuard } from "../domain/commands.guard";
+import { CommandsGuard } from "../application/commands.guard";
 
 @Module({
   imports: [
@@ -32,4 +32,4 @@ import { CommandsGuard } from "../domain/commands.guard";
     CommandsGuard,
   ],
 })
-export class ClientModule {}
+export class ClientModule { }

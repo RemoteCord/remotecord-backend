@@ -26,6 +26,8 @@ import {
 } from "./subscriptions/subscriptions.schema";
 import { CustomersModel, CustomersSchema } from "./customers/customers.schema";
 import { CustomersRepository } from "./customers/customers.repository";
+import { CommandsModel, CommandsSchema } from "./commands/commands.schema";
+import { CommandsLogsRepository } from "./commands/commands-log.repository";
 
 @Module({
   imports: [
@@ -43,6 +45,7 @@ import { CustomersRepository } from "./customers/customers.repository";
       { name: ClientPermissionModel.name, schema: ClientPermissionSchema },
       { name: SubscriptionsModel.name, schema: SubscriptionsSchema },
       { name: CustomersModel.name, schema: CustomersSchema },
+      { name: CommandsModel.name, schema: CommandsSchema },
     ]),
     forwardRef(() => AuthModule),
   ],
@@ -52,6 +55,7 @@ import { CustomersRepository } from "./customers/customers.repository";
     ClientPermissionRepository,
     SubscriptionsRepository,
     CustomersRepository,
+    CommandsLogsRepository,
     ClientPermissionGuard,
     // Add missing dependency here if it's a provider
   ],
@@ -62,7 +66,8 @@ import { CustomersRepository } from "./customers/customers.repository";
     ClientPermissionRepository,
     ClientPermissionGuard,
     SubscriptionsRepository,
+    CommandsLogsRepository,
     CustomersRepository,
   ],
 })
-export class SchemasModule {}
+export class SchemasModule { }

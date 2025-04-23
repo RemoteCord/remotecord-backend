@@ -27,9 +27,10 @@ import { MessageBotGuard } from "./application/guards/MessageBot.guard";
 import { ControllerAuthorizationGuard } from "./application/guards/ControllerAuthorization.guard";
 import { DeleteFriendFromControrllerUseCase } from "./application/delete-friend-from-controller.use-case";
 import { CamerasUseCase } from "./application/events/cameras.use-case";
+import { ControllerDiscordRoutes } from "./infrastructure/routes/controller-discord.controller";
 
 @Module({
-  controllers: [ControllerRoutes, ControllerEvents],
+  controllers: [ControllerRoutes, ControllerEvents, ControllerDiscordRoutes],
   providers: [
     ActivateControllerUseCase,
     AddFriendToControllerUseCase,

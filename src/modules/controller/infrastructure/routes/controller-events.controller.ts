@@ -39,6 +39,9 @@ export class ControllerEvents {
     private readonly camerasUseCase: CamerasUseCase,
   ) { }
 
+
+
+
   @UseGuards(ClientPermissionGuard)
   @Post(":controllerid/upload-file")
   async getCurrentClient(
@@ -110,4 +113,6 @@ export class ControllerEvents {
     return await this.camerasUseCase.takeScreenshot(controllerid, webcamId);
 
   }
+
+
 }

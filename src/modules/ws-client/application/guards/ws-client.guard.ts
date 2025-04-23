@@ -8,9 +8,7 @@ import {
 // import { jwtConstants } from 'src/shared/constants';
 // import * as CryptoJS from 'crypto-js';
 import { Socket } from "socket.io";
-import { LoggerService } from "../../shared/providers";
-import { WsClientVerifyConnectionUseCase } from "./ws-client-verify-connection.use-case";
-import { CommandsRepository } from "../../client/domain/commands.repository";
+import { WsClientVerifyConnectionUseCase } from "../ws-client-verify-connection.use-case";
 
 @Injectable()
 export class WsClientGuard implements CanActivate {
@@ -47,9 +45,13 @@ export class WsClientGuard implements CanActivate {
       client.handshake.query["clientid"] = clientid;
       client.handshake.query["controllerid"] = controllerid;
 
+
       this.logger.log("Passed WsClientGuard");
 
       // await this.commandsRepository.deleteCommandEvent(clientid, );
+
+
+
 
       return true;
     } catch (error) {

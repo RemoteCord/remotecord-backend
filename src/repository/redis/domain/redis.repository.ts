@@ -13,14 +13,14 @@ export type RedisCategories =
   | "stats"
   | "ws"
   | "messages-bot"
-  | "token-connections";
+  | "token-connections" | "app";
 
 @Injectable()
 export class RedisRepository {
   constructor(
     private readonly logger: LoggerService,
     @InjectRedis() private readonly redis: Redis,
-  ) {}
+  ) { }
 
   async HSET(
     params: [RedisCategories, string[]] | [RedisCategories],

@@ -14,10 +14,20 @@ export class ControllerModel {
   @Prop({ required: true })
   picture!: string;
 
+  @Prop({ required: true })
+  email!: string;
+
+  @Prop({ required: false, default: false })
+  premium?: boolean;
+
   @Prop({ required: false, default: [] })
   friends?: string[];
+
   @Prop({ required: false, default: "" })
   activeclient?: string;
+
+  @Prop({ required: false, default: "" })
+  locale?: string;
 }
 
 export const ControllerSchema = SchemaFactory.createForClass(ControllerModel);

@@ -4,7 +4,8 @@ import { Injectable, OnModuleInit } from "@nestjs/common";
 
 @Injectable()
 export class CommandsRepository implements OnModuleInit {
-  constructor(private readonly redisRepository: RedisRepository) {}
+  constructor(private readonly redisRepository: RedisRepository,
+  ) { }
 
   async onModuleInit() {
     // await this.redisRepository.HDELALL(["client-commands-requests"]);

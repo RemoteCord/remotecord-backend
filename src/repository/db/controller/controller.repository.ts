@@ -16,7 +16,7 @@ export class ControllerRepository implements OnModuleInit {
     private readonly controllerModel: Model<ControllerModel>,
 
     private readonly redisRepository: RedisRepository,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     this.redisRepository.HDELALL(["connection-ws"]);
@@ -120,5 +120,12 @@ export class ControllerRepository implements OnModuleInit {
       friend => friend !== clientid,
     );
     await controller.save();
+  }
+
+  async updatePermiumStatus(email: string, status: boolean) {
+    await this.controllerModel.updateOne(
+      { email },
+      { $set: { premium: status } },
+    );
   }
 }
