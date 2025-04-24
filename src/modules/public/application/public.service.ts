@@ -106,6 +106,7 @@ export class PublicService {
 
     const data = {
       connections: Object.keys(connections).length,
+
       clients: clientsNum,
       commands: numCommands,
       web_analytics: posthog_web_results,
@@ -145,7 +146,7 @@ export class PublicService {
     }
   }
 
-  async getWsConnections() {
+  async getStats() {
     const stats = await this.redisRepository.HGETALL<{
       users: number;
       clients: number;

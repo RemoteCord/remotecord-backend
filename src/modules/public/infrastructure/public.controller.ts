@@ -10,7 +10,7 @@ export class PublicController {
 
   @Get("stats")
   async getStats() {
-    const data = await this.publicService.fetchStats();
+    const data = await this.publicService.getStats();
     return data
   }
 
