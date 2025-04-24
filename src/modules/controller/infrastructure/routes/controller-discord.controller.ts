@@ -4,12 +4,26 @@ import axios from "axios";
 import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 import { ConfigService } from "@nestjs/config";
 import { Configuration } from "@/src/config/env.enum";
+import { PublicService } from "@/src/modules/public/application/public.service";
 
 // https://discord.com/oauth2/authorize?client_id=1043524973517615164&response_type=code&redirect_uri=https%3A%2F%2Fapi2.luqueee.dev%2Fapi%2Fcontrollers%2Fget-email&scope=email
 
 @Controller(CONTROLLER_ROUTE)
 export class ControllerDiscordRoutes {
-    constructor(private readonly controllerRepository: ControllerRepository, private readonly configService: ConfigService) { }
+    constructor(private readonly controllerRepository: ControllerRepository, private readonly configService: ConfigService, private readonly publicService: PublicService) { }
+
+    @Get("stats")
+    async getStats() {
+
+        const data = await this.publicService.fetchStats(false);
+
+        return {
+            ...data,
+
+        }
+    }
+
+
 
     @Get("get-email")
     @Redirect('https://discord.gg/A3uVqEHr', 301)

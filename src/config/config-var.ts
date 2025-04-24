@@ -15,4 +15,6 @@ export const configVar = () => ({
   BASE_API_URL: process.env.BASE_API_URL,
   DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
+  POSTHOG_API_KEY: process.env.POSTHOG_API_KEY,
+  POSTHOG_PROJECT_URL: process.env.POSTHOG_PROJECT_URL,
 });

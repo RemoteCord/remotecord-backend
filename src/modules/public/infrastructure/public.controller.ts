@@ -10,7 +10,8 @@ export class PublicController {
 
   @Get("stats")
   async getStats() {
-    return await this.publicService.getWsConnections();
+    const data = await this.publicService.fetchStats();
+    return data
   }
 
   @Get("info")
