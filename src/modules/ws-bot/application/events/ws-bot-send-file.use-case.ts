@@ -5,7 +5,7 @@ import { WsBotGateway } from "../../infrastructure/ws-bot.gateway";
 
 @Injectable()
 export class WsBotSendFileUseCase {
-  constructor(private readonly wsBotGateway: WsBotGateway) {}
+  constructor(private readonly wsBotGateway: WsBotGateway) { }
 
   async execute(controllerid: string, fileurl: string, metadata: FileMetadata) {
     console.log("Emitting send file to bot", controllerid, fileurl, metadata);
@@ -16,4 +16,6 @@ export class WsBotSendFileUseCase {
 
     return;
   }
+
+
 }

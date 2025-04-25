@@ -19,13 +19,15 @@ export class WsClientFile {
     // private readonly logger: LoggerService,
     private readonly configService: ConfigService,
     private readonly wsClientGateway: WsClientGateway,
-  ) {}
+  ) { }
 
   async uploadFileToClient({ clientid, fileroute }: ClientUploadFile) {
     this.wsClientGateway.sendEventToClient(clientid, "uploadFile", {
       fileroute,
     });
   }
+
+
 
   async getFileFromClient({ clientid, fileroute }: ClientGetFile) {
     try {

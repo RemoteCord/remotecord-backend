@@ -2,6 +2,7 @@ import type { Permissions } from "@/src/repository/db/clientPermisions/clientPer
 
 export const permissionsAdapter: Record<string, Permissions> = {
   "upload-file": "uploadFile",
+  "upload-large-file": "uploadFile",
   "get-screens": "screenshot",
   "send-screenshot": "screenshot",
   explorer: "explorer",

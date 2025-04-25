@@ -7,6 +7,7 @@ const ALLOWED_ORIGINS: string[] = [
   "http://tauri.localhost",
   "http://localhost:3006",
   "https://remotecord.app",
+  "https://preview.luqueee.dev"
 ];
 
 const logger = new Logger("CORS");

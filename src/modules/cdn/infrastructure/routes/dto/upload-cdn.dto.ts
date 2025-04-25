@@ -17,3 +17,14 @@ export class UploadCallbackDto {
 
   metadata!: FileMetadata;
 }
+
+export class UploadLargeCallbackDto {
+  @IsString()
+  @IsNotEmpty()
+  fileurl!: string;
+  @IsString()
+  @IsNotEmpty()
+  controllerid!: string;
+
+  metadata!: FileMetadata;
+}

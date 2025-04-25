@@ -29,6 +29,7 @@ import { DeleteFriendFromControrllerUseCase } from "./application/delete-friend-
 import { CamerasUseCase } from "./application/events/cameras.use-case";
 import { ControllerDiscordRoutes } from "./infrastructure/routes/controller-discord.controller";
 import { PublicModule } from "../public/public.module";
+import { CdnModule } from "../cdn/cdn.module";
 
 @Module({
   controllers: [ControllerRoutes, ControllerEvents, ControllerDiscordRoutes],
@@ -58,7 +59,8 @@ import { PublicModule } from "../public/public.module";
     ClientModule,
     AuthModule,
     RedisServiceModule,
-    PublicModule
+    PublicModule,
+    CdnModule
   ],
 })
 export class ControllerModule { }

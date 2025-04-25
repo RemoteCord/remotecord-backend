@@ -82,7 +82,7 @@ export class PublicService {
   async fetchStats(limitCluster = true) {
     if (!cluster.worker || cluster.worker.id !== 1 && limitCluster) return
 
-    console.log("CLUSTER", cluster.worker?.id, process.pid);
+    // console.log("CLUSTER", cluster.worker?.id, process.pid);
     // this.redis.hset("ws-application-id", "users", 0);
     const connections = await this.controllerRepository.getAllActiveClients();
     const clientsNum = await this.redisRepository.HLEN(["client-data"]);
