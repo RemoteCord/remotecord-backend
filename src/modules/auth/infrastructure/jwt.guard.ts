@@ -37,45 +37,50 @@ export class JwtAuthGuard {
   ) {
   }
   async canActivate(context: ExecutionContext) {
-    // Add your custom authentication logic here
-    // for example, call super.logIn(request) to establish a session.
-    const request = context.switchToHttp().getRequest<FastifyRequest>();
+    try {
+      // Add your custom authentication logic here
+      // for example, call super.logIn(request) to establish a session.
+      const request = context.switchToHttp().getRequest<FastifyRequest>();
 
-    const token = request.headers["authorization"]?.split(" ")[1];
-    if (!token) {
-      throw new CustomUnathorizedException();
-    }
+      const token = request.headers["authorization"]?.split(" ")[1];
+      if (!token) {
+        throw new CustomUnathorizedException();
+      }
 
-    this.logger.log(`Running JwtAuthGuard`);
+      this.logger.log(`Running JwtAuthGuard`);
 
-    // console.log("JwtAuthGuard canActivate called");
+      // console.log("JwtAuthGuard canActivate called");
 
-    const user_data = await jwtDecode(token) as User;
+      const user_data = await jwtDecode(token) as User;
 
-    const clientid = user_data.sub as string;
+      const clientid = user_data.sub as string;
 
-    const existUser = await this.userRepository.getUserById(clientid);
-    // console.log("user_data_db", user_data_db);
-    if (existUser) {
+      const existUser = await this.userRepository.getUserById(clientid);
       // console.log("user_data_db", user_data_db);
-      // this.logger.error("No user found in request");
-      const { email, name, picture, sub } = user_data;
+      if (existUser) {
+        // console.log("user_data_db", user_data_db);
+        // this.logger.error("No user found in request");
+        const { email, name, picture, sub } = user_data;
 
-      request.headers["email"] = email;
-      request.headers["username"] = name;
-      request.headers["picture"] = picture;
-      request.headers["clientid"] = sub
-      this.logger.log(`passed jwt guard ${clientid} ${name}`);
+        request.headers["email"] = email;
+        request.headers["username"] = name;
+        request.headers["picture"] = picture;
+        request.headers["clientid"] = sub
+        this.logger.log(`passed jwt guard ${clientid} ${name}`);
 
-      return true;
+        return true;
+      }
+
+
+      this.logger.error("No user found in request. JwtAuthGuard Failed");
+      return false;
+    } catch (error) {
+
+      return false
     }
-
-
-    this.logger.error("No user found in request. JwtAuthGuard Failed");
-    return false;
   }
 
-  async decryptData(token: string): Promise<JWTUser> {
+  async decryptData(token: string): Promise<JWTUser | null> {
     try {
       const data = await jwtDecode(token) as User;
       return {
@@ -84,8 +89,9 @@ export class JwtAuthGuard {
         username: data.name,
       };
     } catch (error) {
-      this.logger.error("Error decrypting data", error);
-      throw new CustomUnathorizedException();
+      // this.logger.error("Error decrypting data", error);
+      // throw new CustomUnathorizedException();
+      return null
     }
     // return data;
   }

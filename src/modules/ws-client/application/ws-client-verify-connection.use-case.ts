@@ -9,7 +9,7 @@ export class WsClientVerifyConnectionUseCase {
     private readonly clientDataEncryptUseCase: ClientDataEncryptUseCase,
     private readonly controllerRepository: ControllerRepository,
     private readonly jwtAuthGuard: JwtAuthGuard,
-  ) {}
+  ) { }
 
   async execute(controllerid: string, token: string) {
     // console.log("WS CLIENT VERIFY", token, controllerid);
@@ -17,7 +17,9 @@ export class WsClientVerifyConnectionUseCase {
     if (!controllerid) throw new Error("Controller ID not provided");
 
     const data = await this.jwtAuthGuard.decryptData(token);
-
+    if (!data) {
+      throw new Error("Invalid token");
+    }
     const { clientid } = data;
     if (!clientid) {
       throw new Error("Invalid token");

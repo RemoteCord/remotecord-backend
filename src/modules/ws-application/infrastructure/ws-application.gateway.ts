@@ -68,14 +68,15 @@ export class WsApplicationGateway
   }
 
   async handleConnection(client: Socket) {
-    const { clientid } = await this.wsApplicationJoinsUseCase.execute(client);
     try {
+      const { clientid } = await this.wsApplicationJoinsUseCase.execute(client);
 
       await this.redisRepository.HSET(["ws", [clientid]], {
         application: client.id,
       });
 
 
+      this.logger.debug(`Client ${clientid} connected to ws-application`);
       // await this.clientJoinsUseCase.execute()
     } catch (error) {
       this.logger.debug("Error on joining to ws-application", error);
@@ -83,7 +84,6 @@ export class WsApplicationGateway
       client.disconnect();
       return
     }
-    this.logger.debug(`Client ${clientid} connected to ws-application`);
 
   }
 

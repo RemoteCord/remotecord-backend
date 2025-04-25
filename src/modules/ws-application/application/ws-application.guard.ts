@@ -9,6 +9,7 @@ import {
 import { Socket } from "socket.io";
 import { LoggerService } from "../../shared/providers";
 import { JwtAuthGuard } from "../../auth/infrastructure/jwt.guard";
+import { ClientNotFoundException } from "@/src/repository/db/user/exceptions";
 
 @Injectable()
 export class WsApplicationGuard implements CanActivate {
@@ -30,9 +31,14 @@ export class WsApplicationGuard implements CanActivate {
       // console.log("token:", token);
       if (!token) throw new UnauthorizedException();
 
-      const { clientid } =
+      const data =
         await this.jwtAuthGuard.decryptData(token);
+      if (!data) {
+        this.logger.error("No data found in token");
+        throw new ClientNotFoundException("No data found in token");
+      }
 
+      const { clientid } = data;
       //   const id = this.verifyToken(token);
       //   client["clientid"] = id;
 

@@ -24,6 +24,11 @@ export class WsApplicationJoinsUseCase {
 
 
     const data = await this.jwtAuthGuard.decryptData(token);
+    if (!data) {
+      this.logger.error("No data found in token");
+      throw new ClientNotFoundException("No data found in token");
+    }
+
     const { clientid, email, username } = data;
 
 

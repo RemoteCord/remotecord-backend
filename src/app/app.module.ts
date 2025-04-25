@@ -28,7 +28,7 @@ import { LoggerMiddleware } from "../modules/shared/middlewares/logger.middlewar
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `./environments/${process.env.NODE_ENV}.env`,
+      envFilePath: `/.env`,
       load: [configVar],
     }),
     // SentryModule.forRoot(),
