@@ -76,12 +76,17 @@ export class JwtAuthGuard {
   }
 
   async decryptData(token: string): Promise<JWTUser> {
-    const data = await jwtDecode(token) as User;
-    return {
-      ...data,
-      clientid: data.sub,
-      username: data.name,
-    };
+    try {
+      const data = await jwtDecode(token) as User;
+      return {
+        ...data,
+        clientid: data.sub,
+        username: data.name,
+      };
+    } catch (error) {
+      this.logger.error("Error decrypting data", error);
+      throw new CustomUnathorizedException();
+    }
     // return data;
   }
 

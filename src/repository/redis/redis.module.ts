@@ -19,14 +19,15 @@ export const REDIS_MICROSERVICE_KEY = "REDIS_MICROSERVICE";
         type: "single",
         url: `redis://${configService.get(Configuration.REDIS_HOST)}:${configService.get(Configuration.REDIS_PORT)}`,
         global: true,
+
         options: {
           username: configService.get(Configuration.REDIS_USERNAME),
           password: configService.get(Configuration.REDIS_PASSWORD),
-          // db: configService.get(Configuration.REDIS_DB),
-          clusterRetryStrategy: (times: any) => Math.min(times * 100, 3000),
+          db: configService.get(Configuration.REDIS_DB),
+          sentinelPassword: configService.get(Configuration.REDIS_PASSWORD),
         },
       }),
     }),
   ],
 })
-export class RedisServiceModule {}
+export class RedisServiceModule { }
