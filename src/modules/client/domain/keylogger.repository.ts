@@ -8,13 +8,13 @@ export class KeyLoggerRepository implements OnModuleInit {
   constructor(
     private readonly redisRepository: RedisRepository,
     private readonly wsClientSendKeylogger: WsClientSendKeylogger,
-  ) {}
+  ) { }
 
   onModuleInit() {
     this.redisRepository.HDELALL(["keylogger"]);
   }
 
-  @Interval(5000)
+  @Interval(10000)
   async getKeys() {
     const values = await this.redisRepository.HGETALL<Record<string, boolean>>([
       "keylogger",
