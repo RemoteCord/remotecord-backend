@@ -169,6 +169,7 @@ export class PublicService {
     const values = await this.redisRepository.HGETALL<{
       downloads: string;
       platforms: string;
+      version: string;
     } | null>(["app"]);
 
     if (!values) {
@@ -176,6 +177,7 @@ export class PublicService {
     }
 
     return {
+      version: values.version,
       downloads: JSON.parse(values.downloads),
       plattformKeys: JSON.parse(values.platforms),
     };
