@@ -75,10 +75,14 @@ export class ClientController {
 
     const { permissions, controllerid } = body;
 
-    return await this.userInfoUseCase.updateControllerPermissions(
+    const res = await this.userInfoUseCase.updateControllerPermissions(
       permissions,
       controllerid,
       clientid,
     );
+
+    this.logger.log(`Updated permissions from ${clientid} to ${controllerid}`);
+
+    return res;
   }
 }

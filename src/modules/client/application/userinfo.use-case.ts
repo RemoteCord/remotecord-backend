@@ -94,6 +94,7 @@ export class UserInfoUseCase {
         controllerid,
         permissions,
       );
+
       return { status: true };
     } catch (error) {
       return { status: false };

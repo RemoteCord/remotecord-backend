@@ -123,7 +123,7 @@ export class PublicService {
   async fetchDownloadEndpoints() {
     if (!cluster.worker || cluster.worker.id !== 1) return
 
-    console.log("CLUSTER", cluster.worker?.id, process.pid);
+    // console.log("CLUSTER", cluster.worker?.id, process.pid);
     try {
 
       const endpoints = await fetch("https://github.com/remotecord/remotecord-app/releases/latest/download/latest.json")
@@ -138,6 +138,7 @@ export class PublicService {
       }, {} as Record<string, string>);
 
       await this.redisRepository.HSET(["app"], {
+        version: endpoints.version,
         downloads: JSON.stringify(downloads),
         platforms: JSON.stringify(platformKeys),
       });
