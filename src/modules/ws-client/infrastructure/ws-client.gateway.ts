@@ -184,7 +184,7 @@ export class WsClientGateway
 
     const pathSplited = splitedPath.split(folder);
 
-    console.log("pathSplited", pathSplited);
+    // console.log("pathSplited", pathSplited);
     let resultPath = "";
     if (pathSplited.length > 1) {
       resultPath = path.join(folder, pathSplited[1]);
