@@ -12,7 +12,7 @@ import axios from "axios";
 import { Configuration } from "@/src/config/env.enum";
 import type { PosthogWebResult } from "../types/posthog";
 import cluster from "cluster";
-
+import os from "node:os"
 @Injectable()
 export class PublicService {
   constructor(
@@ -82,11 +82,15 @@ export class PublicService {
   async fetchStats(limitCluster = true) {
     if (!cluster.worker || cluster.worker.id !== 1 && limitCluster) return
 
+    const totalMem = Number((os.totalmem() / 1024 / 1024).toFixed(2));
+    const freeMem = Number((os.freemem() / 1024 / 1024).toFixed(2));
+    const usedMem = totalMem - freeMem;
+
+    console.log("MEMORY", totalMem, freeMem, usedMem);
     // console.log("CLUSTER", cluster.worker?.id, process.pid);
     // this.redis.hset("ws-application-id", "users", 0);
     const connections = await this.controllerRepository.getAllActiveClients();
     const clientsNum = await this.redisRepository.HLEN(["client-data"]);
-
     const numCommands = await this.commandsLogsRepository.countCommands();
 
     const posthog_web_results = await this.fetchPosthogWebResults();
@@ -99,6 +103,11 @@ export class PublicService {
         users: 0,
         clients: 0,
         commands: numCommands,
+        memory: JSON.stringify({
+          free: freeMem,
+          total: totalMem,
+          used: usedMem,
+        }),
         web_analytics: JSON.stringify(posthog_web_results),
       });
       return;

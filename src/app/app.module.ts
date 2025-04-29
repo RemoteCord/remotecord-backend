@@ -21,9 +21,9 @@ import { RedisServiceModule } from "../repository/redis/redis.module";
 import { PublicModule } from "../modules/public/public.module";
 import { SentryGlobalFilter, SentryModule } from "@sentry/nestjs/setup";
 import { APP_FILTER } from "@nestjs/core";
-import { StripeModule } from "../modules/stripe/stripe.module";
 import { PatreonModule } from "../modules/patreon/patreon.module";
 import { LoggerMiddleware } from "../modules/shared/middlewares/logger.middleware";
+import { PremiumModule } from "../modules/premium/premium.module";
 
 @Module({
   imports: [
@@ -32,7 +32,6 @@ import { LoggerMiddleware } from "../modules/shared/middlewares/logger.middlewar
       load: [configVar],
     }),
     // SentryModule.forRoot(),
-    StripeModule.forRootAsync(),
     ScheduleModule.forRoot(),
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true, cache: true }),
@@ -48,6 +47,7 @@ import { LoggerMiddleware } from "../modules/shared/middlewares/logger.middlewar
     RedisServiceModule,
     PublicModule,
     PatreonModule,
+    PremiumModule,
   ],
   providers: [
     {
