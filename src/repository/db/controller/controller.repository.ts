@@ -19,7 +19,7 @@ export class ControllerRepository implements OnModuleInit {
   ) { }
 
   async onModuleInit() {
-    this.redisRepository.HDELALL(["connection-ws"]);
+    await this.redisRepository.HDELALL(["connection-ws"]);
     await this.controllerModel.updateMany({}, { activeclient: "" });
   }
 
