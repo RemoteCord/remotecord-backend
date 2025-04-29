@@ -13,11 +13,13 @@ import { Configuration } from "@/src/config/env.enum";
 import type { PosthogWebResult } from "../types/posthog";
 import cluster from "cluster";
 import os from "node:os"
+import { UserRepository } from "@/src/repository/db/user/user.repository";
 @Injectable()
 export class PublicService {
   constructor(
     private readonly redisRepository: RedisRepository,
     private readonly controllerRepository: ControllerRepository,
+    private readonly userRepository: UserRepository,
     private readonly commandsLogsRepository: CommandsLogsRepository,
     private readonly configService: ConfigService,
   ) { }
@@ -90,7 +92,8 @@ export class PublicService {
     // console.log("CLUSTER", cluster.worker?.id, process.pid);
     // this.redis.hset("ws-application-id", "users", 0);
     const connections = await this.controllerRepository.getAllActiveClients();
-    const clientsNum = await this.redisRepository.HLEN(["client-data"]);
+    const clientsNum = await this.userRepository.countAllUsers();
+    const controllersNum = await this.controllerRepository.countAllControllers();
     const numCommands = await this.commandsLogsRepository.countCommands();
 
     const posthog_web_results = await this.fetchPosthogWebResults();
@@ -98,10 +101,12 @@ export class PublicService {
     // console.log("posthog_web_results", posthog_web_results);
 
     // console.log("wsConnections", clientsNum);
-    if (!connections) {
+    if (!clientsNum || !numCommands || !connections) {
       this.redisRepository.HSET(["stats"], {
-        users: 0,
-        clients: 0,
+        users: JSON.stringify({
+          controllers: 0,
+          clients: 0,
+        }),
         commands: numCommands,
         memory: JSON.stringify({
           free: freeMem,
@@ -115,13 +120,18 @@ export class PublicService {
 
     const data = {
       connections: Object.keys(connections).length,
-
-      clients: clientsNum,
+      users: JSON.stringify({
+        controllers: controllersNum,
+        clients: clientsNum,
+      }),
       commands: numCommands,
-      web_analytics: posthog_web_results,
+      web_analytics: JSON.stringify(posthog_web_results),
+      memory: JSON.stringify({
+        free: freeMem,
+        total: totalMem,
+        used: usedMem,
+      }),
     }
-
-
 
     this.redisRepository.HSET(["stats"], data);
 
@@ -158,18 +168,21 @@ export class PublicService {
 
   async getStats() {
     const stats = await this.redisRepository.HGETALL<{
-      users: number;
-      clients: number;
+      users: string;
       commands: number;
     } | null>(["stats"]);
 
     if (!stats) {
-      return { users: 0 };
+      return {
+        users: {
+          controllers: 0,
+          clients: 0,
+        }, commands: 0
+      };
     }
 
     return {
-      users: stats.users,
-      clients: stats.clients,
+      users: JSON.parse(stats.users),
       commands: stats.commands,
     };
   }

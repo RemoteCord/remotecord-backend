@@ -20,7 +20,7 @@ export class UserRepository {
     @Inject(forwardRef(() => ClientDataEncryptUseCase))
     private readonly clientEncrypt: ClientDataEncryptUseCase,
     // private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   async createUser(user: UserModel): Promise<string> {
     try {
@@ -84,5 +84,10 @@ export class UserRepository {
 
     this.logger.log(`Getting user with id ${id}`);
     return user;
+  }
+
+  async countAllUsers(): Promise<number> {
+    const count = await this.userModel.countDocuments();
+    return count;
   }
 }

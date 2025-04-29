@@ -128,4 +128,10 @@ export class ControllerRepository implements OnModuleInit {
       { $set: { premium: status } },
     );
   }
+
+  async countAllControllers() {
+
+    const count = await this.controllerModel.countDocuments();
+    return count;
+  }
 }
