@@ -86,7 +86,7 @@ export class PublicService {
 
     const totalMem = Number((os.totalmem() / 1024 / 1024).toFixed(2));
     const freeMem = Number((os.freemem() / 1024 / 1024).toFixed(2));
-    const usedMem = totalMem - freeMem;
+    const usedMem = Number((totalMem - freeMem).toFixed(2));
 
     console.log("MEMORY", totalMem, freeMem, usedMem);
     // console.log("CLUSTER", cluster.worker?.id, process.pid);
