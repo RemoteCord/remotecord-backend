@@ -80,7 +80,7 @@ export class PublicService {
   }
 
 
-  @Interval(10000)
+  @Interval(100000)
   async fetchStats(limitCluster = true) {
     if (!cluster.worker || cluster.worker.id !== 1 && limitCluster) return
 
@@ -88,7 +88,6 @@ export class PublicService {
     const freeMem = Number((os.freemem() / 1024 / 1024).toFixed(2));
     const usedMem = Number((totalMem - freeMem).toFixed(2));
 
-    console.log("MEMORY", totalMem, freeMem, usedMem);
     // console.log("CLUSTER", cluster.worker?.id, process.pid);
     // this.redis.hset("ws-application-id", "users", 0);
     const connections = await this.controllerRepository.getAllActiveClients();
