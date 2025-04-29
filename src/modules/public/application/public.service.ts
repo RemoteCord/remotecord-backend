@@ -135,7 +135,19 @@ export class PublicService {
 
     this.redisRepository.HSET(["stats"], data);
 
-    return data
+    return {
+      ...data,
+      users: {
+        controllers: controllersNum,
+        clients: clientsNum,
+      },
+      web_analytics: posthog_web_results,
+      memory: {
+        free: freeMem,
+        total: totalMem,
+        used: usedMem,
+      },
+    }
   }
 
   @Interval(1000000)

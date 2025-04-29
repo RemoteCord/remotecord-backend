@@ -19,7 +19,7 @@ export class WsApplicationConnectClientUseCase {
     private readonly redisRepository: RedisRepository,
     private readonly wsApplicationGateway: WsApplicationGateway,
     private readonly wsClientGateway: WsClientGateway,
-  ) {}
+  ) { }
 
   async disconnect(controllerid: string) {
     try {
@@ -64,6 +64,10 @@ export class WsApplicationConnectClientUseCase {
       console.log(activeclient);
       if (activeclient === clientid)
         throw new Error("Client already connected");
+
+      if (activeclient !== "")
+        throw new Error("Controller have another client connected");
+
 
       const tokenConnection = generateRandomHash();
 
