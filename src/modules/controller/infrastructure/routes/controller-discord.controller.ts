@@ -26,7 +26,7 @@ export class ControllerDiscordRoutes {
 
 
     @Get("get-email")
-    @Redirect('https://discord.gg/A3uVqEHr', 301)
+    @Redirect("https://discord.gg/vg9hyNT9tR", 301)
 
     async getEmail(@Query("code") code: string) {
 
