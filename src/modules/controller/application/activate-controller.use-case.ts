@@ -15,13 +15,13 @@ export class ActivateControllerUseCase {
     name: string,
   ): Promise<{ status: boolean; isAlreadyActivated: boolean }> {
     try {
-      // const res = await this.controllerRepository.create({
-      //   controllerid,
-      //   name,
-      //   picture,
-      // });
+      const res = await this.controllerRepository.create({
+        controllerid,
+        name,
+        picture,
+      });
 
-      // this.logger.info(`Controller activated: ${res}`);
+      this.logger.info(`Controller activated: ${res}`);
       return { status: true, isAlreadyActivated: false };
     } catch (error) {
       const errorMessage =
