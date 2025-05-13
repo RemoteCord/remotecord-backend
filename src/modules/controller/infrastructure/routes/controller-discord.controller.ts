@@ -23,8 +23,6 @@ export class ControllerDiscordRoutes {
         }
     }
 
-
-
     @Get("get-email")
     @Redirect("https://discord.gg/vg9hyNT9tR", 301)
 
@@ -57,7 +55,6 @@ export class ControllerDiscordRoutes {
             refresh_token: string;
             scope: string;
             token_type: string;
-
         }
 
         const userData = await fetch(
@@ -86,7 +83,7 @@ export class ControllerDiscordRoutes {
             picture: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`,
             locale: userData.locale,
         }).catch((error) => {
-            // console.error("Error creating controller", error);
+            console.error("Error creating controller", error);
         }
         );
 

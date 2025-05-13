@@ -14,8 +14,8 @@ export class ControllerModel {
   @Prop({ required: true })
   picture!: string;
 
-  @Prop({ required: true })
-  email!: string;
+  @Prop({ required: false, default: "" })
+  email?: string;
 
   @Prop({ required: false, default: false })
   premium?: boolean;
