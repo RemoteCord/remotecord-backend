@@ -66,7 +66,7 @@ export class WsApplicationConnectClientUseCase {
         throw new Error("Client already connected");
 
       if (activeclient !== "")
-        throw new Error("Controller have another client connected");
+        throw new Error("The controller has another client connected");
 
 
       const tokenConnection = generateRandomHash();
